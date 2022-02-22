@@ -14,18 +14,23 @@
  * This handles writing and reading information to/from the VICKY's text mode memory
  *
  *** things this library needs to be able to do
- * work with either channel A or channel B
- * clear / fill an entire screen of text characters
- * clear / fill an entire screen of text attributes
+ * x work with either channel A or channel B
+ * x clear / fill an entire screen of text characters
+ * x clear / fill an entire screen of text attributes
+ * invert the colors of a screen
  * clear / fill a smaller-than-screen rectangular area of text/attrs
  * Draw a string to a specified x, y coord (no wrap)
- * Draw a char to a specified x, y coord
- * Get the currently displayed character at the specified coord
- * Get the attribute value at the specified coord
+ * x Draw a char to a specified x, y coord
+ * x Get the currently displayed character at the specified coord
+ * x Set the foreground and background colors at the specified coord
+ * x Set the attribute value at the specified coord
+ * x Get the attribute value at the specified coord
+ * x Get the foreground or background color at the specified coord
+ * draw a line using "graphic" characters
+ * draw a box using "graphic" characters
  * copy a full screen of text or attr from an off-screen buffer
  * copy a full screen of text or attr TO an off-screen buffer
  * copy a rectangular area of text or attr TO/FROM an off-screen buffer
- * invert the colors of a screen
  * display a string in a rectangular block on the screen, with wrap
  * display a string in a rectangular block on the screen, with wrap, taking a hook for a "display more" event, and scrolling text vertically up after hook func returns 'continue' (or exit, returning control to calling func, if hook returns 'stop')
  * replace current text font with another, loading from specified ram loc.
@@ -148,13 +153,38 @@ boolean Text_ShowFontChars(ScreenID the_screen_id);
 // **** FONT RELATED *****
 
 
-// **** CHAR put/get functions *****
 
-// Draw a char at a specified x, y coord
-boolean Text_SetCharAtXY(ScreenID the_screen_id, char the_char, signed int x, signed int y);
+// **** Set char/attr functions *****
+
+
+// Set a char at a specified x, y coord
+boolean Text_SetCharAtXY(ScreenID the_screen_id, signed int x, signed int y, unsigned char the_char);
+
+// Set the attribute value at a specified x, y coord
+boolean Text_SetAttrAtXY(ScreenID the_screen_id, signed int x, signed int y, unsigned char fore_color, unsigned char back_color);
 
 // Draw a char at a specified x, y coord, also setting the color attributes
-boolean Text_SetCharAndColorAtXY(ScreenID the_screen_id, char the_char, unsigned char fore_color, unsigned char back_color, signed int x, signed int y);
+boolean Text_SetCharAndColorAtXY(ScreenID the_screen_id, signed int x, signed int y, unsigned char the_char, unsigned char fore_color, unsigned char back_color);
+
+
+
+
+// **** Get char/attr functions *****
+
+
+// Get the char at a specified x, y coord
+unsigned char Text_GetCharAtXY(ScreenID the_screen_id, signed int x, signed int y);
+
+// Get the attribute value at a specified x, y coord
+unsigned char Text_GetAttrAtXY(ScreenID the_screen_id, signed int x, signed int y);
+
+// Get the foreground color at a specified x, y coord
+unsigned char Text_GetForeColorAtXY(ScreenID the_screen_id, signed int x, signed int y);
+
+// Get the background color at a specified x, y coord
+unsigned char Text_GetBackColorAtXY(ScreenID the_screen_id, signed int x, signed int y);
+
+
 
 
 #endif /* LIB_TEXT_H_ */

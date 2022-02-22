@@ -70,37 +70,38 @@ boolean General_StringToUnsignedLong(const unsigned char* the_string_value, unsi
 /*****************************************************************************/
 
 // Convert a (positive-only) string integer to an unsigned long integer. returns false in event of error
-boolean General_StringToUnsignedLong(const unsigned char* the_string_value, unsigned long* the_conversion)
-{
-	unsigned char*	temp;
-	unsigned long	val = 0;
-	boolean			safe_conversion = true;
-	
-	errno = 0;
-	// LOGIC: errno will be changed by strtol if an overrun or other error occurs
-	
 
-	// do conversion... carefully
-
-	val = strtol((char*)the_string_value, (char**)&temp, 0);
-
-	if (temp == the_string_value || *temp != '\0' || ((val == LONG_MIN || val == LONG_MAX) && errno == ERANGE))
-	{
-		//printf("General_StringToUnsignedLong: Could not convert '%s' to long and leftover string is: '%s' \n", the_string_value, temp);
-		val = LONG_MAX;
-		safe_conversion = false;
-	}
-
-	if (val > INT_MAX)
-	{
-		//printf("General_StringToUnsignedLong: Could not convert '%s' to int: greater than allowable value.\n", the_string_value);
-		val = LONG_MAX;
-		safe_conversion = false;
-	}
-
-	*the_conversion = (unsigned long)val;
-	return safe_conversion;
-}
+// boolean General_StringToUnsignedLong(const unsigned char* the_string_value, unsigned long* the_conversion)
+// {
+// 	unsigned char*	temp;
+// 	unsigned long	val = 0;
+// 	boolean			safe_conversion = true;
+// 	
+// 	errno = 0;
+// 	// LOGIC: errno will be changed by strtol if an overrun or other error occurs
+// 	
+// 
+// 	// do conversion... carefully
+// 
+// 	val = strtol((char*)the_string_value, (char**)&temp, 0);
+// 
+// 	if (temp == the_string_value || *temp != '\0' || ((val == LONG_MIN || val == LONG_MAX) && errno == ERANGE))
+// 	{
+// 		//printf("General_StringToUnsignedLong: Could not convert '%s' to long and leftover string is: '%s' \n", the_string_value, temp);
+// 		val = LONG_MAX;
+// 		safe_conversion = false;
+// 	}
+// 
+// 	if (val > INT_MAX)
+// 	{
+// 		//printf("General_StringToUnsignedLong: Could not convert '%s' to int: greater than allowable value.\n", the_string_value);
+// 		val = LONG_MAX;
+// 		safe_conversion = false;
+// 	}
+// 
+// 	*the_conversion = (unsigned long)val;
+// 	return safe_conversion;
+// }
 
 
 
@@ -111,35 +112,36 @@ boolean General_StringToUnsignedLong(const unsigned char* the_string_value, unsi
 
 
 // extract file extension into the passed char pointer, as new lowercased string pointer, if any found. returns false if no file extension found.
-boolean General_ExtractFileExtensionFromFilename(const unsigned char* the_file_name, unsigned char* the_extension)
-{
-	// LOGIC: 
-	//   if the first char is the first dot from right, we'll count the whole thing as an extension
-	//   if no dot char, then don't set extension, and return false
-	
-    char* dot = strrchr((char*)the_file_name, '.');
-    int i;
 
-    // (re) set the file extension to "" in case we have to return. It may have a value from whatever previous use was
-    the_extension[0] = '\0';
-
-	if(!dot)
-	//if(!dot || dot == the_file_name)
-    {
-    	return false;
-    }
-
-	for (i = 1; dot[i]; i++)
-	{
-		the_extension[i-1] = General_ToLower(dot[i]);
-	}
-
-	the_extension[i-1] = '\0';
-	//General_PrintBufferCharacters(the_extension, i+5);
-//	printf("General_ExtractFileExtensionFromFilename: lowercased name = |%s|\n", the_extension);
-
-	return true;
-}
+// boolean General_ExtractFileExtensionFromFilename(const unsigned char* the_file_name, unsigned char* the_extension)
+// {
+// 	// LOGIC: 
+// 	//   if the first char is the first dot from right, we'll count the whole thing as an extension
+// 	//   if no dot char, then don't set extension, and return false
+// 	
+//     char* dot = strrchr((char*)the_file_name, '.');
+//     int i;
+// 
+//     // (re) set the file extension to "" in case we have to return. It may have a value from whatever previous use was
+//     the_extension[0] = '\0';
+// 
+// 	if(!dot)
+// 	//if(!dot || dot == the_file_name)
+//     {
+//     	return false;
+//     }
+// 
+// 	for (i = 1; dot[i]; i++)
+// 	{
+// 		the_extension[i-1] = General_ToLower(dot[i]);
+// 	}
+// 
+// 	the_extension[i-1] = '\0';
+// 	//General_PrintBufferCharacters(the_extension, i+5);
+// //	printf("General_ExtractFileExtensionFromFilename: lowercased name = |%s|\n", the_extension);
+// 
+// 	return true;
+// }
 
 
 // replacement for tolower() in c library, which doesn't seem to work here for some reason.
@@ -437,31 +439,32 @@ boolean General_PointInRect(signed int x, signed int y, Rectangle r)
 
 
 // Convert a positive or negative string integer to a signed long integer. returns false in event of error
-boolean General_StringToSignedLong(const unsigned char* the_string_value, signed long* the_conversion)
-{
-	signed long				signed_val = 0;
-	unsigned long			unsigned_val = 0;
-	boolean					safe_conversion;
-	const unsigned char*	start_of_number = the_string_value;
-	
-	// is this a negative number string?
-	if (*the_string_value == '-')
-	{
-		start_of_number++;
-	}
-	
-	safe_conversion = General_StringToUnsignedLong(start_of_number, &unsigned_val);
 
-	signed_val = (signed long)unsigned_val;
-	
-	if (*the_string_value == '-')
-	{
-		signed_val = -signed_val;
-	}
-	
-	*the_conversion = signed_val;
-	return safe_conversion;
-}
+// boolean General_StringToSignedLong(const unsigned char* the_string_value, signed long* the_conversion)
+// {
+// 	signed long				signed_val = 0;
+// 	unsigned long			unsigned_val = 0;
+// 	boolean					safe_conversion;
+// 	const unsigned char*	start_of_number = the_string_value;
+// 	
+// 	// is this a negative number string?
+// 	if (*the_string_value == '-')
+// 	{
+// 		start_of_number++;
+// 	}
+// 	
+// 	safe_conversion = General_StringToUnsignedLong(start_of_number, &unsigned_val);
+// 
+// 	signed_val = (signed long)unsigned_val;
+// 	
+// 	if (*the_string_value == '-')
+// 	{
+// 		signed_val = -signed_val;
+// 	}
+// 	
+// 	*the_conversion = signed_val;
+// 	return safe_conversion;
+// }
 
 
 // Position one rect within the bounds of another. Horizontally: centers the hero rect within the left/right of the frame rect; Vertically: centers or or puts at 25% line
@@ -512,117 +515,121 @@ void General_CenterRectWithinRect(Rectangle* the_frame_rect, Rectangle* the_hero
 // if no path part detected, returns the original string
 // not guaranteed that this is a FILENAME, as if you passed a path to a dir, it would return the DIR name
 // amigaDOS compatibility function (see FilePart)
-unsigned char* General_NamePart(const unsigned char* the_file_path)
-{
-	unsigned char*	last_slash;
-	
-	last_slash = (unsigned char*)strchr((char*)the_file_path, '/');
-	
-	if (last_slash && ++last_slash)
-	{
-		return last_slash;
-	}
-	
-	return (unsigned char*)the_file_path;
-}
+
+// unsigned char* General_NamePart(const unsigned char* the_file_path)
+// {
+// 	unsigned char*	last_slash;
+// 	
+// 	last_slash = (unsigned char*)strchr((char*)the_file_path, '/');
+// 	
+// 	if (last_slash && ++last_slash)
+// 	{
+// 		return last_slash;
+// 	}
+// 	
+// 	return (unsigned char*)the_file_path;
+// }
 
 
 // return everything to the left of the filename in a path. 
 // amigaDOS compatibility function
-unsigned char* General_PathPart(const unsigned char* the_file_path)
-{
-	unsigned char*	the_directory_path;
-	unsigned char*	this_point;
-	
-	this_point = (unsigned char*)the_file_path;
-	the_directory_path = this_point; // default to returning start of the string
-	
-	while (*this_point)
-	{
-		if (*this_point == '/')
-		{
-			the_directory_path = this_point;
-		}
-		
-		this_point++;
-	}
-	
-	return the_directory_path;
-}
+
+// unsigned char* General_PathPart(const unsigned char* the_file_path)
+// {
+// 	unsigned char*	the_directory_path;
+// 	unsigned char*	this_point;
+// 	
+// 	this_point = (unsigned char*)the_file_path;
+// 	the_directory_path = this_point; // default to returning start of the string
+// 	
+// 	while (*this_point)
+// 	{
+// 		if (*this_point == '/')
+// 		{
+// 			the_directory_path = this_point;
+// 		}
+// 		
+// 		this_point++;
+// 	}
+// 	
+// 	return the_directory_path;
+// }
 
 
 // allocate and return the portion of the path passed, minus the filename. In other words: return a path to the parent file.
 // calling method must free the string returned
-unsigned char* General_ExtractPathToParentFolderWithAlloc(const unsigned char* the_file_path)
-{
-	// LOGIC: 
-	//   PathPart includes the : if non-name part is for a volume. but doesn't not include trailing / if not a volume
-	//   we want in include the trailing : and /, so calling routine can always just append a file name and get a legit path
-	
-	unsigned long	path_len;
-	unsigned char*	the_directory_path;
 
-	// get a string for the directory portion of the filepath
-	if ( (the_directory_path = (unsigned char*)calloc(FILE_MAX_PATHNAME_SIZE, sizeof(char)) ) == NULL)
-	{
-		LOG_ERR(("%s %d: could not allocate memory for the directory path", __func__ , __LINE__));
-		return NULL;
-	}
-	
-	path_len = (General_PathPart(the_file_path) - the_file_path) - 1;
-	
-	//DEBUG_OUT(("%s %d: pathlen=%lu; last char='%c'", __func__ , __LINE__, path_len, the_file_path[path_len]));
-
-	if (the_file_path[path_len] != ':')
-	{
-		// path wasn't to root of a volume, move 1 tick to the right to pick up the / that is already in the full path
-		path_len++;
-	}
-
-	path_len++;
-
-	General_Strlcpy(the_directory_path, the_file_path, path_len + 1);
-	//DEBUG_OUT(("%s %d: pathlen=%lu; parent path='%s'", __func__ , __LINE__, path_len, the_directory_path));
-	
-	return the_directory_path;
-}
+// unsigned char* General_ExtractPathToParentFolderWithAlloc(const unsigned char* the_file_path)
+// {
+// 	// LOGIC: 
+// 	//   PathPart includes the : if non-name part is for a volume. but doesn't not include trailing / if not a volume
+// 	//   we want in include the trailing : and /, so calling routine can always just append a file name and get a legit path
+// 	
+// 	unsigned long	path_len;
+// 	unsigned char*	the_directory_path;
+// 
+// 	// get a string for the directory portion of the filepath
+// 	if ( (the_directory_path = (unsigned char*)calloc(FILE_MAX_PATHNAME_SIZE, sizeof(char)) ) == NULL)
+// 	{
+// 		LOG_ERR(("%s %d: could not allocate memory for the directory path", __func__ , __LINE__));
+// 		return NULL;
+// 	}
+// 	
+// 	path_len = (General_PathPart(the_file_path) - the_file_path) - 1;
+// 	
+// 	//DEBUG_OUT(("%s %d: pathlen=%lu; last char='%c'", __func__ , __LINE__, path_len, the_file_path[path_len]));
+// 
+// 	if (the_file_path[path_len] != ':')
+// 	{
+// 		// path wasn't to root of a volume, move 1 tick to the right to pick up the / that is already in the full path
+// 		path_len++;
+// 	}
+// 
+// 	path_len++;
+// 
+// 	General_Strlcpy(the_directory_path, the_file_path, path_len + 1);
+// 	//DEBUG_OUT(("%s %d: pathlen=%lu; parent path='%s'", __func__ , __LINE__, path_len, the_directory_path));
+// 	
+// 	return the_directory_path;
+// }
 
 
 // allocate and return the filename portion of the path passed.
 // calling method must free the string returned
-unsigned char* General_ExtractFilenameFromPathWithAlloc(const unsigned char* the_file_path)
-{
-	unsigned char*	the_file_name;
 
-	// get a string for the file name portion of the filepath
-	if ( (the_file_name = (unsigned char*)calloc(FILE_MAX_PATHNAME_SIZE, sizeof(char)) ) == NULL)
-	{
-		LOG_ERR(("%s %d: could not allocate memory for the filename", __func__ , __LINE__));
-		return NULL;
-	}
-	else
-	{
-		unsigned char*	the_file_name_part = General_NamePart(the_file_path);
-		int				filename_len = General_Strnlen(the_file_name_part, FILE_MAX_PATHNAME_SIZE);
-
-		if (filename_len == 0)
-		{
-			// FilePart() might return a string with no text: that would indicate the file path is for the root of a file system or virtual device
-			// in that case, we just use the file path minus : as the name
-
-			// copy the part of the path minus the last char into the file name
-			unsigned int path_len = General_Strnlen(the_file_path, FILE_MAX_PATHNAME_SIZE);
-			General_Strlcpy(the_file_name, the_file_path, path_len);
-		}
-		else
-		{
-			General_Strlcpy(the_file_name, the_file_name_part, filename_len + 1);
-		}
-		LOG_ALLOC(("%s %d:	__ALLOC__	the_file_name	%p	size	%i", __func__ , __LINE__, the_file_name, FILE_MAX_PATHNAME_SIZE));
-	}
-
-	return the_file_name;
-}
+// unsigned char* General_ExtractFilenameFromPathWithAlloc(const unsigned char* the_file_path)
+// {
+// 	unsigned char*	the_file_name;
+// 
+// 	// get a string for the file name portion of the filepath
+// 	if ( (the_file_name = (unsigned char*)calloc(FILE_MAX_PATHNAME_SIZE, sizeof(char)) ) == NULL)
+// 	{
+// 		LOG_ERR(("%s %d: could not allocate memory for the filename", __func__ , __LINE__));
+// 		return NULL;
+// 	}
+// 	else
+// 	{
+// 		unsigned char*	the_file_name_part = General_NamePart(the_file_path);
+// 		int				filename_len = General_Strnlen(the_file_name_part, FILE_MAX_PATHNAME_SIZE);
+// 
+// 		if (filename_len == 0)
+// 		{
+// 			// FilePart() might return a string with no text: that would indicate the file path is for the root of a file system or virtual device
+// 			// in that case, we just use the file path minus : as the name
+// 
+// 			// copy the part of the path minus the last char into the file name
+// 			unsigned int path_len = General_Strnlen(the_file_path, FILE_MAX_PATHNAME_SIZE);
+// 			General_Strlcpy(the_file_name, the_file_path, path_len);
+// 		}
+// 		else
+// 		{
+// 			General_Strlcpy(the_file_name, the_file_name_part, filename_len + 1);
+// 		}
+// 		LOG_ALLOC(("%s %d:	__ALLOC__	the_file_name	%p	size	%i", __func__ , __LINE__, the_file_name, FILE_MAX_PATHNAME_SIZE));
+// 	}
+// 
+// 	return the_file_name;
+// }
 
 
 // populates the passed string by safely combining the passed file path and name, accounting for cases where path is a disk root

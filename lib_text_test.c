@@ -49,13 +49,41 @@ void text_test_teardown(void)	// this is called EVERY test
 MU_TEST(text_test_fill_text)
 {
 	//mu_assert( Text_FillCharMem(CHANNEL_A, 'Z'), "Could not fill character memory in channel A" );
-//	mu_assert( Text_FillCharMem(CHANNEL_B, 'a'), "Could not fill character memory in channel B" );
+	mu_assert( Text_FillCharMem(CHANNEL_B, 4), "Could not fill character memory in channel B" );
 }
 
 MU_TEST(text_test_fill_attr)
 {
 	//mu_assert( Text_FillAttrMem(CHANNEL_A, 127), "Could not fill attribute memory in channel A" );
-//	mu_assert( Text_FillAttrMem(CHANNEL_B, 5), "Could not fill attribute memory in channel B" );
+	mu_assert( Text_FillAttrMem(CHANNEL_B, 148), "Could not fill attribute memory in channel B" );
+
+		// 31=black on white
+		// 64=dark blue on black
+		// 96=dark cyan on black
+		// 112=medium gray on black
+		// 128=medium gray on black
+		// 138=black on light green
+		// 139=black on bright yellow
+		// 140=gray? on medium blue
+		// 141=gray? on pink
+		// 142=gray? on light cyan
+
+		// 143=black/gray? on white
+		// 15=black on white
+	
+		// 144=red on black
+		// 16=dark red on black
+	
+		// 145=light red on dark red
+		// 17=dark red on dark red
+	
+		// 146=light red on medium green
+		// 18=dark red on medium green
+	
+		// 147=light red on olive
+		// 19=dark red on medium green?
+	
+		// 148=light red on dark blue
 }
 
 // MU_TEST(text_test_update_font)

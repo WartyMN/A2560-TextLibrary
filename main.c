@@ -118,10 +118,10 @@ int main(int argc, char* argv[])
 #endif
 
 	// test colors
-	if (1)
+	if (0)
 	{
-		Text_FillCharMem(CHANNEL_B, 4); // 4 = diamond. good mix of fore/back color
-		Text_FillAttrMem(CHANNEL_B, 148);
+// 		Text_FillCharMem(CHANNEL_B, 4); // 4 = diamond. good mix of fore/back color
+// 		Text_FillAttrMem(CHANNEL_B, 148);
 		// 31=black on white
 		// 64=dark blue on black
 		// 96=dark cyan on black
@@ -194,11 +194,46 @@ int main(int argc, char* argv[])
 		}
 	}
 
-// WHY does running TWO of these work (any 2), but a third causes a morfe crash???? 
 
-	// test char and color placement
+	// test char and color reading
 	if (1)
 	{
+		unsigned char	the_color;
+		unsigned char	the_value;
+		unsigned char	the_char;
+		signed int		x;
+		signed int		y;
+		
+		x = 0;
+		y = 6;
+		
+		//Text_SetAttrAtXY(CHANNEL_A, x, y, FG_COLOR_WHITE, BG_COLOR_BLACK);
+		
+		the_color = Text_GetForeColorAtXY(CHANNEL_A, x, y);
+		DEBUG_OUT(("%s %d: x=%i, y=%i, fore color=%u", __func__, __LINE__, x, y, the_color));
+		the_color = Text_GetBackColorAtXY(CHANNEL_A, x, y);
+		DEBUG_OUT(("%s %d: x=%i, y=%i, back color=%u", __func__, __LINE__, x, y, the_color));
+		the_value = Text_GetAttrAtXY(CHANNEL_A, x, y);
+		DEBUG_OUT(("%s %d: x=%i, y=%i, attr=%u", __func__, __LINE__, x, y, the_value));
+		the_char = Text_GetCharAtXY(CHANNEL_A, x, y);
+		DEBUG_OUT(("%s %d: x=%i, y=%i, char=%u", __func__, __LINE__, x, y, the_char));
+		
+		
+	}
+
+	// test char and color placement
+	if (0)
+	{
+		// test attr only
+// 		Text_SetAttrAtXY(CHANNEL_A, 0, 0, FG_COLOR_WHITE, BG_COLOR_BLACK);
+// 		Text_SetAttrAtXY(CHANNEL_A, 1, 0, FG_COLOR_MED_GRAY, BG_COLOR_BLACK);
+// 		Text_SetAttrAtXY(CHANNEL_A, 71, 0, FG_COLOR_MED_GRAY, BG_COLOR_MED_GRAY);
+// 		Text_SetAttrAtXY(CHANNEL_A, 0, 1, FG_COLOR_MED_GRAY, BG_COLOR_MED_GRAY);
+//		Text_SetAttrAtXY(CHANNEL_A, 1, 1, FG_COLOR_MED_GRAY, BG_COLOR_MED_GRAY);
+//		Text_SetAttrAtXY(CHANNEL_A, 2, 1, FG_COLOR_ORANGE, BG_COLOR_MED_GRAY);
+//		Text_SetAttrAtXY(CHANNEL_A, 3, 1, FG_COLOR_ORANGE, BG_COLOR_MED_GRAY);
+// 		Text_SetAttrAtXY(CHANNEL_A, 8, 1, FG_COLOR_MED_GRAY, BG_COLOR_MED_GRAY);
+
 // 		// white char on black back
 // 		Text_SetCharAndColorAtXY(CHANNEL_B, 30, COLOR_WHITE, COLOR_BLACK, 0, 4);
 //  		
@@ -224,10 +259,10 @@ int main(int argc, char* argv[])
 //		Text_SetCharAndColorAtXY(CHANNEL_B, 30, FG_COLOR_WHITE, BG_COLOR_BLACK_RED, 2, 16);
 //  		
 //  		// orange char on black back
-  		Text_SetCharAndColorAtXY(CHANNEL_B, 30, COLOR_ORANGE, COLOR_BLACK, 2, 18);
+//   		Text_SetCharAndColorAtXY(CHANNEL_B, 30, COLOR_ORANGE, COLOR_BLACK, 2, 18);
  		
 //  		// brown char on black back
-  		Text_SetCharAndColorAtXY(CHANNEL_B, 30, COLOR_BROWN, COLOR_BLACK, 2, 20);
+//   		Text_SetCharAndColorAtXY(CHANNEL_B, 30, COLOR_BROWN, COLOR_BLACK, 2, 2000);
 //  		
 //  		// lt red char on black back
 //  		Text_SetCharAndColorAtXY(CHANNEL_B, 30, COLOR_LIGHTRED, COLOR_BLACK, 2, 22);
@@ -288,5 +323,5 @@ int main(int argc, char* argv[])
 // #define BG_COLOR_WHITE			0x0F
 	}
 	
-	printf("Hello 21st time, A2560 World!\n");
+	printf("Hello 26th time, A2560 World!\n");
 }

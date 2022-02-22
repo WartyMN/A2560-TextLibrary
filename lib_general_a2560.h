@@ -57,6 +57,8 @@
 #define TEXTB_WIDTH			80	// channel B width
 #define TEXTB_HEIGHT		60	// channel B height
 
+#define TEXT_COL_WIDTH_FOR_PLOTTING	80	// regardless of visible cols (between borders), VRAM seems to be fixed at 80 cols across.
+
 #define CHANNEL_A_WIDTH		576	// pixels in between the borders
 #define CHANNEL_A_HEIGHT	448	// pixels in between the borders
 #define CHANNEL_B_WIDTH		640	// pixels in between the borders
