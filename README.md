@@ -20,23 +20,23 @@ Note: **NO ONE SHOULD USE THIS, OR EVEN LOOK IN ITS DIRECTION!** (until I get so
 The A2650 kernel/OS doesn't support dynamically linked libraries yet, so for now, you have you just compile this into your app. 
 
 ## Expected final functionality
- * x work with either channel A or channel B
- * x clear / fill an entire screen of text characters
- * x clear / fill an entire screen of text attributes
+ * work with either channel A or channel B
+ * clear / fill an entire screen of text characters
+ * clear / fill an entire screen of text attributes
  * invert the colors of a screen
  * clear / fill a smaller-than-screen rectangular area of text/attrs
- * Draw a string to a specified x, y coord (no wrap)
- * x Draw a char to a specified x, y coord
- * x Get the currently displayed character at the specified coord
- * x Set the foreground and background colors at the specified coord
- * x Set the attribute value at the specified coord
- * x Get the attribute value at the specified coord
- * x Get the foreground or background color at the specified coord
+ * Draw a char to a specified x, y coord
+ * Get the currently displayed character at the specified coord
+ * Set the foreground and background colors at the specified coord
+ * Set the attribute value at the specified coord
+ * Get the attribute value at the specified coord
+ * Get the foreground or background color at the specified coord
  * draw a line using "graphic" characters
  * draw a box using "graphic" characters
  * copy a full screen of text or attr from an off-screen buffer
  * copy a full screen of text or attr TO an off-screen buffer
  * copy a rectangular area of text or attr TO/FROM an off-screen buffer
+ * Draw a string to a specified x, y coord (no wrap)
  * display a string in a rectangular block on the screen, with wrap
  * display a string in a rectangular block on the screen, with wrap, taking a hook for a "display more" event, and scrolling text vertically up after hook func returns 'continue' (or exit, returning control to calling func, if hook returns 'stop')
  * replace current text font with another, loading from specified ram loc.
@@ -51,3 +51,6 @@ The A2650 kernel/OS doesn't support dynamically linked libraries yet, so for now
  * Set the attribute value at the specified coord
  * Get the attribute value at the specified coord
  * Get the foreground or background color at the specified coord
+ * draw a line using "graphic" characters
+ * draw a box using "graphic" characters
+ * Draw a string to a specified x, y coord (no wrap)

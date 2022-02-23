@@ -158,68 +158,68 @@ int main(int argc, char* argv[])
 	}
 
 	// muck with char font memory to prove we can
-	if (0)
-	{
-		if (!Text_UpdateFontData(CHANNEL_B, 0))
-		{
-			//printf("%s %d: Text_ShowFontChars returned error\n", __func__, __LINE__);
-		}
-	}
-	
-	
-	// test show fonts. 256 chars / 80 cols screen = 3.2 rows needed. 
-	if (0)
-	{
-		if (!Text_ShowFontChars(CHANNEL_B))
-		{
-			//printf("%s %d: Text_ShowFontChars returned error\n", __func__, __LINE__);
-		}
-	}
+// 	if (0)
+// 	{
+// 		if (!Text_UpdateFontData(CHANNEL_B, 0))
+// 		{
+// 			//printf("%s %d: Text_ShowFontChars returned error\n", __func__, __LINE__);
+// 		}
+// 	}
+// 	
+// 	
+// 	// test show fonts. 256 chars / 80 cols screen = 3.2 rows needed. 
+// 	if (0)
+// 	{
+// 		if (!Text_ShowFontChars(CHANNEL_B))
+// 		{
+// 			//printf("%s %d: Text_ShowFontChars returned error\n", __func__, __LINE__);
+// 		}
+// 	}
 	
 	// test char placement
-	if (0)
-	{
-		signed int	x;
-		signed int	y;
-		
-		for (y = 4; y < 40; y = y+2)
-		{
-			for (x = 0; x < 50; x++)
-			{
-				if (!Text_SetCharAtXY(CHANNEL_B, 'X', x, y))
-				{
-					printf("Oh, no!\n");
-				}
-			}
-		}
-	}
+// 	if (0)
+// 	{
+// 		signed int	x;
+// 		signed int	y;
+// 		
+// 		for (y = 4; y < 40; y = y+2)
+// 		{
+// 			for (x = 0; x < 50; x++)
+// 			{
+// 				if (!Text_SetCharAtXY(CHANNEL_B, 'X', x, y))
+// 				{
+// 					printf("Oh, no!\n");
+// 				}
+// 			}
+// 		}
+// 	}
 
 
 	// test char and color reading
-	if (1)
-	{
-		unsigned char	the_color;
-		unsigned char	the_value;
-		unsigned char	the_char;
-		signed int		x;
-		signed int		y;
-		
-		x = 0;
-		y = 6;
-		
-		//Text_SetAttrAtXY(CHANNEL_A, x, y, FG_COLOR_WHITE, BG_COLOR_BLACK);
-		
-		the_color = Text_GetForeColorAtXY(CHANNEL_A, x, y);
-		DEBUG_OUT(("%s %d: x=%i, y=%i, fore color=%u", __func__, __LINE__, x, y, the_color));
-		the_color = Text_GetBackColorAtXY(CHANNEL_A, x, y);
-		DEBUG_OUT(("%s %d: x=%i, y=%i, back color=%u", __func__, __LINE__, x, y, the_color));
-		the_value = Text_GetAttrAtXY(CHANNEL_A, x, y);
-		DEBUG_OUT(("%s %d: x=%i, y=%i, attr=%u", __func__, __LINE__, x, y, the_value));
-		the_char = Text_GetCharAtXY(CHANNEL_A, x, y);
-		DEBUG_OUT(("%s %d: x=%i, y=%i, char=%u", __func__, __LINE__, x, y, the_char));
-		
-		
-	}
+// 	if (0)
+// 	{
+// 		unsigned char	the_color;
+// 		unsigned char	the_value;
+// 		unsigned char	the_char;
+// 		signed int		x;
+// 		signed int		y;
+// 		
+// 		x = 0;
+// 		y = 6;
+// 		
+// 		//Text_SetAttrAtXY(CHANNEL_A, x, y, FG_COLOR_WHITE, BG_COLOR_BLACK);
+// 		
+// 		the_color = Text_GetForeColorAtXY(CHANNEL_A, x, y);
+// 		DEBUG_OUT(("%s %d: x=%i, y=%i, fore color=%u", __func__, __LINE__, x, y, the_color));
+// 		the_color = Text_GetBackColorAtXY(CHANNEL_A, x, y);
+// 		DEBUG_OUT(("%s %d: x=%i, y=%i, back color=%u", __func__, __LINE__, x, y, the_color));
+// 		the_value = Text_GetAttrAtXY(CHANNEL_A, x, y);
+// 		DEBUG_OUT(("%s %d: x=%i, y=%i, attr=%u", __func__, __LINE__, x, y, the_value));
+// 		the_char = Text_GetCharAtXY(CHANNEL_A, x, y);
+// 		DEBUG_OUT(("%s %d: x=%i, y=%i, char=%u", __func__, __LINE__, x, y, the_char));
+// 		
+// 		
+// 	}
 
 	// test char and color placement
 	if (0)
@@ -322,6 +322,164 @@ int main(int argc, char* argv[])
 // #define BG_COLOR_LT_GRAY		0x0E
 // #define BG_COLOR_WHITE			0x0F
 	}
+
+	// test line drawing
+// 	if (1)
+// 	{
+// 		signed int		x;
+// 		signed int		y;
+// 		signed int		line_len;
+// 		unsigned char	the_char;
+// 		
+// 		x = 10;
+// 		y = 20;
+// 		line_len = 20;
+// 		the_char = CH_WALL_H;
+// 		
+// 		if (!Text_DrawHLine(CHANNEL_A, x, y, line_len, the_char, FG_COLOR_BLACK_BLUE, BG_COLOR_BLUE, char_only))
+// 		{
+// // 			DEBUG_OUT(("%s %d: draw H line returned false with x, y, len, char %i, %i, %i, %c", __func__, __LINE__, x, y, line_len, the_char));
+// 		}
+// 		
+// 		y = 30;
+// 		
+// 		if (!Text_DrawHLine(CHANNEL_A, x, y, line_len, the_char, FG_COLOR_BLACK_BLUE, BG_COLOR_BLUE, char_and_attr))
+// 		{
+// //			DEBUG_OUT(("%s %d: draw V line returned false with x, y, len, char %i, %i, %i, %c", __func__, __LINE__, x, y, line_len, the_char));
+// 		}
+// 		
+// 		y = 20;
+// 		line_len = 10;
+// 		the_char = CH_WALL_V;
+// 		
+// 		if (!Text_DrawVLine(CHANNEL_A, x, y, line_len, the_char, FG_COLOR_BLACK_BLUE, BG_COLOR_BLUE, attr_only))
+// 		{
+// //			DEBUG_OUT(("%s %d: draw V line returned false with x, y, len, char %i, %i, %i, %c", __func__, __LINE__, x, y, line_len, the_char));
+// 		}
+// 
+// 		x = x + 20;
+// 		
+// 		if (!Text_DrawVLine(CHANNEL_A, x, y, line_len, the_char, FG_COLOR_BLACK_BLUE, BG_COLOR_BROWN, char_and_attr))
+// 		{
+// //			DEBUG_OUT(("%s %d: draw V line returned false with x, y, len, char %i, %i, %i, %c", __func__, __LINE__, x, y, line_len, the_char));
+// 		}
+// 		
+// 	}
 	
-	printf("Hello 26th time, A2560 World!\n");
+// 	// test basic box draw (from coordinates)
+// 	if (1)
+// 	{
+// 		signed int		x;
+// 		signed int		y;
+// 		signed int		h_line_len;
+// 		signed int		v_line_len;
+// 		unsigned char	the_char;
+// 		
+// 		x = 10;
+// 		y = 10;
+// 		h_line_len = 6;
+// 		v_line_len = 6;
+// 		the_char = CH_CHECKERED2;
+// 		
+// 		if (!Text_DrawBoxCoords(CHANNEL_A, x, y, x + h_line_len, y + v_line_len, the_char, FG_COLOR_BLACK_BLUE, BG_COLOR_BROWN, char_and_attr))
+// 		{
+// //			DEBUG_OUT(("%s %d: draw V line returned false with x, y, len, char %i, %i, %i, %c", __func__, __LINE__, x, y, line_len, the_char));
+// 		}	
+// 	}
+// 	
+// 	// test basic box draw (with height/width)
+// 	if (1)
+// 	{
+// 		signed int		x;
+// 		signed int		y;
+// 		signed int		h_line_len;
+// 		signed int		v_line_len;
+// 		unsigned char	the_char;
+// 		
+// 		x = 10;
+// 		y = 10;
+// 		h_line_len = 6;
+// 		v_line_len = 6;
+// 		the_char = CH_CHECKERED3;
+// 		
+// 		if (!Text_DrawBox(CHANNEL_A, x, y, h_line_len, v_line_len, the_char, FG_COLOR_BLACK_BLUE, BG_COLOR_BROWN, char_and_attr))
+// 		{
+// 		DEBUG_OUT(("%s %d: draw V line returned false with x, y, len, char %i, %i, %i, %c", __func__, __LINE__, x, y, h_line_len, the_char));
+// 		}
+// 	
+// 		x += 10;
+// 		y += 10;
+// 	if (!Text_DrawBoxCoords(CHANNEL_A, 0, 0, x + h_line_len+5, y + v_line_len+5, --the_char, FG_COLOR_BLACK_GREEN, BG_COLOR_BROWN, char_and_attr))
+// 		{
+// 		DEBUG_OUT(("%s %d: draw V line returned false with x, y, len, char %i, %i, %i, %c", __func__, __LINE__, x, y, h_line_len, the_char));
+// 		}	
+// 	}
+// 	
+// 	// test fancy box draw (from coordinates)
+// 	if (1)
+// 	{
+// 		signed int		x;
+// 		signed int		y;
+// 		signed int		h_line_len;
+// 		signed int		v_line_len;
+// 		unsigned char	the_char;
+// 		
+// 		x = 10;
+// 		y = 10;
+// 		h_line_len = 6;
+// 		v_line_len = 6;
+// 		the_char = CH_CHECKERED2;
+// 		
+// 		if (!Text_DrawBoxCoordsFancy(CHANNEL_A, x, y, x + h_line_len, y + v_line_len, FG_COLOR_BLACK_BLUE, BG_COLOR_BROWN))
+// 		{
+// //			DEBUG_OUT(("%s %d: draw V line returned false with x, y, len, char %i, %i, %i, %c", __func__, __LINE__, x, y, line_len, the_char));
+// 		}	
+// 	}
+	
+	
+	// test DrawString
+// 	if (1)
+// 	{
+// 		unsigned char*	the_message;
+// 		
+// 		if ((the_message = General_StrlcpyWithAlloc((unsigned char*)"this is a string", 250)) == NULL)
+// 		{
+// 			DEBUG_OUT(("%s %d: couldn't get a copy of the string", __func__, __LINE__));
+// 		}
+// 		else
+// 		{
+// 			if (!Text_DrawStringAtXY(CHANNEL_A, -1, -1, the_message, FG_COLOR_OLIVE, BG_COLOR_BROWN))
+// 			{
+// 	//			DEBUG_OUT(("%s %d: draw V line returned false with x, y, len, char %i, %i, %i, %c", __func__, __LINE__, x, y, line_len, the_char));
+// 			}	
+// // 			printf("%s\n", the_message);
+// 		}
+// 	}
+
+	// test block fill
+	if (1)
+	{
+		if (!Text_FillBoxSlow(CHANNEL_A, 15, 15, 25, 30, CH_CHECKERED1, FG_COLOR_OLIVE, BG_COLOR_BROWN, char_and_attr))
+		{
+//			DEBUG_OUT(("%s %d: draw V line returned false with x, y, len, char %i, %i, %i, %c", __func__, __LINE__, x, y, line_len, the_char));
+		}	
+
+		if (!Text_FillBoxSlow(CHANNEL_B, 15, 15, 25, 30, CH_CHECKERED1, FG_COLOR_OLIVE, BG_COLOR_BROWN, char_and_attr))
+		{
+//			DEBUG_OUT(("%s %d: draw V line returned false with x, y, len, char %i, %i, %i, %c", __func__, __LINE__, x, y, line_len, the_char));
+		}	
+
+		if (!Text_FillBoxSlow(CHANNEL_A, 0, 25, 25, 50, CH_CHECKERED3, FG_COLOR_BLUE, BG_COLOR_BLACK_BLUE, char_and_attr))
+		{
+//			DEBUG_OUT(("%s %d: draw V line returned false with x, y, len, char %i, %i, %i, %c", __func__, __LINE__, x, y, line_len, the_char));
+		}	
+
+		if (!Text_FillBox(CHANNEL_A, 26, 25, 50, 50, CH_SMILEY1, FG_COLOR_BLUE, BG_COLOR_BLACK_BLUE))
+		{
+//			DEBUG_OUT(("%s %d: draw V line returned false with x, y, len, char %i, %i, %i, %c", __func__, __LINE__, x, y, line_len, the_char));
+		}	
+
+	}
+	
+	//exit(0);
 }

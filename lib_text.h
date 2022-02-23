@@ -19,18 +19,18 @@
  * x clear / fill an entire screen of text attributes
  * invert the colors of a screen
  * clear / fill a smaller-than-screen rectangular area of text/attrs
- * Draw a string to a specified x, y coord (no wrap)
  * x Draw a char to a specified x, y coord
  * x Get the currently displayed character at the specified coord
  * x Set the foreground and background colors at the specified coord
  * x Set the attribute value at the specified coord
  * x Get the attribute value at the specified coord
  * x Get the foreground or background color at the specified coord
- * draw a line using "graphic" characters
- * draw a box using "graphic" characters
+ * x draw a line using "graphic" characters
+ * x draw a box using "graphic" characters
  * copy a full screen of text or attr from an off-screen buffer
  * copy a full screen of text or attr TO an off-screen buffer
  * copy a rectangular area of text or attr TO/FROM an off-screen buffer
+ * x display a string at a specified x, y coord (no wrap)
  * display a string in a rectangular block on the screen, with wrap
  * display a string in a rectangular block on the screen, with wrap, taking a hook for a "display more" event, and scrolling text vertically up after hook func returns 'continue' (or exit, returning control to calling func, if hook returns 'stop')
  * replace current text font with another, loading from specified ram loc.
@@ -111,9 +111,44 @@
 // update: the numbers shown in vicky2 file in morfe don't match up to what's shown on screen, at least with a2650 config. eg, 20/00/00 is not a super dark blue, it's some totally bright thing. need to spend some time mapping these out better. But since user configurable, will wait until real machine comes and I can make sure of what's in flash rom. 
 
 /*****************************************************************************/
+/*                  Character-codes (IBM Page 437 charset)                   */
+/*****************************************************************************/
+// https://en.wikipedia.org/wiki/Code_page_437
+
+#define CH_CHECKERED1	0xB0
+#define CH_CHECKERED2	0xB1
+#define CH_CHECKERED3	0xB2
+#define CH_SOLID		0xDB	// inverse space
+#define CH_WALL_H		0xCD
+#define CH_WALL_V		0xBA
+#define CH_WALL_UL		0xC9
+#define CH_WALL_UR		0xBB
+#define CH_WALL_LL		0xC8
+#define CH_WALL_LR		0xBC
+#define CH_INTERSECT	0xCE
+#define CH_SMILEY1		0x01 // 
+#define CH_SMILEY2		0x02 // 
+#define CH_HEART		0x03 // 
+#define CH_DIAMOND		0x04 // 
+#define CH_CLUB			0x05 // 
+#define CH_SPADE		0x06 // 
+#define CH_MIDDOT		0x07 // 
+#define CH_RIGHT		0x10 // Triangle pointing right
+#define CH_LEFT			0x11 // Triangle pointing left
+#define CH_UP			0x1E // Triangle pointing up
+#define CH_DOWN			0x1F // Triangle pointing down
+
+
+/*****************************************************************************/
 /*                               Enumerations                                */
 /*****************************************************************************/
 
+typedef enum text_draw_choice
+{
+	char_only		= 0,
+	attr_only 		= 1,
+	char_and_attr	= 2,
+} text_draw_choice;
 
 
 /*****************************************************************************/
@@ -135,6 +170,9 @@
 
 
 
+// **** Block fill functions ****
+
+
 // Fill attribute memory for the passed screen
 // returns false on any error/invalid input.
 boolean Text_FillAttrMem(ScreenID the_screen_id, unsigned char the_fill);
@@ -143,14 +181,25 @@ boolean Text_FillAttrMem(ScreenID the_screen_id, unsigned char the_fill);
 // returns false on any error/invalid input.
 boolean Text_FillCharMem(ScreenID the_screen_id, unsigned char the_fill);
 
+// Fill character and/or attribute memory for a specific box area
+// returns false on any error/invalid input.
+// this version uses char-by-char functions, so it is very slow.
+boolean Text_FillBoxSlow(ScreenID the_screen_id, signed int x1, signed int y1, signed int x2, signed int y2, unsigned char the_char, unsigned char fore_color, unsigned char back_color, text_draw_choice the_draw_choice);
+
+// Fill character and attribute memory for a specific box area
+// returns false on any error/invalid input.
+boolean Text_FillBox(ScreenID the_screen_id, signed int x1, signed int y1, signed int x2, signed int y2, unsigned char the_char, unsigned char fore_color, unsigned char back_color);
+
+
+// **** FONT RELATED *****
+
+
 // replace the current font data with the data at the passed memory buffer
 boolean Text_UpdateFontData(ScreenID the_screen_id, unsigned char* new_font_data);
 
 // test function to display all 256 font characters
 boolean Text_ShowFontChars(ScreenID the_screen_id);
 
-
-// **** FONT RELATED *****
 
 
 
@@ -184,6 +233,35 @@ unsigned char Text_GetForeColorAtXY(ScreenID the_screen_id, signed int x, signed
 // Get the background color at a specified x, y coord
 unsigned char Text_GetBackColorAtXY(ScreenID the_screen_id, signed int x, signed int y);
 
+
+
+// **** Drawing functions *****
+
+
+// draws a horizontal line from specified coords, for n characters, using the specified char and/or attribute
+boolean Text_DrawHLine(ScreenID the_screen_id, signed int x, signed int y, signed int the_line_len, unsigned char the_char, unsigned char fore_color, unsigned char back_color, text_draw_choice the_draw_choice);
+
+// draws a vertical line from specified coords, for n characters, using the specified char and/or attribute
+boolean Text_DrawVLine(ScreenID the_screen_id, signed int x, signed int y, signed int the_line_len, unsigned char the_char, unsigned char fore_color, unsigned char back_color, text_draw_choice the_draw_choice);
+
+// draws a basic box based on 2 sets of coords, using the specified char and/or attribute for all cells
+boolean Text_DrawBoxCoords(ScreenID the_screen_id, signed int x1, signed int y1, signed int x2, signed int y2, unsigned char the_char, unsigned char fore_color, unsigned char back_color, text_draw_choice the_draw_choice);
+
+// draws a box based on 2 sets of coords, using the predetermined line and corner "graphics", and the passed colors
+boolean Text_DrawBoxCoordsFancy(ScreenID the_screen_id, signed int x1, signed int y1, signed int x2, signed int y2, unsigned char fore_color, unsigned char back_color);
+
+// draws a basic box based on start coords and width/height, using the specified char and/or attribute for all cells
+boolean Text_DrawBox(ScreenID the_screen_id, signed int x, signed int y, signed int the_width, signed int the_height, unsigned char the_char, unsigned char fore_color, unsigned char back_color, text_draw_choice the_draw_choice);
+
+
+
+// **** Draw string functions *****
+
+
+// Draw a string at a specified x, y coord, also setting the color attributes
+// Truncate, but still draw the string if it is too long to display on the line it started.
+// No word wrap is performed. 
+boolean Text_DrawStringAtXY(ScreenID the_screen_id, signed int x, signed int y, unsigned char* the_string, unsigned char fore_color, unsigned char back_color);
 
 
 

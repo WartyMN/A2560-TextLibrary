@@ -250,70 +250,70 @@ unsigned long General_Strlcpy(unsigned char* dst, const unsigned char* src, unsi
 }
 
 // General_Strlcat implementation from apple/bsd. Modified with Amiga-isms
-unsigned long General_Strlcat(unsigned char* dst, const unsigned char* src, unsigned long maxlen)
-{
-    const unsigned long srclen = strlen((char*)src);
-    const unsigned long dstlen = General_Strnlen(dst, maxlen);
-
-    if (dstlen == maxlen)
-    {
-    	return maxlen + srclen;
-    }
-
-    if (srclen < maxlen-dstlen)
-    {
-        memcpy(dst + dstlen, src, srclen + 1);
-    }
-    else
-    {
-        memcpy(dst + dstlen, src, maxlen - dstlen - 1);
-        dst[maxlen - 1] = '\0';
-    }
-
-    return dstlen + srclen;
-}
+// unsigned long General_Strlcat(unsigned char* dst, const unsigned char* src, unsigned long maxlen)
+// {
+//     const unsigned long srclen = strlen((char*)src);
+//     const unsigned long dstlen = General_Strnlen(dst, maxlen);
+// 
+//     if (dstlen == maxlen)
+//     {
+//     	return maxlen + srclen;
+//     }
+// 
+//     if (srclen < maxlen-dstlen)
+//     {
+//         memcpy(dst + dstlen, src, srclen + 1);
+//     }
+//     else
+//     {
+//         memcpy(dst + dstlen, src, maxlen - dstlen - 1);
+//         dst[maxlen - 1] = '\0';
+//     }
+// 
+//     return dstlen + srclen;
+// }
 
 
 // strncmp implementation from Amiga site. Case sensitive
 // http://home.snafu.de/kdschem/c.dir/strings.dir/strncmp.c
-int General_Strncmp(const unsigned char* string_1, const unsigned char* string_2, long length)
-{
-	register unsigned char c;
-	
-	do ; while( (c = *string_1++) && (c == *string_2++) && --length );
-	if (c)
-	{
-		string_2--;
-	}
-	return (c - *string_2);
-}
+// int General_Strncmp(const unsigned char* string_1, const unsigned char* string_2, long length)
+// {
+// 	register unsigned char c;
+// 	
+// 	do ; while( (c = *string_1++) && (c == *string_2++) && --length );
+// 	if (c)
+// 	{
+// 		string_2--;
+// 	}
+// 	return (c - *string_2);
+// }
 
 
 // strncasecmp (case insensitive comparison) based on code from slashdot and apple open source
 // https://stackoverflow.com/questions/5820810/case-insensitive-string-comparison-in-c
 // https://opensource.apple.com/source/tcl/tcl-10/tcl/compat/strncasecmp.c.auto.html
-signed int General_Strncasecmp(const unsigned char* string_1, const unsigned char* string_2, long max_len)
-{
-	//DEBUG_OUT(("%s %d: s1='%s'; s2='%s'; maxlen=%i", __func__ , __LINE__, string_1, string_2, max_len));
-
-	for (; max_len != 0; max_len--, string_1++, string_2++)
-	{
-		unsigned char	u1 = (unsigned char) *string_1;
-		unsigned char	u2 = (unsigned char) *string_2;
-		
-		if (General_ToLower(u1) != General_ToLower(u2))
-		{
-			return General_ToLower(u1) - General_ToLower(u2);
-		}
-		
-		if (u1 == '\0')
-		{
-			return 0;
-		}
-	}
-	
-	return 0;	
-}
+// signed int General_Strncasecmp(const unsigned char* string_1, const unsigned char* string_2, long max_len)
+// {
+// 	//DEBUG_OUT(("%s %d: s1='%s'; s2='%s'; maxlen=%i", __func__ , __LINE__, string_1, string_2, max_len));
+// 
+// 	for (; max_len != 0; max_len--, string_1++, string_2++)
+// 	{
+// 		unsigned char	u1 = (unsigned char) *string_1;
+// 		unsigned char	u2 = (unsigned char) *string_2;
+// 		
+// 		if (General_ToLower(u1) != General_ToLower(u2))
+// 		{
+// 			return General_ToLower(u1) - General_ToLower(u2);
+// 		}
+// 		
+// 		if (u1 == '\0')
+// 		{
+// 			return 0;
+// 		}
+// 	}
+// 	
+// 	return 0;	
+// }
 
 
 // strnlen implementation from apple/bsd. Modified with Amiga-isms
@@ -334,107 +334,107 @@ unsigned long General_Strnlen(const unsigned char* s, unsigned long maxlen)
 
 // function compatible with List_MergeSortedList(). Compares to strings passed as void pointers, returns true if first string is longer than second. 
 // NOTE: compares to a maximum of MAX_STRING_COMP_LEN
-boolean General_CompareStringLength(void* first_payload, void* second_payload)
-{
-	unsigned char*		string_1 = (unsigned char*)first_payload;
-	unsigned char*		string_2 = (unsigned char*)second_payload;
-
-	if (General_Strnlen(string_1, MAX_STRING_COMP_LEN) > General_Strnlen(string_2, MAX_STRING_COMP_LEN))
-	{
-		return true;
-	}
-	else
-	{
-		return false;
-	}
-}
+// boolean General_CompareStringLength(void* first_payload, void* second_payload)
+// {
+// 	unsigned char*		string_1 = (unsigned char*)first_payload;
+// 	unsigned char*		string_2 = (unsigned char*)second_payload;
+// 
+// 	if (General_Strnlen(string_1, MAX_STRING_COMP_LEN) > General_Strnlen(string_2, MAX_STRING_COMP_LEN))
+// 	{
+// 		return true;
+// 	}
+// 	else
+// 	{
+// 		return false;
+// 	}
+// }
 
 
 // Find the next space, dash, or other word break character and return its position within the string. If none found before end of string or max len, returns -1.
-signed int General_StrFindNextWordEnd(const unsigned char* the_string, unsigned int max_search_len)
-{
-	char*	next_space;
-	char*	next_dash;
-	char*	first_hit = NULL; // worst case scenario - no word endings found
-	
-	next_space = strchr((char*)the_string, ' ');
-	next_dash = strchr((char*)the_string, '-');
-	
-	if (next_space)
-	{
-		first_hit = next_space;
-	}
-	
-	if (next_dash && next_dash < next_space)
-	{
-		first_hit = next_dash;
-	}
-	
-	if (first_hit)
-	{
-		return (first_hit - (char*)the_string) +1;
-	}
-	else
-	{
-		return -1;
-	}
-}
+// signed int General_StrFindNextWordEnd(const unsigned char* the_string, unsigned int max_search_len)
+// {
+// 	char*	next_space;
+// 	char*	next_dash;
+// 	char*	first_hit = NULL; // worst case scenario - no word endings found
+// 	
+// 	next_space = strchr((char*)the_string, ' ');
+// 	next_dash = strchr((char*)the_string, '-');
+// 	
+// 	if (next_space)
+// 	{
+// 		first_hit = next_space;
+// 	}
+// 	
+// 	if (next_dash && next_dash < next_space)
+// 	{
+// 		first_hit = next_dash;
+// 	}
+// 	
+// 	if (first_hit)
+// 	{
+// 		return (first_hit - (char*)the_string) +1;
+// 	}
+// 	else
+// 	{
+// 		return -1;
+// 	}
+// }
 
 
 // Find the next line break character and return its position within the string (+1: first char is '1'). If none found before end of string or max len, returns 0.
-unsigned int General_StrFindNextLineBreak(const unsigned char* the_string, unsigned int max_search_len)
-{
-	char*	next_line_break;
-
-	next_line_break = strchr((char*)the_string, '\n');
-	
-	if (next_line_break)
-	{
-		return (unsigned int)((next_line_break - (char*)the_string) + 1);
-	}
-	else
-	{
-		return 0;
-	}
-}
+// unsigned int General_StrFindNextLineBreak(const unsigned char* the_string, unsigned int max_search_len)
+// {
+// 	char*	next_line_break;
+// 
+// 	next_line_break = strchr((char*)the_string, '\n');
+// 	
+// 	if (next_line_break)
+// 	{
+// 		return (unsigned int)((next_line_break - (char*)the_string) + 1);
+// 	}
+// 	else
+// 	{
+// 		return 0;
+// 	}
+// }
 
 
 // test if 2 rectangles intersect
-boolean General_RectIntersect(Rectangle r1, Rectangle r2)
-{
-	if	(
-		(r1.MinX > r2.MaxX) ||
-		(r1.MaxX < r2.MinX) ||
-		(r1.MinY > r2.MaxY) ||
-		(r1.MaxY < r2.MinY)
-		)
-	{
-		return false;
-	}
-	else
-	{
-		return true;
-	}
-}
+// boolean General_RectIntersect(Rectangle r1, Rectangle r2)
+// {
+// 	if	(
+// 		(r1.MinX > r2.MaxX) ||
+// 		(r1.MaxX < r2.MinX) ||
+// 		(r1.MinY > r2.MaxY) ||
+// 		(r1.MaxY < r2.MinY)
+// 		)
+// 	{
+// 		return false;
+// 	}
+// 	else
+// 	{
+// 		return true;
+// 	}
+// }
 
 
 // test if a point is within a rectangle
-boolean General_PointInRect(signed int x, signed int y, Rectangle r)
-{
-	if	(
-		(x > r.MaxX) ||
-		(x < r.MinX) ||
-		(y > r.MaxY) ||
-		(y < r.MinY)
-		)
-	{
-		return false;
-	}
-	else
-	{
-		return true;
-	}
-}
+// boolean General_PointInRect(signed int x, signed int y, Rectangle r)
+// {
+// 	if	(
+// 		(x > r.MaxX) ||
+// 		(x < r.MinX) ||
+// 		(y > r.MaxY) ||
+// 		(y < r.MinY)
+// 		)
+// 	{
+// 		return false;
+// 	}
+// 	else
+// 	{
+// 		return true;
+// 	}
+// }
 
 
 
@@ -469,46 +469,46 @@ boolean General_PointInRect(signed int x, signed int y, Rectangle r)
 
 // Position one rect within the bounds of another. Horizontally: centers the hero rect within the left/right of the frame rect; Vertically: centers or or puts at 25% line
 // put the frame coords into the frame_rect, and the object to be centered into the hero_rect. ON return, the frame rect will hold the coords to be used.
-void General_CenterRectWithinRect(Rectangle* the_frame_rect, Rectangle* the_hero_rect, boolean at_25_percent_v)
-{
-	signed short		hero_height = the_hero_rect->MaxY - the_hero_rect->MinY;
-	signed short		hero_width = the_hero_rect->MaxX - the_hero_rect->MinX;
-	signed short		frame_height = the_frame_rect->MaxY - the_frame_rect->MinY;
-	
-	// horizontal: center left/right
-	the_frame_rect->MinX = (the_frame_rect->MaxX - the_frame_rect->MinX - hero_width) / 2 + the_frame_rect->MinX;
-	the_frame_rect->MaxX = the_frame_rect->MinX + hero_width;
-
-	if (at_25_percent_v == true)
-	{
-		signed short		proposed_top;
-
-		// set at 25% of vertical (good for showing an about window, for example)
-		proposed_top = frame_height / 4;
-		
-		// make sure there was actually enough space
-		if ((proposed_top + hero_height) > the_frame_rect->MaxY)
-		{
-			// commented out code below works, but it would be better to just center it vertically at this point
-			//the_frame_rect->MinY = proposed_top - ((proposed_top + hero_height) - the_frame_rect->bottom);
-			at_25_percent_v = false; // let fall through
-		}
-		else
-		{
-			the_frame_rect->MinY = proposed_top;
-		}
-	}
-
-	if (at_25_percent_v == false)
-	{
-		// vertical: center top/bottom
-		the_frame_rect->MinY = (frame_height - hero_height) / 2 + the_frame_rect->MinY;
-	}
-
-	the_frame_rect->MaxY = the_frame_rect->MinY + hero_height;
-
-	//DEBUG_OUT(("%s %d: coords=%i, %i / %i, %i", __func__ , __LINE__, the_frame_rect->MinX, the_frame_rect->MinY, the_frame_rect->MaxX, the_frame_rect->MaxY));
-}
+// void General_CenterRectWithinRect(Rectangle* the_frame_rect, Rectangle* the_hero_rect, boolean at_25_percent_v)
+// {
+// 	signed short		hero_height = the_hero_rect->MaxY - the_hero_rect->MinY;
+// 	signed short		hero_width = the_hero_rect->MaxX - the_hero_rect->MinX;
+// 	signed short		frame_height = the_frame_rect->MaxY - the_frame_rect->MinY;
+// 	
+// 	// horizontal: center left/right
+// 	the_frame_rect->MinX = (the_frame_rect->MaxX - the_frame_rect->MinX - hero_width) / 2 + the_frame_rect->MinX;
+// 	the_frame_rect->MaxX = the_frame_rect->MinX + hero_width;
+// 
+// 	if (at_25_percent_v == true)
+// 	{
+// 		signed short		proposed_top;
+// 
+// 		// set at 25% of vertical (good for showing an about window, for example)
+// 		proposed_top = frame_height / 4;
+// 		
+// 		// make sure there was actually enough space
+// 		if ((proposed_top + hero_height) > the_frame_rect->MaxY)
+// 		{
+// 			// commented out code below works, but it would be better to just center it vertically at this point
+// 			//the_frame_rect->MinY = proposed_top - ((proposed_top + hero_height) - the_frame_rect->bottom);
+// 			at_25_percent_v = false; // let fall through
+// 		}
+// 		else
+// 		{
+// 			the_frame_rect->MinY = proposed_top;
+// 		}
+// 	}
+// 
+// 	if (at_25_percent_v == false)
+// 	{
+// 		// vertical: center top/bottom
+// 		the_frame_rect->MinY = (frame_height - hero_height) / 2 + the_frame_rect->MinY;
+// 	}
+// 
+// 	the_frame_rect->MaxY = the_frame_rect->MinY + hero_height;
+// 
+// 	//DEBUG_OUT(("%s %d: coords=%i, %i / %i, %i", __func__ , __LINE__, the_frame_rect->MinX, the_frame_rect->MinY, the_frame_rect->MaxX, the_frame_rect->MaxY));
+// }
 
 
 // return the first char of the last part of a file path
@@ -633,24 +633,24 @@ void General_CenterRectWithinRect(Rectangle* the_frame_rect, Rectangle* the_hero
 
 
 // populates the passed string by safely combining the passed file path and name, accounting for cases where path is a disk root
-void General_CreateFilePathFromFolderAndFile(unsigned char* the_combined_path, unsigned char* the_folder_path, unsigned char* the_file_name)
-{
-	signed int	path_len;
-	
-	General_Strlcpy(the_combined_path, the_folder_path, FILE_MAX_PATHNAME_SIZE);
-	path_len = General_Strnlen(the_combined_path, FILE_MAX_PATHNAME_SIZE);
-
-	// if the filename passed was empty, just return the original folder path. 
-	//   otherwise you end up with "mypath" and file "" = "mypath/", which is bad. 
-	if (the_file_name[0] == '\0')
-	{
-		return;
-	}
-	
-	General_Strlcat(the_combined_path, the_file_name, FILE_MAX_PATHNAME_SIZE);
-
-	//DEBUG_OUT(("%s %d: file '%s' and folder '%s' produces path of '%s'", __func__ , __LINE__, the_file_name, the_folder_path, the_combined_path));
-}
+// void General_CreateFilePathFromFolderAndFile(unsigned char* the_combined_path, unsigned char* the_folder_path, unsigned char* the_file_name)
+// {
+// 	signed int	path_len;
+// 	
+// 	General_Strlcpy(the_combined_path, the_folder_path, FILE_MAX_PATHNAME_SIZE);
+// 	path_len = General_Strnlen(the_combined_path, FILE_MAX_PATHNAME_SIZE);
+// 
+// 	// if the filename passed was empty, just return the original folder path. 
+// 	//   otherwise you end up with "mypath" and file "" = "mypath/", which is bad. 
+// 	if (the_file_name[0] == '\0')
+// 	{
+// 		return;
+// 	}
+// 	
+// 	General_Strlcat(the_combined_path, the_file_name, FILE_MAX_PATHNAME_SIZE);
+// 
+// 	//DEBUG_OUT(("%s %d: file '%s' and folder '%s' produces path of '%s'", __func__ , __LINE__, the_file_name, the_folder_path, the_combined_path));
+// }
 
 
 
@@ -761,42 +761,42 @@ void General_LogCleanUp(void)
 
 
 // debug function to print out a chunk of memory character by character
-void General_PrintBufferCharacters(char* the_data, unsigned short the_len)
-{
-	unsigned short	i;
-	unsigned short	bytes_out = 0;
-	char*	temp = the_data;
-	char	buffer[512];
-	char*	next_field = buffer;
-	
-	sprintf(next_field, "Buffer Print: ");
-	bytes_out += 14;
-	next_field +=14;
-
-	for (i = 0; i < the_len; i++, temp++)
-	{
-		if (*temp == 0)
-		{
-			sprintf(next_field, "'(0)' = 0,     ");
-		}
-		else
-		{
-			sprintf(next_field, "'%c' = %u,     ", (unsigned char)(*temp), (unsigned char)(*temp));
-		}
-		
-		bytes_out += 10;
-		next_field += 10;
-		
-		if (bytes_out > 235)
-		{
-			DEBUG_OUT((buffer));
-			bytes_out = 0;
-			next_field = buffer;
-		}
-	}
-	
-	sprintf(next_field, "\n");
-	
-	DEBUG_OUT((buffer));
-}
+// void General_PrintBufferCharacters(char* the_data, unsigned short the_len)
+// {
+// 	unsigned short	i;
+// 	unsigned short	bytes_out = 0;
+// 	char*	temp = the_data;
+// 	char	buffer[512];
+// 	char*	next_field = buffer;
+// 	
+// 	sprintf(next_field, "Buffer Print: ");
+// 	bytes_out += 14;
+// 	next_field +=14;
+// 
+// 	for (i = 0; i < the_len; i++, temp++)
+// 	{
+// 		if (*temp == 0)
+// 		{
+// 			sprintf(next_field, "'(0)' = 0,     ");
+// 		}
+// 		else
+// 		{
+// 			sprintf(next_field, "'%c' = %u,     ", (unsigned char)(*temp), (unsigned char)(*temp));
+// 		}
+// 		
+// 		bytes_out += 10;
+// 		next_field += 10;
+// 		
+// 		if (bytes_out > 235)
+// 		{
+// 			DEBUG_OUT((buffer));
+// 			bytes_out = 0;
+// 			next_field = buffer;
+// 		}
+// 	}
+// 	
+// 	sprintf(next_field, "\n");
+// 	
+// 	DEBUG_OUT((buffer));
+// }
 
