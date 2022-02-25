@@ -56,4 +56,7 @@ The A2650 kernel/OS doesn't support dynamically linked libraries yet, so for now
  * Get the foreground or background color at the specified coord
  * draw a line using "graphic" characters
  * draw a box using "graphic" characters
+ * copy a full screen of text or attr from an off-screen buffer
+ * copy a full screen of text or attr TO an off-screen buffer
+ * copy a rectangular area of text or attr TO/FROM an off-screen buffer
  * Draw a string to a specified x, y coord (no wrap)

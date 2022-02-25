@@ -27,8 +27,8 @@
  * x Get the foreground or background color at the specified coord
  * x draw a line using "graphic" characters
  * x draw a box using "graphic" characters
- * copy a full screen of text or attr from an off-screen buffer
- * copy a full screen of text or attr TO an off-screen buffer
+ * x copy a full screen of text or attr from an off-screen buffer
+ * x copy a full screen of text or attr TO an off-screen buffer
  * copy a full screen of text and attr between channel A and B
  * copy a rectangular area of text or attr TO/FROM an off-screen buffer
  * x display a string at a specified x, y coord (no wrap)
@@ -52,8 +52,11 @@
 /*                            Macro Definitions                              */
 /*****************************************************************************/
 
-#define SCREEN_FOR_TEXT_ATTR	true	// param for functions with is_attr
-#define SCREEN_FOR_TEXT_CHAR	false	// param for functions with is_attr
+#define SCREEN_FOR_TEXT_ATTR	true	// param for functions with for_attr
+#define SCREEN_FOR_TEXT_CHAR	false	// param for functions with for_attr
+
+#define SCREEN_COPY_TO_SCREEN	true	// param for functions doing block copy to/from screen / off-screen buffer
+#define SCREEN_COPY_FROM_SCREEN	false	// param for functions doing block copy to/from screen / off-screen buffer
 
 // these are from my C-128 code, but they match up to what is shown in the VICKY II wiki page
 //   https://wiki.c256foenix.com/index.php?title=VICKY_II
@@ -188,6 +191,13 @@ boolean Text_CopyCharMemToScreen(signed int the_screen_id, unsigned char* the_so
 // returns false on any error/invalid input.
 boolean Text_CopyCharMemFromScreen(signed int the_screen_id, unsigned char* the_target_buffer);
 
+// Copy a full screen of text or attr to or from an off-screen buffer
+// returns false on any error/invalid input.
+boolean Text_CopyScreen(signed int the_screen_id, unsigned char* the_buffer, boolean to_screen, boolean for_attr);
+
+// Copy a rectangular area of text or attr to or from an off-screen buffer
+// returns false on any error/invalid input.
+boolean Text_CopyMemBox(signed int the_screen_id, unsigned char* the_buffer, signed int x1, signed int y1, signed int x2, signed int y2, boolean to_screen, boolean for_attr);
 
 
 // **** Block fill functions ****

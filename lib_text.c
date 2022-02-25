@@ -145,7 +145,6 @@ unsigned char* Text_GetMemLocForXY(signed int the_screen_id, signed int x, signe
 	
 	if (for_attr)
 	{
-//		the_write_loc += global_screen[the_screen_id].text_attr_ram_ - global_screen[the_screen_id].text_ram_;
 		the_write_loc = global_screen[the_screen_id].text_attr_ram_ + (TEXT_COL_COUNT_FOR_PLOTTING * y) + x;
 	}
 	else
@@ -328,6 +327,123 @@ boolean Text_CopyCharMemFromScreen(signed int the_screen_id, unsigned char* the_
 	return true;
 }
 
+
+// Copy a full screen of text or attr to or from an off-screen buffer
+// returns false on any error/invalid input.
+boolean Text_CopyScreen(signed int the_screen_id, unsigned char* the_buffer, boolean to_screen, boolean for_attr)
+{
+	signed int		the_write_len;
+	unsigned char*	the_vram_loc;
+	
+	if (the_screen_id != ID_CHANNEL_A && the_screen_id != ID_CHANNEL_B)
+	{
+		LOG_ERR(("%s %d: illegal screen id", __func__, __LINE__));
+		return false;
+	}
+		
+// this check appears to cause morfe to die
+// 	if (the_buffer == NULL)
+// 	{
+// 		LOG_ERR(("%s %d: passed off-screen buffer was NULL", __func__, __LINE__));
+// 		return false;
+// 	}
+
+	if (for_attr)
+	{
+		the_vram_loc = global_screen[the_screen_id].text_attr_ram_;
+	}
+	else
+	{
+		the_vram_loc = global_screen[the_screen_id].text_ram_;
+	}
+	
+	//the_write_len = global_screen[the_screen_id].text_cols_ * global_screen[the_screen_id].text_rows_;
+	the_write_len = TEXT_COL_COUNT_FOR_PLOTTING * TEXT_ROW_COUNT_FOR_PLOTTING;
+
+	if (to_screen)
+	{
+		memcpy(the_vram_loc, the_buffer, the_write_len);
+		//DEBUG_OUT(("%s %d: vramloc=%p, buffer=%p, to_screen=%i, the_write_len=%i", the_vram_loc, the_buffer, to_screen, the_write_len));
+	}
+	else
+	{
+		memcpy(the_buffer, the_vram_loc, the_write_len);
+	}
+
+	return true;
+}
+
+
+// Copy a rectangular area of text or attr to or from an off-screen buffer
+// returns false on any error/invalid input.
+boolean Text_CopyMemBox(signed int the_screen_id, unsigned char* the_buffer, signed int x1, signed int y1, signed int x2, signed int y2, boolean to_screen, boolean for_attr)
+{
+	signed int		the_write_len;
+	signed int		initial_offset;
+	unsigned char*	the_vram_loc;
+	unsigned char*	the_buffer_loc;
+	
+	if (!Text_ValidateAll(the_screen_id, x1, y1, 0, 0))
+	{
+		LOG_ERR(("%s %d: illegal screen id, coordinate, or color", __func__, __LINE__));
+		return false;
+	}
+	
+	if (!Text_ValidateXY(the_screen_id, x2, y2))
+	{
+		LOG_ERR(("%s %d: illegal coordinate", __func__, __LINE__));
+		return false;
+	}
+
+	if (x1 > x2 || y1 > y2)
+	{
+		LOG_ERR(("%s %d: illegal coordinates", __func__, __LINE__));
+		return false;
+	}
+	
+// this check appears to cause morfe to die
+// 	if (the_buffer == NULL)
+// 	{
+// 		LOG_ERR(("%s %d: passed off-screen buffer was NULL", __func__, __LINE__));
+// 		return false;
+// 	}
+
+	// get initial read/write locs
+	initial_offset = (TEXT_COL_COUNT_FOR_PLOTTING * y1) + x1;
+	the_buffer_loc = the_buffer + initial_offset;
+
+	if (for_attr)
+	{
+		the_vram_loc = global_screen[the_screen_id].text_attr_ram_ + initial_offset;
+	}
+	else
+	{
+		the_vram_loc = global_screen[the_screen_id].text_ram_ + initial_offset;
+	}
+	
+	// do copy one line at a time
+	
+	the_write_len = x2 - x1 + 1;
+
+//	DEBUG_OUT(("%s %d: vramloc=%p, buffer=%p, bufferloc=%p, to_screen=%i, the_write_len=%i", the_vram_loc, the_buffer, the_buffer_loc, to_screen, the_write_len));
+
+	for (; y1 <= y2; y1++)
+	{
+		if (to_screen)
+		{
+			memcpy(the_vram_loc, the_buffer_loc, the_write_len);
+		}
+		else
+		{
+			memcpy(the_buffer_loc, the_vram_loc, the_write_len);
+		}
+		
+		the_buffer_loc += TEXT_COL_COUNT_FOR_PLOTTING;
+		the_vram_loc += TEXT_COL_COUNT_FOR_PLOTTING;
+	}
+
+	return true;
+}
 
 
 

@@ -113,6 +113,8 @@ int main(int argc, char* argv[])
 	global_screen[ID_CHANNEL_B].text_ram_ = TEXTB_RAM;
 	global_screen[ID_CHANNEL_B].text_attr_ram_ = TEXTB_ATTR;
 	
+	//printf("is this thing on?");
+
 #if defined(RUN_TESTS)
 	Text_RunTests();
 #endif
