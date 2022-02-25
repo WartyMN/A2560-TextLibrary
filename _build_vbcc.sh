@@ -12,7 +12,7 @@ cd $DEVA2560/lib_text
 #vc +/opt/vbcc/config/a2560-s28-micah -o text.s28 main.c general.c general_a2560.c lib_text.c lib_text_test.c
 #vc +/opt/vbcc/config/a2560-s28-micah -o text.s28 main.c general.c general_a2560.c lib_text.c
 
-vc +/opt/vbcc/config/a2560-s28-micah -o text.s28 main.c lib_general.c lib_general_a2560.c lib_text.c
+vc +/opt/vbcc/config/a2560-s28-micah -o text.s28 main.c lib_general.c lib_general_a2560.c lib_text.c lib_text_test.c
 #vc +/opt/vbcc/config/a2560-s28 -o text.s28 main.c lib_general.c lib_general_a2560.c lib_text.c
 
 # no tests

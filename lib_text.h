@@ -175,30 +175,30 @@ typedef enum text_draw_choice
 
 // Fill attribute memory for the passed screen
 // returns false on any error/invalid input.
-boolean Text_FillAttrMem(ScreenID the_screen_id, unsigned char the_fill);
+boolean Text_FillAttrMem(signed int the_screen_id, unsigned char the_fill);
 
 // Fill character memory for the passed screen
 // returns false on any error/invalid input.
-boolean Text_FillCharMem(ScreenID the_screen_id, unsigned char the_fill);
+boolean Text_FillCharMem(signed int the_screen_id, unsigned char the_fill);
 
 // Fill character and/or attribute memory for a specific box area
 // returns false on any error/invalid input.
 // this version uses char-by-char functions, so it is very slow.
-boolean Text_FillBoxSlow(ScreenID the_screen_id, signed int x1, signed int y1, signed int x2, signed int y2, unsigned char the_char, unsigned char fore_color, unsigned char back_color, text_draw_choice the_draw_choice);
+boolean Text_FillBoxSlow(signed int the_screen_id, signed int x1, signed int y1, signed int x2, signed int y2, unsigned char the_char, unsigned char fore_color, unsigned char back_color, text_draw_choice the_draw_choice);
 
 // Fill character and attribute memory for a specific box area
 // returns false on any error/invalid input.
-boolean Text_FillBox(ScreenID the_screen_id, signed int x1, signed int y1, signed int x2, signed int y2, unsigned char the_char, unsigned char fore_color, unsigned char back_color);
+boolean Text_FillBox(signed int the_screen_id, signed int x1, signed int y1, signed int x2, signed int y2, unsigned char the_char, unsigned char fore_color, unsigned char back_color);
 
 
 // **** FONT RELATED *****
 
 
 // replace the current font data with the data at the passed memory buffer
-boolean Text_UpdateFontData(ScreenID the_screen_id, unsigned char* new_font_data);
+boolean Text_UpdateFontData(signed int the_screen_id, unsigned char* new_font_data);
 
 // test function to display all 256 font characters
-boolean Text_ShowFontChars(ScreenID the_screen_id);
+boolean Text_ShowFontChars(signed int the_screen_id);
 
 
 
@@ -207,13 +207,13 @@ boolean Text_ShowFontChars(ScreenID the_screen_id);
 
 
 // Set a char at a specified x, y coord
-boolean Text_SetCharAtXY(ScreenID the_screen_id, signed int x, signed int y, unsigned char the_char);
+boolean Text_SetCharAtXY(signed int the_screen_id, signed int x, signed int y, unsigned char the_char);
 
 // Set the attribute value at a specified x, y coord
-boolean Text_SetAttrAtXY(ScreenID the_screen_id, signed int x, signed int y, unsigned char fore_color, unsigned char back_color);
+boolean Text_SetAttrAtXY(signed int the_screen_id, signed int x, signed int y, unsigned char fore_color, unsigned char back_color);
 
 // Draw a char at a specified x, y coord, also setting the color attributes
-boolean Text_SetCharAndColorAtXY(ScreenID the_screen_id, signed int x, signed int y, unsigned char the_char, unsigned char fore_color, unsigned char back_color);
+boolean Text_SetCharAndColorAtXY(signed int the_screen_id, signed int x, signed int y, unsigned char the_char, unsigned char fore_color, unsigned char back_color);
 
 
 
@@ -222,16 +222,16 @@ boolean Text_SetCharAndColorAtXY(ScreenID the_screen_id, signed int x, signed in
 
 
 // Get the char at a specified x, y coord
-unsigned char Text_GetCharAtXY(ScreenID the_screen_id, signed int x, signed int y);
+unsigned char Text_GetCharAtXY(signed int the_screen_id, signed int x, signed int y);
 
 // Get the attribute value at a specified x, y coord
-unsigned char Text_GetAttrAtXY(ScreenID the_screen_id, signed int x, signed int y);
+unsigned char Text_GetAttrAtXY(signed int the_screen_id, signed int x, signed int y);
 
 // Get the foreground color at a specified x, y coord
-unsigned char Text_GetForeColorAtXY(ScreenID the_screen_id, signed int x, signed int y);
+unsigned char Text_GetForeColorAtXY(signed int the_screen_id, signed int x, signed int y);
 
 // Get the background color at a specified x, y coord
-unsigned char Text_GetBackColorAtXY(ScreenID the_screen_id, signed int x, signed int y);
+unsigned char Text_GetBackColorAtXY(signed int the_screen_id, signed int x, signed int y);
 
 
 
@@ -239,19 +239,19 @@ unsigned char Text_GetBackColorAtXY(ScreenID the_screen_id, signed int x, signed
 
 
 // draws a horizontal line from specified coords, for n characters, using the specified char and/or attribute
-boolean Text_DrawHLine(ScreenID the_screen_id, signed int x, signed int y, signed int the_line_len, unsigned char the_char, unsigned char fore_color, unsigned char back_color, text_draw_choice the_draw_choice);
+boolean Text_DrawHLine(signed int the_screen_id, signed int x, signed int y, signed int the_line_len, unsigned char the_char, unsigned char fore_color, unsigned char back_color, text_draw_choice the_draw_choice);
 
 // draws a vertical line from specified coords, for n characters, using the specified char and/or attribute
-boolean Text_DrawVLine(ScreenID the_screen_id, signed int x, signed int y, signed int the_line_len, unsigned char the_char, unsigned char fore_color, unsigned char back_color, text_draw_choice the_draw_choice);
+boolean Text_DrawVLine(signed int the_screen_id, signed int x, signed int y, signed int the_line_len, unsigned char the_char, unsigned char fore_color, unsigned char back_color, text_draw_choice the_draw_choice);
 
 // draws a basic box based on 2 sets of coords, using the specified char and/or attribute for all cells
-boolean Text_DrawBoxCoords(ScreenID the_screen_id, signed int x1, signed int y1, signed int x2, signed int y2, unsigned char the_char, unsigned char fore_color, unsigned char back_color, text_draw_choice the_draw_choice);
+boolean Text_DrawBoxCoords(signed int the_screen_id, signed int x1, signed int y1, signed int x2, signed int y2, unsigned char the_char, unsigned char fore_color, unsigned char back_color, text_draw_choice the_draw_choice);
 
 // draws a box based on 2 sets of coords, using the predetermined line and corner "graphics", and the passed colors
-boolean Text_DrawBoxCoordsFancy(ScreenID the_screen_id, signed int x1, signed int y1, signed int x2, signed int y2, unsigned char fore_color, unsigned char back_color);
+boolean Text_DrawBoxCoordsFancy(signed int the_screen_id, signed int x1, signed int y1, signed int x2, signed int y2, unsigned char fore_color, unsigned char back_color);
 
 // draws a basic box based on start coords and width/height, using the specified char and/or attribute for all cells
-boolean Text_DrawBox(ScreenID the_screen_id, signed int x, signed int y, signed int the_width, signed int the_height, unsigned char the_char, unsigned char fore_color, unsigned char back_color, text_draw_choice the_draw_choice);
+boolean Text_DrawBox(signed int the_screen_id, signed int x, signed int y, signed int the_width, signed int the_height, unsigned char the_char, unsigned char fore_color, unsigned char back_color, text_draw_choice the_draw_choice);
 
 
 
@@ -261,7 +261,7 @@ boolean Text_DrawBox(ScreenID the_screen_id, signed int x, signed int y, signed 
 // Draw a string at a specified x, y coord, also setting the color attributes
 // Truncate, but still draw the string if it is too long to display on the line it started.
 // No word wrap is performed. 
-boolean Text_DrawStringAtXY(ScreenID the_screen_id, signed int x, signed int y, unsigned char* the_string, unsigned char fore_color, unsigned char back_color);
+boolean Text_DrawStringAtXY(signed int the_screen_id, signed int x, signed int y, unsigned char* the_string, unsigned char fore_color, unsigned char back_color);
 
 
 

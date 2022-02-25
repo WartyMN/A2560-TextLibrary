@@ -52,28 +52,28 @@ extern Screen global_screen[2];
 /*****************************************************************************/
 
 // validate screen id, x, y, and colors
-boolean Text_ValidateAll(ScreenID the_screen_id, signed int x, signed int y, unsigned char fore_color, unsigned char back_color);
+boolean Text_ValidateAll(signed int the_screen_id, signed int x, signed int y, unsigned char fore_color, unsigned char back_color);
 
 // validate the coordinates are within the bounds of the specified screen
-boolean Text_ValidateXY(ScreenID the_screen_id, signed int x, signed int y);
+boolean Text_ValidateXY(signed int the_screen_id, signed int x, signed int y);
 
 // calculate the VRAM location of the specified coordinate
-unsigned char* Text_GetMemLocForXY(ScreenID the_screen_id, signed int x, signed int y, boolean for_attr);
+unsigned char* Text_GetMemLocForXY(signed int the_screen_id, signed int x, signed int y, boolean for_attr);
 
 // Fill attribute or text char memory. Writes to char memory if for_attr is false.
 // calling function must validate the screen ID before passing!
 // returns false on any error/invalid input.
-boolean Text_FillMemory(ScreenID the_screen_id, boolean for_attr, unsigned char the_fill);
+boolean Text_FillMemory(signed int the_screen_id, boolean for_attr, unsigned char the_fill);
 
 // Fill character and attribute memory for a specific box area
 // calling function must validate screen id, coords, attribute value before passing!
 // returns false on any error/invalid input.
-boolean Text_FillMemoryBoxBoth(ScreenID the_screen_id, signed int x, signed int y, signed int width, signed int height, unsigned char the_char, unsigned char the_attribute_value);
+boolean Text_FillMemoryBoxBoth(signed int the_screen_id, signed int x, signed int y, signed int width, signed int height, unsigned char the_char, unsigned char the_attribute_value);
 
 // Fill character OR attribute memory for a specific box area
 // calling function must validate screen id, coords, attribute value before passing!
 // returns false on any error/invalid input.
-boolean Text_FillMemoryBox(ScreenID the_screen_id, signed int x, signed int y, signed int width, signed int height, boolean for_attr, unsigned char the_fill);
+boolean Text_FillMemoryBox(signed int the_screen_id, signed int x, signed int y, signed int width, signed int height, boolean for_attr, unsigned char the_fill);
 
 
 /*****************************************************************************/
@@ -85,9 +85,9 @@ boolean Text_FillMemoryBox(ScreenID the_screen_id, signed int x, signed int y, s
 
 
 // validate screen id, x, y, and colors
-boolean Text_ValidateAll(ScreenID the_screen_id, signed int x, signed int y, unsigned char fore_color, unsigned char back_color)
+boolean Text_ValidateAll(signed int the_screen_id, signed int x, signed int y, unsigned char fore_color, unsigned char back_color)
 {
-	if (the_screen_id != CHANNEL_A && the_screen_id != CHANNEL_B)
+	if (the_screen_id != ID_CHANNEL_A && the_screen_id != ID_CHANNEL_B)
 	{
 		LOG_INFO(("%s %d: illegal screen id", __func__, __LINE__));
 		return false;
@@ -110,7 +110,7 @@ boolean Text_ValidateAll(ScreenID the_screen_id, signed int x, signed int y, uns
 
 
 // validate the coordinates are within the bounds of the specified screen
-boolean Text_ValidateXY(ScreenID the_screen_id, signed int x, signed int y)
+boolean Text_ValidateXY(signed int the_screen_id, signed int x, signed int y)
 {
 	signed int		max_row;
 	signed int		max_col;
@@ -128,7 +128,7 @@ boolean Text_ValidateXY(ScreenID the_screen_id, signed int x, signed int y)
 
 
 // calculate the VRAM location of the specified coordinate
-unsigned char* Text_GetMemLocForXY(ScreenID the_screen_id, signed int x, signed int y, boolean for_attr)
+unsigned char* Text_GetMemLocForXY(signed int the_screen_id, signed int x, signed int y, boolean for_attr)
 {
 	unsigned char*	the_write_loc;
 	//signed int		num_cols;
@@ -162,7 +162,7 @@ unsigned char* Text_GetMemLocForXY(ScreenID the_screen_id, signed int x, signed 
 // Fill attribute or text char memory. Writes to char memory if for_attr is false.
 // calling function must validate the screen ID before passing!
 // returns false on any error/invalid input.
-boolean Text_FillMemory(ScreenID the_screen_id, boolean for_attr, unsigned char the_fill)
+boolean Text_FillMemory(signed int the_screen_id, boolean for_attr, unsigned char the_fill)
 {
 	unsigned char*	the_write_loc;
 	unsigned long	the_write_len;
@@ -187,7 +187,7 @@ boolean Text_FillMemory(ScreenID the_screen_id, boolean for_attr, unsigned char 
 // Fill character and attribute memory for a specific box area
 // calling function must validate screen id, coords, attribute value before passing!
 // returns false on any error/invalid input.
-boolean Text_FillMemoryBoxBoth(ScreenID the_screen_id, signed int x, signed int y, signed int width, signed int height, unsigned char the_char, unsigned char the_attribute_value)
+boolean Text_FillMemoryBoxBoth(signed int the_screen_id, signed int x, signed int y, signed int width, signed int height, unsigned char the_char, unsigned char the_attribute_value)
 {
 	unsigned char*	the_char_loc;
 	unsigned char*	the_attr_loc;
@@ -214,7 +214,7 @@ boolean Text_FillMemoryBoxBoth(ScreenID the_screen_id, signed int x, signed int 
 // Fill character OR attribute memory for a specific box area
 // calling function must validate screen id, coords, attribute value before passing!
 // returns false on any error/invalid input.
-boolean Text_FillMemoryBox(ScreenID the_screen_id, signed int x, signed int y, signed int width, signed int height, boolean for_attr, unsigned char the_fill)
+boolean Text_FillMemoryBox(signed int the_screen_id, signed int x, signed int y, signed int width, signed int height, boolean for_attr, unsigned char the_fill)
 {
 	unsigned char*	the_write_loc;
 	signed int		max_row;
@@ -245,9 +245,9 @@ boolean Text_FillMemoryBox(ScreenID the_screen_id, signed int x, signed int y, s
 
 // Fill attribute memory for the passed screen
 // returns false on any error/invalid input.
-boolean Text_FillAttrMem(ScreenID the_screen_id, unsigned char the_fill)
+boolean Text_FillAttrMem(signed int the_screen_id, unsigned char the_fill)
 {
-	if (the_screen_id != CHANNEL_A && the_screen_id != CHANNEL_B)
+	if (the_screen_id != ID_CHANNEL_A && the_screen_id != ID_CHANNEL_B)
 	{
 		LOG_ERR(("%s %d: illegal screen id", __func__, __LINE__));
 		return false;
@@ -258,9 +258,9 @@ boolean Text_FillAttrMem(ScreenID the_screen_id, unsigned char the_fill)
 
 // Fill character memory for the passed screen
 // returns false on any error/invalid input.
-boolean Text_FillCharMem(ScreenID the_screen_id, unsigned char the_fill)
+boolean Text_FillCharMem(signed int the_screen_id, unsigned char the_fill)
 {
-	if (the_screen_id != CHANNEL_A && the_screen_id != CHANNEL_B)
+	if (the_screen_id != ID_CHANNEL_A && the_screen_id != ID_CHANNEL_B)
 	{
 		LOG_ERR(("%s %d: illegal screen id", __func__, __LINE__));
 		return false;
@@ -273,9 +273,8 @@ boolean Text_FillCharMem(ScreenID the_screen_id, unsigned char the_fill)
 // Fill character and/or attribute memory for a specific box area
 // returns false on any error/invalid input.
 // this version uses char-by-char functions, so it is very slow.
-boolean Text_FillBoxSlow(ScreenID the_screen_id, signed int x1, signed int y1, signed int x2, signed int y2, unsigned char the_char, unsigned char fore_color, unsigned char back_color, text_draw_choice the_draw_choice)
+boolean Text_FillBoxSlow(signed int the_screen_id, signed int x1, signed int y1, signed int x2, signed int y2, unsigned char the_char, unsigned char fore_color, unsigned char back_color, text_draw_choice the_draw_choice)
 {
-	unsigned char dy;
 	unsigned char dx;
 	
 	if (!Text_ValidateAll(the_screen_id, x1, y1,fore_color, back_color))
@@ -298,7 +297,6 @@ boolean Text_FillBoxSlow(ScreenID the_screen_id, signed int x1, signed int y1, s
 
 	// add 1 to line len, because desired behavior is a box that connects fully to the passed coords
 	dx = x2 - x1 + 1;
-	dy = y2 - y1 + 1;
 	
 	for (; y1 <= y2; y1++)
 	{
@@ -315,15 +313,13 @@ boolean Text_FillBoxSlow(ScreenID the_screen_id, signed int x1, signed int y1, s
 
 // Fill character and attribute memory for a specific box area
 // returns false on any error/invalid input.
-boolean Text_FillBox(ScreenID the_screen_id, signed int x1, signed int y1, signed int x2, signed int y2, unsigned char the_char, unsigned char fore_color, unsigned char back_color)
+boolean Text_FillBox(signed int the_screen_id, signed int x1, signed int y1, signed int x2, signed int y2, unsigned char the_char, unsigned char fore_color, unsigned char back_color)
 {
 	unsigned char	dy;
 	unsigned char	dx;
-	unsigned char*	the_char_loc;
-	unsigned char*	the_attr_loc;
 	unsigned char	the_attribute_value;
 	
-	if (!Text_ValidateAll(the_screen_id, x1, y1,fore_color, back_color))
+	if (!Text_ValidateAll(the_screen_id, x1, y1, fore_color, back_color))
 	{
 		LOG_ERR(("%s %d: illegal screen id, coordinate, or color", __func__, __LINE__));
 		return false;
@@ -344,74 +340,134 @@ boolean Text_FillBox(ScreenID the_screen_id, signed int x1, signed int y1, signe
 	// add 1 to line len, because desired behavior is a box that connects fully to the passed coords
 	dx = x2 - x1 + 1;
 	dy = y2 - y1 + 1;
-	
+
 	// calculate attribute value from passed fore and back colors
 	// LOGIC: text mode only supports 16 colors. lower 4 bits are back, upper 4 bits are foreground
 	the_attribute_value = ((fore_color << 4) | back_color);
 
-	// set up char and attribute memory initial loc
-	the_char_loc = Text_GetMemLocForXY(the_screen_id, x1, y1, SCREEN_FOR_TEXT_CHAR);
-	the_attr_loc = the_char_loc + (global_screen[the_screen_id].text_attr_ram_ - global_screen[the_screen_id].text_ram_);
+	return Text_FillMemoryBoxBoth(the_screen_id, x1, y1, dx, dy, the_char, the_attribute_value);
+}
+
+
+// Fill character memory for a specific box area
+// returns false on any error/invalid input.
+boolean Text_FillBoxCharOnly(signed int the_screen_id, signed int x1, signed int y1, signed int x2, signed int y2, unsigned char the_char)
+{
+	unsigned char	dy;
+	unsigned char	dx;
 	
-	for (; y1 <= y2; y1++)
+	if (!Text_ValidateAll(the_screen_id, x1, y1, 0, 0))
 	{
-		memset(the_char_loc, the_char, dx);
-		memset(the_attr_loc, the_attribute_value, dx);
-		the_char_loc += TEXT_COL_WIDTH_FOR_PLOTTING;
-		the_attr_loc += TEXT_COL_WIDTH_FOR_PLOTTING;
+		LOG_ERR(("%s %d: illegal screen id, coordinate, or color", __func__, __LINE__));
+		return false;
 	}
-			
-	return true;
+	
+	if (!Text_ValidateXY(the_screen_id, x2, y2))
+	{
+		LOG_ERR(("%s %d: illegal coordinate", __func__, __LINE__));
+		return false;
+	}
+
+	if (x1 > x2 || y1 > y2)
+	{
+		LOG_ERR(("%s %d: illegal coordinates", __func__, __LINE__));
+		return false;
+	}
+
+	// add 1 to line len, because desired behavior is a box that connects fully to the passed coords
+	dx = x2 - x1 + 1;
+	dy = y2 - y1 + 1;
+
+	return Text_FillMemoryBox(the_screen_id, x1, y1, dx, dy, SCREEN_FOR_TEXT_CHAR, the_char);
+}
+
+
+// Fill attribute memory for a specific box area
+// returns false on any error/invalid input.
+boolean Text_FillBoxAttrOnly(signed int the_screen_id, signed int x1, signed int y1, signed int x2, signed int y2, unsigned char fore_color, unsigned char back_color)
+{
+	unsigned char	dy;
+	unsigned char	dx;
+	unsigned char	the_attribute_value;
+	
+	if (!Text_ValidateAll(the_screen_id, x1, y1, 0, 0))
+	{
+		LOG_ERR(("%s %d: illegal screen id, coordinate, or color", __func__, __LINE__));
+		return false;
+	}
+	
+	if (!Text_ValidateXY(the_screen_id, x2, y2))
+	{
+		LOG_ERR(("%s %d: illegal coordinate", __func__, __LINE__));
+		return false;
+	}
+
+	if (x1 > x2 || y1 > y2)
+	{
+		LOG_ERR(("%s %d: illegal coordinates", __func__, __LINE__));
+		return false;
+	}
+
+	// add 1 to line len, because desired behavior is a box that connects fully to the passed coords
+	dx = x2 - x1 + 1;
+	dy = y2 - y1 + 1;
+
+	// calculate attribute value from passed fore and back colors
+	// LOGIC: text mode only supports 16 colors. lower 4 bits are back, upper 4 bits are foreground
+	the_attribute_value = ((fore_color << 4) | back_color);
+
+	return Text_FillMemoryBox(the_screen_id, x1, y1, dx, dy, SCREEN_FOR_TEXT_ATTR, the_attribute_value);
 }
 
 
 // **** FONT RELATED *****
 
-// // replace the current font data with the data at the passed memory buffer
-// boolean Text_UpdateFontData(ScreenID the_screen_id, unsigned char* new_font_data)
-// {
-// 	// TEST: check the mem locs I have work in morfe.
-// 	memset(FONT_MEMORY_BANK0, 55, 8*256*1);
-// 	// NO EFFECT: memset(FONT_MEMORY_BANK1, 255, 8*256*1);
-// 	// seems to be expected: apparently the second font is no longer a thing
-// 
-// 	return true;
-// }
-// 
-// // test function to display all 256 font characters
-// boolean Text_ShowFontChars(ScreenID the_screen_id)
-// {
-// 	unsigned char	the_char = 1;
-// 	unsigned char*	the_write_loc;
-// 
-// 	if (the_screen_id != CHANNEL_A && the_screen_id != CHANNEL_B)
-// 	{
-// 		LOG_ERR(("%s %d: illegal screen id", __func__, __LINE__));
-// 		return false;
-// 	}
-// 
-// 	the_write_loc = global_screen[the_screen_id].text_ram_;
-// 
-// 	//printf("\n");
-// 
-// 	do
-// 	{
-// 		*the_write_loc++ = the_char;
-// 		//printf("%c", the_char++);
-// 	} while (the_char > 0);
-// 
-// 	//printf("\n");
-// 	
-// 	return true;
-// }
-// 
+// replace the current font data with the data at the passed memory buffer
+boolean Text_UpdateFontData(signed int the_screen_id, unsigned char* new_font_data)
+{
+	// TEST: check the mem locs I have work in morfe.
+	memset(FONT_MEMORY_BANK0, 55, 8*256*1);
+	// NO EFFECT: memset(FONT_MEMORY_BANK1, 255, 8*256*1);
+	// seems to be expected: apparently the second font is no longer a thing
+
+	return true;
+}
+
+// test function to display all 256 font characters
+boolean Text_ShowFontChars(signed int the_screen_id)
+{
+	unsigned char	the_char = 0;
+	unsigned char*	the_write_loc;
+	unsigned short	i;
+
+	if (the_screen_id != ID_CHANNEL_A && the_screen_id != ID_CHANNEL_B)
+	{
+		LOG_ERR(("%s %d: illegal screen id", __func__, __LINE__));
+		return false;
+	}
+
+	the_write_loc = global_screen[the_screen_id].text_ram_;
+
+	//printf("\n");
+
+	for (i = 0; i < 256; i++)
+	{
+		*the_write_loc++ = the_char++;
+		//printf("%c", the_char++);
+	}
+
+	//printf("\n");
+	
+	return true;
+}
+
 
 
 // **** Set char/attr functions *****
 
 
 // Set a char at a specified x, y coord
-boolean Text_SetCharAtXY(ScreenID the_screen_id, signed int x, signed int y, unsigned char the_char)
+boolean Text_SetCharAtXY(signed int the_screen_id, signed int x, signed int y, unsigned char the_char)
 {
 	unsigned char*	the_write_loc;
 	
@@ -429,7 +485,7 @@ boolean Text_SetCharAtXY(ScreenID the_screen_id, signed int x, signed int y, uns
 
 
 // Set the attribute value at a specified x, y coord
-boolean Text_SetAttrAtXY(ScreenID the_screen_id, signed int x, signed int y, unsigned char fore_color, unsigned char back_color)
+boolean Text_SetAttrAtXY(signed int the_screen_id, signed int x, signed int y, unsigned char fore_color, unsigned char back_color)
 {
 	unsigned char*	the_write_loc;
 	unsigned char	the_attribute_value;
@@ -452,7 +508,7 @@ boolean Text_SetAttrAtXY(ScreenID the_screen_id, signed int x, signed int y, uns
 
 
 // Draw a char at a specified x, y coord, also setting the color attributes
-boolean Text_SetCharAndColorAtXY(ScreenID the_screen_id, signed int x, signed int y, unsigned char the_char, unsigned char fore_color, unsigned char back_color)
+boolean Text_SetCharAndColorAtXY(signed int the_screen_id, signed int x, signed int y, unsigned char the_char, unsigned char fore_color, unsigned char back_color)
 {
 	unsigned char*	the_write_loc;
 	unsigned char	the_attribute_value;
@@ -477,89 +533,89 @@ boolean Text_SetCharAndColorAtXY(ScreenID the_screen_id, signed int x, signed in
 	
 	return true;
 }
-// 
-// 
-// // **** Get char/attr functions *****
-// 
-// 
-// // Get the char at a specified x, y coord
-// unsigned char Text_GetCharAtXY(ScreenID the_screen_id, signed int x, signed int y)
-// {
-// 	unsigned char*	the_read_loc;
-// 	unsigned char	the_char;
-// 	
-// 	if (!Text_ValidateAll(the_screen_id, x, y, 0, 0))
-// 	{
-// 		LOG_ERR(("%s %d: illegal screen id or coordinate", __func__, __LINE__));
-// 		return false;
-// 	}
-// 	
-// 	the_read_loc = Text_GetMemLocForXY(the_screen_id, x, y, SCREEN_FOR_TEXT_CHAR);	
-//  	the_char = (unsigned char)*the_read_loc;
-// 	
-// 	return the_char;
-// }
-// 
-// 
-// // Get the attribute value at a specified x, y coord
-// unsigned char Text_GetAttrAtXY(ScreenID the_screen_id, signed int x, signed int y)
-// {
-// 	unsigned char*	the_read_loc;
-// 	unsigned char	the_value;
-// 	
-// 	if (!Text_ValidateAll(the_screen_id, x, y, 0, 0))
-// 	{
-// 		LOG_ERR(("%s %d: illegal screen id or coordinate", __func__, __LINE__));
-// 		return false;
-// 	}
-// 	
-// 	the_read_loc = Text_GetMemLocForXY(the_screen_id, x, y, SCREEN_FOR_TEXT_ATTR);	
-//  	the_value = (unsigned char)*the_read_loc;
-// 	
-// 	return the_value;
-// }
-// 
-// 
-// // Get the foreground color at a specified x, y coord
-// unsigned char Text_GetForeColorAtXY(ScreenID the_screen_id, signed int x, signed int y)
-// {
-// 	unsigned char*	the_read_loc;
-// 	unsigned char	the_value;
-// 	unsigned char	the_color;
-// 	
-// 	if (!Text_ValidateAll(the_screen_id, x, y, 0, 0))
-// 	{
-// 		LOG_ERR(("%s %d: illegal screen id or coordinate", __func__, __LINE__));
-// 		return false;
-// 	}
-// 	
-// 	the_read_loc = Text_GetMemLocForXY(the_screen_id, x, y, SCREEN_FOR_TEXT_ATTR);	
-//  	the_value = (unsigned char)*the_read_loc;
-// 	the_color = (the_value & 0xF0) >> 4;
-// 	
-// 	return the_color;
-// }
-// 
-// 
-// // Get the background color at a specified x, y coord
-// unsigned char Text_GetBackColorAtXY(ScreenID the_screen_id, signed int x, signed int y)
-// {
-// 	unsigned char*	the_read_loc;
-// 	unsigned char	the_value;
-// 	unsigned char	the_color;
-// 	
-// 	if (!Text_ValidateAll(the_screen_id, x, y, 0, 0))
-// 	{
-// 		LOG_ERR(("%s %d: illegal screen id or coordinate", __func__, __LINE__));
-// 		return false;
-// 	}
-// 	
-// 	the_read_loc = Text_GetMemLocForXY(the_screen_id, x, y, SCREEN_FOR_TEXT_ATTR);	
-//  	the_value = (unsigned char)*the_read_loc;
-// 	the_color = (the_value & 0x0F);
-// 	
-// 	return the_color;
-// }
+
+
+// **** Get char/attr functions *****
+
+
+// Get the char at a specified x, y coord
+unsigned char Text_GetCharAtXY(signed int the_screen_id, signed int x, signed int y)
+{
+	unsigned char*	the_read_loc;
+	unsigned char	the_char;
+	
+	if (!Text_ValidateAll(the_screen_id, x, y, 0, 0))
+	{
+		LOG_ERR(("%s %d: illegal screen id or coordinate", __func__, __LINE__));
+		return false;
+	}
+	
+	the_read_loc = Text_GetMemLocForXY(the_screen_id, x, y, SCREEN_FOR_TEXT_CHAR);	
+ 	the_char = (unsigned char)*the_read_loc;
+	
+	return the_char;
+}
+
+
+// Get the attribute value at a specified x, y coord
+unsigned char Text_GetAttrAtXY(signed int the_screen_id, signed int x, signed int y)
+{
+	unsigned char*	the_read_loc;
+	unsigned char	the_value;
+	
+	if (!Text_ValidateAll(the_screen_id, x, y, 0, 0))
+	{
+		LOG_ERR(("%s %d: illegal screen id or coordinate", __func__, __LINE__));
+		return false;
+	}
+	
+	the_read_loc = Text_GetMemLocForXY(the_screen_id, x, y, SCREEN_FOR_TEXT_ATTR);	
+ 	the_value = (unsigned char)*the_read_loc;
+	
+	return the_value;
+}
+
+
+// Get the foreground color at a specified x, y coord
+unsigned char Text_GetForeColorAtXY(signed int the_screen_id, signed int x, signed int y)
+{
+	unsigned char*	the_read_loc;
+	unsigned char	the_value;
+	unsigned char	the_color;
+	
+	if (!Text_ValidateAll(the_screen_id, x, y, 0, 0))
+	{
+		LOG_ERR(("%s %d: illegal screen id or coordinate", __func__, __LINE__));
+		return false;
+	}
+	
+	the_read_loc = Text_GetMemLocForXY(the_screen_id, x, y, SCREEN_FOR_TEXT_ATTR);	
+ 	the_value = (unsigned char)*the_read_loc;
+	the_color = (the_value & 0xF0) >> 4;
+	
+	return the_color;
+}
+
+
+// Get the background color at a specified x, y coord
+unsigned char Text_GetBackColorAtXY(signed int the_screen_id, signed int x, signed int y)
+{
+	unsigned char*	the_read_loc;
+	unsigned char	the_value;
+	unsigned char	the_color;
+	
+	if (!Text_ValidateAll(the_screen_id, x, y, 0, 0))
+	{
+		LOG_ERR(("%s %d: illegal screen id or coordinate", __func__, __LINE__));
+		return false;
+	}
+	
+	the_read_loc = Text_GetMemLocForXY(the_screen_id, x, y, SCREEN_FOR_TEXT_ATTR);	
+ 	the_value = (unsigned char)*the_read_loc;
+	the_color = (the_value & 0x0F);
+	
+	return the_color;
+}
 
 
 
@@ -567,7 +623,7 @@ boolean Text_SetCharAndColorAtXY(ScreenID the_screen_id, signed int x, signed in
 
 
 // draws a horizontal line from specified coords, for n characters, using the specified char and/or attribute
-boolean Text_DrawHLine(ScreenID the_screen_id, signed int x, signed int y, signed int the_line_len, unsigned char the_char, unsigned char fore_color, unsigned char back_color, text_draw_choice the_draw_choice)
+boolean Text_DrawHLine(signed int the_screen_id, signed int x, signed int y, signed int the_line_len, unsigned char the_char, unsigned char fore_color, unsigned char back_color, text_draw_choice the_draw_choice)
 {
 	signed int	dx;
 	
@@ -605,209 +661,208 @@ boolean Text_DrawHLine(ScreenID the_screen_id, signed int x, signed int y, signe
 	return true;
 }
 
-// 
-// // draws a vertical line from specified coords, for n characters, using the specified char and/or attribute
-// boolean Text_DrawVLine(ScreenID the_screen_id, signed int x, signed int y, signed int the_line_len, unsigned char the_char, unsigned char fore_color, unsigned char back_color, text_draw_choice the_draw_choice)
-// {
-// 	unsigned char dy;
-// 	
-// 	if (!Text_ValidateAll(the_screen_id, x, y, fore_color, back_color))
-// 	{
-// 		LOG_ERR(("%s %d: illegal screen id, coordinate, or color", __func__, __LINE__));
-// 		return false;
-// 	}
-// 
-// 	switch (the_draw_choice)
-// 	{
-// 		case char_only:
-// 			for (dy = 0; dy < the_line_len; dy++)
-// 			{
-// 				Text_SetCharAtXY(the_screen_id, x, y + dy, the_char);
-// 			}
-// 			break;
-// 			
-// 		case attr_only:
-// 			for (dy = 0; dy < the_line_len; dy++)
-// 			{
-// 				Text_SetAttrAtXY(the_screen_id, x, y + dy, fore_color, back_color);
-// 			}
-// 			break;
-// 			
-// 		case char_and_attr:
-// 		default:
-// 			for (dy = 0; dy < the_line_len; dy++)
-// 			{
-// 				Text_SetCharAndColorAtXY(the_screen_id, x, y + dy, the_char, fore_color, back_color);		
-// 			}
-// 			break;			
-// 	}
-// 	
-// 	return true;
-// }
-// 
-// 
-// // draws a basic box based on 2 sets of coords, using the specified char and/or attribute for all cells
-// boolean Text_DrawBoxCoords(ScreenID the_screen_id, signed int x1, signed int y1, signed int x2, signed int y2, unsigned char the_char, unsigned char fore_color, unsigned char back_color, text_draw_choice the_draw_choice)
-// {
-// 	unsigned char dy;
-// 	unsigned char dx;
-// 	
-// 	if (!Text_ValidateAll(the_screen_id, x1, y1,fore_color, back_color))
-// 	{
-// 		LOG_ERR(("%s %d: illegal screen id, coordinate, or color", __func__, __LINE__));
-// 		return false;
-// 	}
-// 	
-// 	if (!Text_ValidateXY(the_screen_id, x2, y2))
-// 	{
-// 		LOG_ERR(("%s %d: illegal coordinate", __func__, __LINE__));
-// 		return false;
-// 	}
-// 
-// 	if (x1 > x2 || y1 > y2)
-// 	{
-// 		LOG_ERR(("%s %d: illegal coordinates", __func__, __LINE__));
-// 		return false;
-// 	}
-// 
-// 	// add 1 to line len, because desired behavior is a box that connects fully to the passed coords
-// 	dx = x2 - x1 + 1;
-// 	dy = y2 - y1 + 1;
-// 	
-// 	if (!Text_DrawHLine(the_screen_id, x1, y1, dx, the_char, fore_color, back_color, the_draw_choice))
-// 	{
-// 		LOG_ERR(("%s %d: draw box failed", __func__, __LINE__));
-// 		return false;
-// 	}
-// 	
-// 	if (!Text_DrawVLine(the_screen_id, x2, y1, dy, the_char, fore_color, back_color, the_draw_choice))
-// 	{
-// 		LOG_ERR(("%s %d: draw box failed", __func__, __LINE__));
-// 		return false;
-// 	}
-// 	
-// 	if (!Text_DrawHLine(the_screen_id, x1, y2, dx, the_char, fore_color, back_color, the_draw_choice))
-// 	{
-// 		LOG_ERR(("%s %d: draw box failed", __func__, __LINE__));
-// 		return false;
-// 	}
-// 	
-// 	if (!Text_DrawVLine(the_screen_id, x1, y1, dy, the_char, fore_color, back_color, the_draw_choice))
-// 	{
-// 		LOG_ERR(("%s %d: draw box failed", __func__, __LINE__));
-// 		return false;
-// 	}
-// 		
-// 	return true;
-// }
-// 
-// 
-// // draws a box based on 2 sets of coords, using the predetermined line and corner "graphics", and the passed colors
-// boolean Text_DrawBoxCoordsFancy(ScreenID the_screen_id, signed int x1, signed int y1, signed int x2, signed int y2, unsigned char fore_color, unsigned char back_color)
-// {
-// 	unsigned char	dy;
-// 	unsigned char	dx;
-// 	unsigned char	the_char;
-// 	
-// 	if (!Text_ValidateAll(the_screen_id, x1, y1,fore_color, back_color))
-// 	{
-// 		LOG_ERR(("%s %d: illegal screen id, coordinate, or color", __func__, __LINE__));
-// 		return false;
-// 	}
-// 	
-// 	if (!Text_ValidateXY(the_screen_id, x2, y2))
-// 	{
-// 		LOG_ERR(("%s %d: illegal coordinate", __func__, __LINE__));
-// 		return false;
-// 	}
-// 
-// 	if (x1 > x2 || y1 > y2)
-// 	{
-// 		LOG_ERR(("%s %d: illegal coordinates", __func__, __LINE__));
-// 		return false;
-// 	}
-// 
-// 	// add 1 to line len, because desired behavior is a box that connects fully to the passed coords
-// 	dx = x2 - x1;
-// 	dy = y2 - y1;
-// 	
-// 	// draw all lines one char shorter on each end so that we don't overdraw when we do corners
-// 	
-// 	if (!Text_DrawHLine(the_screen_id, x1+1, y1, dx, CH_WALL_H, fore_color, back_color, char_and_attr))
-// 	{
-// 		LOG_ERR(("%s %d: draw box failed", __func__, __LINE__));
-// 		return false;
-// 	}
-// 	
-// 	if (!Text_DrawHLine(the_screen_id, x1+1, y2, dx, CH_WALL_H, fore_color, back_color, char_and_attr))
-// 	{
-// 		LOG_ERR(("%s %d: draw box failed", __func__, __LINE__));
-// 		return false;
-// 	}
-// 	
-// 	if (!Text_DrawVLine(the_screen_id, x2, y1+1, dy, CH_WALL_V, fore_color, back_color, char_and_attr))
-// 	{
-// 		LOG_ERR(("%s %d: draw box failed", __func__, __LINE__));
-// 		return false;
-// 	}
-// 	
-// 	if (!Text_DrawVLine(the_screen_id, x1, y1+1, dy, CH_WALL_V, fore_color, back_color, char_and_attr))
-// 	{
-// 		LOG_ERR(("%s %d: draw box failed", __func__, __LINE__));
-// 		return false;
-// 	}
-// 	
-// 	// draw the 4 corners with dedicated corner pieces
-// 	Text_SetCharAndColorAtXY(the_screen_id, x1, y1, CH_WALL_UL, fore_color, back_color);		
-// 	Text_SetCharAndColorAtXY(the_screen_id, x2, y1, CH_WALL_UR, fore_color, back_color);		
-// 	Text_SetCharAndColorAtXY(the_screen_id, x2, y2, CH_WALL_LR, fore_color, back_color);		
-// 	Text_SetCharAndColorAtXY(the_screen_id, x1, y2, CH_WALL_LL, fore_color, back_color);		
-// 	
-// 	return true;
-// }
-// 
-// 
-// // draws a basic box based on start coords and width/height, using the specified char and/or attribute for all cells
-// boolean Text_DrawBox(ScreenID the_screen_id, signed int x, signed int y, signed int the_width, signed int the_height, unsigned char the_char, unsigned char fore_color, unsigned char back_color, text_draw_choice the_draw_choice)
-// {	
-// 	if (!Text_ValidateAll(the_screen_id, x, y,fore_color, back_color))
-// 	{
-// 		LOG_ERR(("%s %d: illegal screen id, coordinate, or color", __func__, __LINE__));
-// 		return false;
-// 	}
-// 	
-// 	if (!Text_ValidateXY(the_screen_id, x + the_width - 1, y + the_height - 1))
-// 	{
-// 		LOG_ERR(("%s %d: illegal coordinate", __func__, __LINE__));
-// 		return false;
-// 	}
-// 
-// 	if (!Text_DrawHLine(the_screen_id, x, y, the_width, the_char, fore_color, back_color, the_draw_choice))
-// 	{
-// 		LOG_ERR(("%s %d: draw box failed", __func__, __LINE__));
-// 		return false;
-// 	}
-// 	
-// 	if (!Text_DrawVLine(the_screen_id, x + the_width - 1, y, the_height, the_char, fore_color, back_color, the_draw_choice))
-// 	{
-// 		LOG_ERR(("%s %d: draw box failed", __func__, __LINE__));
-// 		return false;
-// 	}
-// 	
-// 	if (!Text_DrawHLine(the_screen_id, x, y + the_height - 1, the_width, the_char, fore_color, back_color, the_draw_choice))
-// 	{
-// 		LOG_ERR(("%s %d: draw box failed", __func__, __LINE__));
-// 		return false;
-// 	}
-// 	
-// 	if (!Text_DrawVLine(the_screen_id, x, y, the_height, the_char, fore_color, back_color, the_draw_choice))
-// 	{
-// 		LOG_ERR(("%s %d: draw box failed", __func__, __LINE__));
-// 		return false;
-// 	}
-// 		
-// 	return true;
-// }
+
+// draws a vertical line from specified coords, for n characters, using the specified char and/or attribute
+boolean Text_DrawVLine(signed int the_screen_id, signed int x, signed int y, signed int the_line_len, unsigned char the_char, unsigned char fore_color, unsigned char back_color, text_draw_choice the_draw_choice)
+{
+	unsigned char dy;
+	
+	if (!Text_ValidateAll(the_screen_id, x, y, fore_color, back_color))
+	{
+		LOG_ERR(("%s %d: illegal screen id, coordinate, or color", __func__, __LINE__));
+		return false;
+	}
+
+	switch (the_draw_choice)
+	{
+		case char_only:
+			for (dy = 0; dy < the_line_len; dy++)
+			{
+				Text_SetCharAtXY(the_screen_id, x, y + dy, the_char);
+			}
+			break;
+			
+		case attr_only:
+			for (dy = 0; dy < the_line_len; dy++)
+			{
+				Text_SetAttrAtXY(the_screen_id, x, y + dy, fore_color, back_color);
+			}
+			break;
+			
+		case char_and_attr:
+		default:
+			for (dy = 0; dy < the_line_len; dy++)
+			{
+				Text_SetCharAndColorAtXY(the_screen_id, x, y + dy, the_char, fore_color, back_color);		
+			}
+			break;			
+	}
+	
+	return true;
+}
+
+
+// draws a basic box based on 2 sets of coords, using the specified char and/or attribute for all cells
+boolean Text_DrawBoxCoords(signed int the_screen_id, signed int x1, signed int y1, signed int x2, signed int y2, unsigned char the_char, unsigned char fore_color, unsigned char back_color, text_draw_choice the_draw_choice)
+{
+	unsigned char dy;
+	unsigned char dx;
+	
+	if (!Text_ValidateAll(the_screen_id, x1, y1,fore_color, back_color))
+	{
+		LOG_ERR(("%s %d: illegal screen id, coordinate, or color", __func__, __LINE__));
+		return false;
+	}
+	
+	if (!Text_ValidateXY(the_screen_id, x2, y2))
+	{
+		LOG_ERR(("%s %d: illegal coordinate", __func__, __LINE__));
+		return false;
+	}
+
+	if (x1 > x2 || y1 > y2)
+	{
+		LOG_ERR(("%s %d: illegal coordinates", __func__, __LINE__));
+		return false;
+	}
+
+	// add 1 to line len, because desired behavior is a box that connects fully to the passed coords
+	dx = x2 - x1 + 1;
+	dy = y2 - y1 + 1;
+	
+	if (!Text_DrawHLine(the_screen_id, x1, y1, dx, the_char, fore_color, back_color, the_draw_choice))
+	{
+		LOG_ERR(("%s %d: draw box failed", __func__, __LINE__));
+		return false;
+	}
+	
+	if (!Text_DrawVLine(the_screen_id, x2, y1, dy, the_char, fore_color, back_color, the_draw_choice))
+	{
+		LOG_ERR(("%s %d: draw box failed", __func__, __LINE__));
+		return false;
+	}
+	
+	if (!Text_DrawHLine(the_screen_id, x1, y2, dx, the_char, fore_color, back_color, the_draw_choice))
+	{
+		LOG_ERR(("%s %d: draw box failed", __func__, __LINE__));
+		return false;
+	}
+	
+	if (!Text_DrawVLine(the_screen_id, x1, y1, dy, the_char, fore_color, back_color, the_draw_choice))
+	{
+		LOG_ERR(("%s %d: draw box failed", __func__, __LINE__));
+		return false;
+	}
+		
+	return true;
+}
+
+
+// draws a box based on 2 sets of coords, using the predetermined line and corner "graphics", and the passed colors
+boolean Text_DrawBoxCoordsFancy(signed int the_screen_id, signed int x1, signed int y1, signed int x2, signed int y2, unsigned char fore_color, unsigned char back_color)
+{
+	unsigned char	dy;
+	unsigned char	dx;
+	
+	if (!Text_ValidateAll(the_screen_id, x1, y1,fore_color, back_color))
+	{
+		LOG_ERR(("%s %d: illegal screen id, coordinate, or color", __func__, __LINE__));
+		return false;
+	}
+	
+	if (!Text_ValidateXY(the_screen_id, x2, y2))
+	{
+		LOG_ERR(("%s %d: illegal coordinate", __func__, __LINE__));
+		return false;
+	}
+
+	if (x1 > x2 || y1 > y2)
+	{
+		LOG_ERR(("%s %d: illegal coordinates", __func__, __LINE__));
+		return false;
+	}
+
+	// add 1 to line len, because desired behavior is a box that connects fully to the passed coords
+	dx = x2 - x1;
+	dy = y2 - y1;
+	
+	// draw all lines one char shorter on each end so that we don't overdraw when we do corners
+	
+	if (!Text_DrawHLine(the_screen_id, x1+1, y1, dx, CH_WALL_H, fore_color, back_color, char_and_attr))
+	{
+		LOG_ERR(("%s %d: draw box failed", __func__, __LINE__));
+		return false;
+	}
+	
+	if (!Text_DrawHLine(the_screen_id, x1+1, y2, dx, CH_WALL_H, fore_color, back_color, char_and_attr))
+	{
+		LOG_ERR(("%s %d: draw box failed", __func__, __LINE__));
+		return false;
+	}
+	
+	if (!Text_DrawVLine(the_screen_id, x2, y1+1, dy, CH_WALL_V, fore_color, back_color, char_and_attr))
+	{
+		LOG_ERR(("%s %d: draw box failed", __func__, __LINE__));
+		return false;
+	}
+	
+	if (!Text_DrawVLine(the_screen_id, x1, y1+1, dy, CH_WALL_V, fore_color, back_color, char_and_attr))
+	{
+		LOG_ERR(("%s %d: draw box failed", __func__, __LINE__));
+		return false;
+	}
+	
+	// draw the 4 corners with dedicated corner pieces
+	Text_SetCharAndColorAtXY(the_screen_id, x1, y1, CH_WALL_UL, fore_color, back_color);		
+	Text_SetCharAndColorAtXY(the_screen_id, x2, y1, CH_WALL_UR, fore_color, back_color);		
+	Text_SetCharAndColorAtXY(the_screen_id, x2, y2, CH_WALL_LR, fore_color, back_color);		
+	Text_SetCharAndColorAtXY(the_screen_id, x1, y2, CH_WALL_LL, fore_color, back_color);		
+	
+	return true;
+}
+
+
+// draws a basic box based on start coords and width/height, using the specified char and/or attribute for all cells
+boolean Text_DrawBox(signed int the_screen_id, signed int x, signed int y, signed int the_width, signed int the_height, unsigned char the_char, unsigned char fore_color, unsigned char back_color, text_draw_choice the_draw_choice)
+{	
+	if (!Text_ValidateAll(the_screen_id, x, y,fore_color, back_color))
+	{
+		LOG_ERR(("%s %d: illegal screen id, coordinate, or color", __func__, __LINE__));
+		return false;
+	}
+	
+	if (!Text_ValidateXY(the_screen_id, x + the_width - 1, y + the_height - 1))
+	{
+		LOG_ERR(("%s %d: illegal coordinate", __func__, __LINE__));
+		return false;
+	}
+
+	if (!Text_DrawHLine(the_screen_id, x, y, the_width, the_char, fore_color, back_color, the_draw_choice))
+	{
+		LOG_ERR(("%s %d: draw box failed", __func__, __LINE__));
+		return false;
+	}
+	
+	if (!Text_DrawVLine(the_screen_id, x + the_width - 1, y, the_height, the_char, fore_color, back_color, the_draw_choice))
+	{
+		LOG_ERR(("%s %d: draw box failed", __func__, __LINE__));
+		return false;
+	}
+	
+	if (!Text_DrawHLine(the_screen_id, x, y + the_height - 1, the_width, the_char, fore_color, back_color, the_draw_choice))
+	{
+		LOG_ERR(("%s %d: draw box failed", __func__, __LINE__));
+		return false;
+	}
+	
+	if (!Text_DrawVLine(the_screen_id, x, y, the_height, the_char, fore_color, back_color, the_draw_choice))
+	{
+		LOG_ERR(("%s %d: draw box failed", __func__, __LINE__));
+		return false;
+	}
+		
+	return true;
+}
 
 
 
@@ -817,7 +872,7 @@ boolean Text_DrawHLine(ScreenID the_screen_id, signed int x, signed int y, signe
 // Draw a string at a specified x, y coord, also setting the color attributes
 // Truncate, but still draw the string if it is too long to display on the line it started.
 // No word wrap is performed. 
-boolean Text_DrawStringAtXY(ScreenID the_screen_id, signed int x, signed int y, unsigned char* the_string, unsigned char fore_color, unsigned char back_color)
+boolean Text_DrawStringAtXY(signed int the_screen_id, signed int x, signed int y, unsigned char* the_string, unsigned char fore_color, unsigned char back_color)
 {
 	unsigned char*	the_char_loc;
 	unsigned char*	the_attr_loc;

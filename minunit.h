@@ -70,8 +70,8 @@ static int minunit_fail = 0;
 static int minunit_status = 0;
 
 /*  Timers */
-static double minunit_real_timer = 0;
-static double minunit_proc_timer = 0;
+static long minunit_real_timer = 0;
+static long minunit_proc_timer = 0;
 
 /*  Last message */
 static char minunit_last_message[MINUNIT_MESSAGE_LEN];
@@ -103,6 +103,10 @@ static void (*minunit_teardown)(void) = NULL;
 
 /*  Test runner */
 #define MU_RUN_TEST(test) MU__SAFE_BLOCK(\
+	if (minunit_real_timer==0 && minunit_proc_timer==0) {\
+		minunit_real_timer = mu_timer_real();\
+		minunit_proc_timer = mu_timer_cpu();\
+	}\
 	if (minunit_setup) (*minunit_setup)();\
 	minunit_status = 0;\
 	test();\
@@ -115,36 +119,18 @@ static void (*minunit_teardown)(void) = NULL;
 	fflush(stdout);\
 	if (minunit_teardown) (*minunit_teardown)();\
 )
-// #define MU_RUN_TEST(test) MU__SAFE_BLOCK(\
-// 	if (minunit_real_timer==0 && minunit_proc_timer==0) {\
-// 		minunit_real_timer = mu_timer_real();\
-// 		minunit_proc_timer = mu_timer_cpu();\
-// 	}\
-// 	if (minunit_setup) (*minunit_setup)();\
-// 	minunit_status = 0;\
-// 	test();\
-// 	minunit_run++;\
-// 	if (minunit_status) {\
-// 		minunit_fail++;\
-// 		printf("F");\
-// 		printf("\n%s\n", minunit_last_message);\
-// 	}\
-// 	fflush(stdout);\
-// 	if (minunit_teardown) (*minunit_teardown)();\
-// )
 
 /*  Report */
-//#define MU_REPORTx() MU__SAFE_BLOCK(\
-	double minunit_end_real_timer;\
-	double minunit_end_proc_timer;\
-//	printf("\n\n%d tests, %d assertions, %d failures\n", minunit_run, minunit_assert, minunit_fail);\
+#define MU_REPORT() MU__SAFE_BLOCK(\
+	long minunit_end_real_timer;\
+	long minunit_end_proc_timer;\
+	printf("\n\n%d tests, %d assertions, %d failures\n", minunit_run, minunit_assert, minunit_fail);\
 	minunit_end_real_timer = mu_timer_real();\
 	minunit_end_proc_timer = mu_timer_cpu();\
-	printf("\nFinished in %.8f seconds (real) %.8f seconds (proc)\n\n",\
+	printf("\nFinished in %li ticks (real) %li ticks (proc)\n\n",\
 		minunit_end_real_timer - minunit_real_timer,\
 		minunit_end_proc_timer - minunit_proc_timer);\
 )
-#define MU_REPORT() MU__SAFE_BLOCK()
 #define MU_EXIT_CODE minunit_fail
 
 /*  Assertions */
@@ -240,33 +226,29 @@ static void (*minunit_teardown)(void) = NULL;
  * The returned real time is only useful for computing an elapsed time
  * between two calls to this function.
  */
-static double mu_timer_real(void)
+static long mu_timer_real(void)
 {
 	// A2650
-// 	clock_t		the_ticks;
 	long		the_ticks;
-// 	
-// 	the_ticks = clock();
-// 	
-// 	return (double)the_ticks / (double)CLOCKS_PER_SEC;
-	//the_ticks = sys_time_jiffies();
 
- 	//return (double)the_ticks / (double)60;
- 	
- 	return 0;
+// 	the_ticks = sys_time_jiffies();
+// 	printf("\nticks: %li ticks\n", the_ticks);
 	
+//  	return the_ticks;
+	return 1;
 }
 
 /**
  * Returns the amount of CPU time used by the current process,
  * in seconds, or -1.0 if an error occurred.
  */
-static double mu_timer_cpu(void)
+static long mu_timer_cpu(void)
 {
 	// return ticks? what would be useful from an amiga POV?
 	
 	return -1;
 }
+
 
 
 

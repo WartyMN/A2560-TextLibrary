@@ -64,6 +64,9 @@
 #define CHANNEL_B_WIDTH		640	// pixels in between the borders
 #define CHANNEL_B_HEIGHT	480	// pixels in between the borders
 
+#define ID_CHANNEL_A			0	// for use in lib_text() calls, etc. 
+#define ID_CHANNEL_B			1	// for use in lib_text() calls, etc.
+
 //#define FONT_MEMORY_BANK0	(unsigned char*)0xAF8000	// $AF8000 - $AF87FF
 //#define FONT_MEMORY_BANK1	(unsigned char*)0xAF8800	// $AF8800 - $AF8FFF
 
@@ -119,11 +122,12 @@
 /*                               Enumerations                                */
 /*****************************************************************************/
 
-typedef enum ScreenID
-{
-	CHANNEL_A		= 0,
-	CHANNEL_B 		= 1,
-} ScreenID;
+// abandoning enum idea for now: in testing, if I abused it and put -1, 3, etc, it blew up morfe. 
+// typedef enum ScreenID
+// {
+// 	ID_CHANNEL_A		= 0,
+// 	ID_CHANNEL_B 		= 1,
+// } ScreenID;
 
 
 /*****************************************************************************/
@@ -144,7 +148,7 @@ typedef struct Rectangle
 
 typedef struct Screen
 {
-	ScreenID		id_;
+	signed int		id_;
 	Rectangle		rect_;
 	unsigned short	text_cols_;
 	unsigned short	text_rows_;
@@ -167,31 +171,31 @@ typedef enum
 /*****************************************************************************/
 /*                       Public Function Prototypes                          */
 /*****************************************************************************/
-
-// pop up a requester box with message to user. var args are for the message. 
-unsigned long General_ShowAlert(struct Window* the_window, const unsigned char* the_title, boolean is_error, boolean with_cancel, const char* message_format, ...);
-
-// calculates how many characters of the passed string will fit into the passed rectangle
-unsigned int General_TextFit(struct RastPort* the_rastport, unsigned char* the_string, unsigned int the_len, unsigned int the_width);
-
-// format a string by wrapping and trimming to fit the passed width and height. returns number of vertical pixels required. passing a 0 for height disables the governor on allowed vertical space. if max_chars_to_format is less than len of string, processing will stop after that many characters.
-unsigned int General_WrapAndTrimTextToFit(unsigned char** orig_string, unsigned char** formatted_string, unsigned int max_chars_to_format, struct RastPort*	the_rastport, unsigned int max_width, unsigned int max_height);
-
-// draw a line in an intuition window
-void General_DrawLine(struct RastPort* the_rastport, signed long x1, signed long y1, signed long x2, signed long y2, unsigned char the_color_pen);
-
-// draw a poly in an intuition window
-void General_DrawPoly(struct RastPort* the_rastport, short num_coords, short* the_coordinates, unsigned char the_color_pen);
-
-// draw a rectangle in the rastport passed. If do_undraw is TRUE, try to undraw it (unimplemented TODO)
-void General_DrawBox(struct RastPort* the_rastport, signed short x1, signed short y1, signed short x2, signed short y2, boolean do_undraw, unsigned char the_color_pen);
-
-// checks a file exists without locking the file. tries to get a lock on the dir containing the file, then checks contents until it matches
-// SLOW, and probably pointless, but struggling with issue of locks not unlocking when checking for existence of an icon file.
-boolean General_CheckFileExists(unsigned char* the_file_path);
-
-// return current date/time as a timestamp. 
-struct DateStamp* General_GetCurrentDateStampWithAlloc(void);
+// 
+// // pop up a requester box with message to user. var args are for the message. 
+// unsigned long General_ShowAlert(struct Window* the_window, const unsigned char* the_title, boolean is_error, boolean with_cancel, const char* message_format, ...);
+// 
+// // calculates how many characters of the passed string will fit into the passed rectangle
+// unsigned int General_TextFit(struct RastPort* the_rastport, unsigned char* the_string, unsigned int the_len, unsigned int the_width);
+// 
+// // format a string by wrapping and trimming to fit the passed width and height. returns number of vertical pixels required. passing a 0 for height disables the governor on allowed vertical space. if max_chars_to_format is less than len of string, processing will stop after that many characters.
+// unsigned int General_WrapAndTrimTextToFit(unsigned char** orig_string, unsigned char** formatted_string, unsigned int max_chars_to_format, struct RastPort*	the_rastport, unsigned int max_width, unsigned int max_height);
+// 
+// // draw a line in an intuition window
+// void General_DrawLine(struct RastPort* the_rastport, signed long x1, signed long y1, signed long x2, signed long y2, unsigned char the_color_pen);
+// 
+// // draw a poly in an intuition window
+// void General_DrawPoly(struct RastPort* the_rastport, short num_coords, short* the_coordinates, unsigned char the_color_pen);
+// 
+// // draw a rectangle in the rastport passed. If do_undraw is TRUE, try to undraw it (unimplemented TODO)
+// void General_DrawBox(struct RastPort* the_rastport, signed short x1, signed short y1, signed short x2, signed short y2, boolean do_undraw, unsigned char the_color_pen);
+// 
+// // checks a file exists without locking the file. tries to get a lock on the dir containing the file, then checks contents until it matches
+// // SLOW, and probably pointless, but struggling with issue of locks not unlocking when checking for existence of an icon file.
+// boolean General_CheckFileExists(unsigned char* the_file_path);
+// 
+// // return current date/time as a timestamp. 
+// struct DateStamp* General_GetCurrentDateStampWithAlloc(void);
 
 
 
