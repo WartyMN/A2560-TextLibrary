@@ -35,6 +35,7 @@ The A2650 kernel/OS doesn't support dynamically linked libraries yet, so for now
  * draw a box using "graphic" characters
  * copy a full screen of text or attr from an off-screen buffer
  * copy a full screen of text or attr TO an off-screen buffer
+ * copy a full screen of text and attr between channel A and B
  * copy a rectangular area of text or attr TO/FROM an off-screen buffer
  * Draw a string to a specified x, y coord (no wrap)
  * display a string in a rectangular block on the screen, with wrap
@@ -45,6 +46,8 @@ The A2650 kernel/OS doesn't support dynamically linked libraries yet, so for now
  * work with either channel A or channel B
  * clear / fill an entire screen of text characters
  * clear / fill an entire screen of text attributes
+ * invert the colors of a screen
+ * clear / fill a smaller-than-screen rectangular area of text/attrs
  * Draw a char to a specified x, y coord
  * Get the currently displayed character at the specified coord
  * Set the foreground and background colors at the specified coord

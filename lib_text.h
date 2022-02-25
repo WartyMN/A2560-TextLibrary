@@ -17,8 +17,8 @@
  * x work with either channel A or channel B
  * x clear / fill an entire screen of text characters
  * x clear / fill an entire screen of text attributes
- * invert the colors of a screen
- * clear / fill a smaller-than-screen rectangular area of text/attrs
+ * x invert the colors of a screen
+ * x clear / fill a smaller-than-screen rectangular area of text/attrs
  * x Draw a char to a specified x, y coord
  * x Get the currently displayed character at the specified coord
  * x Set the foreground and background colors at the specified coord
@@ -29,6 +29,7 @@
  * x draw a box using "graphic" characters
  * copy a full screen of text or attr from an off-screen buffer
  * copy a full screen of text or attr TO an off-screen buffer
+ * copy a full screen of text and attr between channel A and B
  * copy a rectangular area of text or attr TO/FROM an off-screen buffer
  * x display a string at a specified x, y coord (no wrap)
  * display a string in a rectangular block on the screen, with wrap
@@ -189,6 +190,12 @@ boolean Text_FillBoxSlow(signed int the_screen_id, signed int x1, signed int y1,
 // Fill character and attribute memory for a specific box area
 // returns false on any error/invalid input.
 boolean Text_FillBox(signed int the_screen_id, signed int x1, signed int y1, signed int x2, signed int y2, unsigned char the_char, unsigned char fore_color, unsigned char back_color);
+
+// Invert the colors of a rectangular block
+// As this requires sampling each character cell, it is no faster to for entire screen as opposed to a subset box
+boolean Text_InvertBox(signed int the_screen_id, signed int x1, signed int y1, signed int x2, signed int y2);
+
+
 
 
 // **** FONT RELATED *****

@@ -58,7 +58,7 @@ MU_TEST(text_test_fill_text)
 
 MU_TEST(text_test_fill_attr)
 {
-	mu_assert( Text_FillAttrMem(ID_CHANNEL_A, 127), "Could not fill attribute memory in channel A" );
+	//mu_assert( Text_FillAttrMem(ID_CHANNEL_A, 127), "Could not fill attribute memory in channel A" );
 	mu_assert( Text_FillAttrMem(ID_CHANNEL_B, 148), "Could not fill attribute memory in channel B" );
 		// 31=black on white
 		// 64=dark blue on black
@@ -101,6 +101,19 @@ MU_TEST(text_test_fill_attr)
 // 	mu_assert( Text_FillBoxSlow(200, 0, 6, 15, 8, CH_CHECKERED1, FG_COLOR_OLIVE, BG_COLOR_BROWN, char_and_attr) == false, "Text_FillBoxSlow accepted an illegal screen ID" );
 // 	mu_assert( Text_FillBox(ID_CHANNEL_B, -67, 6, 72, 30, CH_CHECKERED3, FG_COLOR_BLUE, BG_COLOR_BLACK_BLUE) == false, "Text_FillBoxSlow accepted an illegal x coord" );
 // }
+
+
+MU_TEST(text_test_invert_box)
+{
+	signed int i;
+	
+	for (i = 0; i < 999; i++)
+	{
+		mu_assert( Text_InvertBox(ID_CHANNEL_B, 0, 6, 15, 8), "Could not invert color of a box" );
+	}
+	
+	mu_assert( Text_InvertBox(ID_CHANNEL_B, 50, 13, 71, 16), "Could not invert color of a box" );
+}
 
 
 MU_TEST(text_test_font_overwrite)
@@ -306,30 +319,30 @@ MU_TEST(text_test_basic_box_hw)
 }
 
 
-MU_TEST(text_test_fancy_box)
-{
-	signed int		x;
-	signed int		y;
-	signed int		h_line_len;
-	signed int		v_line_len;
-	
-	x = 55;
-	y = 10;
-	h_line_len = 10;
-	v_line_len = 40;
-
-	// good values	
- 	mu_assert(Text_DrawBoxCoordsFancy(ID_CHANNEL_B, x, y, x + h_line_len, y + v_line_len, FG_COLOR_BLACK_BLUE, BG_COLOR_BROWN) == true, "Text_DrawBoxCoordsFancy failed" );
-
-	x += 7;
-	y += 10;
-	h_line_len = 11;
-	v_line_len = 22;
- 	mu_assert(Text_DrawBoxCoordsFancy(ID_CHANNEL_B, x, y, x + h_line_len, y + v_line_len, FG_COLOR_BLACK_GREEN, BG_COLOR_BROWN) == true, "Text_DrawBoxCoordsFancy failed" );
-
-	// bad values
- 	mu_assert(Text_DrawBoxCoordsFancy(ID_CHANNEL_B, x, 1999, x + h_line_len, y + v_line_len, FG_COLOR_BLACK_GREEN, BG_COLOR_BROWN) == false, "Text_DrawBoxCoordsFancy accepted illegal y coord" );
-}
+// MU_TEST(text_test_fancy_box)
+// {
+// 	signed int		x;
+// 	signed int		y;
+// 	signed int		h_line_len;
+// 	signed int		v_line_len;
+// 	
+// 	x = 55;
+// 	y = 10;
+// 	h_line_len = 10;
+// 	v_line_len = 40;
+// 
+// 	// good values	
+//  	mu_assert(Text_DrawBoxCoordsFancy(ID_CHANNEL_B, x, y, x + h_line_len, y + v_line_len, FG_COLOR_BLACK_BLUE, BG_COLOR_BROWN) == true, "Text_DrawBoxCoordsFancy failed" );
+// 
+// 	x += 7;
+// 	y += 10;
+// 	h_line_len = 11;
+// 	v_line_len = 22;
+//  	mu_assert(Text_DrawBoxCoordsFancy(ID_CHANNEL_B, x, y, x + h_line_len, y + v_line_len, FG_COLOR_BLACK_GREEN, BG_COLOR_BROWN) == true, "Text_DrawBoxCoordsFancy failed" );
+// 
+// 	// bad values
+//  	mu_assert(Text_DrawBoxCoordsFancy(ID_CHANNEL_B, x, 1999, x + h_line_len, y + v_line_len, FG_COLOR_BLACK_GREEN, BG_COLOR_BROWN) == false, "Text_DrawBoxCoordsFancy accepted illegal y coord" );
+// }
 
 
 MU_TEST(text_test_draw_string)
@@ -424,9 +437,11 @@ MU_TEST_SUITE(text_test_suite)
 	MU_RUN_TEST(text_test_line_drawing);
 	MU_RUN_TEST(text_test_basic_box_coords);
 	MU_RUN_TEST(text_test_basic_box_hw);
-	MU_RUN_TEST(text_test_fancy_box);
+//	MU_RUN_TEST(text_test_fancy_box);
 	
 	MU_RUN_TEST(text_test_draw_string);
+
+	MU_RUN_TEST(text_test_invert_box);
 	
 // 	MU_RUN_TEST(test_check);
 // 	MU_RUN_TEST(test_assert);

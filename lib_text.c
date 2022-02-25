@@ -235,7 +235,6 @@ boolean Text_FillMemoryBox(signed int the_screen_id, signed int x, signed int y,
 
 
 
-
 /*****************************************************************************/
 /*                        Public Function Definitions                        */
 /*****************************************************************************/
@@ -418,6 +417,61 @@ boolean Text_FillBoxAttrOnly(signed int the_screen_id, signed int x1, signed int
 
 	return Text_FillMemoryBox(the_screen_id, x1, y1, dx, dy, SCREEN_FOR_TEXT_ATTR, the_attribute_value);
 }
+
+
+// Invert the colors of a rectangular block
+// As this requires sampling each character cell, it is no faster to for entire screen as opposed to a subset box
+boolean Text_InvertBox(signed int the_screen_id, signed int x1, signed int y1, signed int x2, signed int y2)
+{
+	unsigned char	skip_len;
+	unsigned char	the_attribute_value;
+	unsigned char	the_inversed_value;
+	unsigned char*	the_write_loc;
+	signed int		the_col;
+	
+	if (!Text_ValidateAll(the_screen_id, x1, y1, 0, 0))
+	{
+		LOG_ERR(("%s %d: illegal screen id, coordinate, or color", __func__, __LINE__));
+		return false;
+	}
+	
+	if (!Text_ValidateXY(the_screen_id, x2, y2))
+	{
+		LOG_ERR(("%s %d: illegal coordinate", __func__, __LINE__));
+		return false;
+	}
+
+	if (x1 > x2 || y1 > y2)
+	{
+		LOG_ERR(("%s %d: illegal coordinates", __func__, __LINE__));
+		return false;
+	}
+
+	// get initial read/write loc
+	the_write_loc = Text_GetMemLocForXY(the_screen_id, x1, y1, SCREEN_FOR_TEXT_ATTR);	
+	
+	// amount of cells to skip past once we have written the specified line len
+	skip_len = TEXT_COL_WIDTH_FOR_PLOTTING - (x2 - x1) - 1;
+
+	for (; y1 <= y2; y1++)
+	{
+		for (the_col = x1; the_col <= x2; the_col++)
+		{
+			the_attribute_value = (unsigned char)*the_write_loc;
+			
+			// LOGIC: text mode only supports 16 colors. lower 4 bits are back, upper 4 bits are foreground
+			the_inversed_value = (((the_attribute_value & 0x0F) << 4) | ((the_attribute_value & 0xF0) >> 4));
+			
+			*the_write_loc++ = the_inversed_value;
+		}
+
+		the_write_loc += skip_len;
+	}
+
+	return true;
+}
+
+
 
 
 // **** FONT RELATED *****
