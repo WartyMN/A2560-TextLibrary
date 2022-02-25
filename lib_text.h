@@ -170,6 +170,25 @@ typedef enum text_draw_choice
 // ** NOTE: there is no destructor or constructor for this library, as it does not track any allocated memory. It works on the basis of a screen ID, which corresponds to the text memory for Vicky's Channel A and Channel B video memory.
 
 
+// **** Block copy functions ****
+
+// Copy a full screen of attr from an off-screen buffer
+// returns false on any error/invalid input.
+boolean Text_CopyAttrMemToScreen(signed int the_screen_id, unsigned char* the_source_buffer);
+
+// Copy a full screen of attr to an off-screen buffer
+// returns false on any error/invalid input.
+boolean Text_CopyAttrMemFromScreen(signed int the_screen_id, unsigned char* the_target_buffer);
+
+// Copy a full screen of text from an off-screen buffer
+// returns false on any error/invalid input.
+boolean Text_CopyCharMemToScreen(signed int the_screen_id, unsigned char* the_source_buffer);
+
+// Copy a full screen of text to an off-screen buffer
+// returns false on any error/invalid input.
+boolean Text_CopyCharMemFromScreen(signed int the_screen_id, unsigned char* the_target_buffer);
+
+
 
 // **** Block fill functions ****
 

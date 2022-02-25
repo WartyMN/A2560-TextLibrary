@@ -139,21 +139,21 @@ unsigned char* Text_GetMemLocForXY(signed int the_screen_id, signed int x, signe
 	
 	//num_cols = global_screen[the_screen_id].text_cols_;
 	
-//	the_write_loc = global_screen[the_screen_id].text_ram_ + (TEXT_COL_WIDTH_FOR_PLOTTING * y) + x;
+//	the_write_loc = global_screen[the_screen_id].text_ram_ + (TEXT_COL_COUNT_FOR_PLOTTING * y) + x;
 	//the_write_loc = global_screen[the_screen_id].text_ram_ + (num_cols * y) + x;
 	//DEBUG_OUT(("%s %d: screen=%i, x=%i, y=%i, num_cols=%i, calc=%i", __func__, __LINE__, (signed int)the_screen_id, x, y, num_cols, (num_cols * y) + x));
 	
 	if (for_attr)
 	{
 //		the_write_loc += global_screen[the_screen_id].text_attr_ram_ - global_screen[the_screen_id].text_ram_;
-		the_write_loc = global_screen[the_screen_id].text_attr_ram_ + (TEXT_COL_WIDTH_FOR_PLOTTING * y) + x;
+		the_write_loc = global_screen[the_screen_id].text_attr_ram_ + (TEXT_COL_COUNT_FOR_PLOTTING * y) + x;
 	}
 	else
 	{
-		the_write_loc = global_screen[the_screen_id].text_ram_ + (TEXT_COL_WIDTH_FOR_PLOTTING * y) + x;
+		the_write_loc = global_screen[the_screen_id].text_ram_ + (TEXT_COL_COUNT_FOR_PLOTTING * y) + x;
 	}
 	
-	//DEBUG_OUT(("%s %d: screen=%i, x=%i, y=%i, for-attr=%i, calc=%i, loc=%p", __func__, __LINE__, (signed int)the_screen_id, x, y, for_attr, (TEXT_COL_WIDTH_FOR_PLOTTING * y) + x, the_write_loc));
+	//DEBUG_OUT(("%s %d: screen=%i, x=%i, y=%i, for-attr=%i, calc=%i, loc=%p", __func__, __LINE__, (signed int)the_screen_id, x, y, for_attr, (TEXT_COL_COUNT_FOR_PLOTTING * y) + x, the_write_loc));
 	
 	return the_write_loc;
 }
@@ -203,8 +203,8 @@ boolean Text_FillMemoryBoxBoth(signed int the_screen_id, signed int x, signed in
 	{
 		memset(the_char_loc, the_char, width);
 		memset(the_attr_loc, the_attribute_value, width);
-		the_char_loc += TEXT_COL_WIDTH_FOR_PLOTTING;
-		the_attr_loc += TEXT_COL_WIDTH_FOR_PLOTTING;
+		the_char_loc += TEXT_COL_COUNT_FOR_PLOTTING;
+		the_attr_loc += TEXT_COL_COUNT_FOR_PLOTTING;
 	}
 			
 	return true;
@@ -227,7 +227,7 @@ boolean Text_FillMemoryBox(signed int the_screen_id, signed int x, signed int y,
 	for (; y <= max_row; y++)
 	{
 		memset(the_write_loc, the_fill, width);
-		the_write_loc += TEXT_COL_WIDTH_FOR_PLOTTING;
+		the_write_loc += TEXT_COL_COUNT_FOR_PLOTTING;
 	}
 			
 	return true;
@@ -240,6 +240,98 @@ boolean Text_FillMemoryBox(signed int the_screen_id, signed int x, signed int y,
 /*****************************************************************************/
 
 // ** NOTE: there is no destructor or constructor for this library, as it does not track any allocated memory. It works on the basis of a screen ID, which corresponds to the text memory for Vicky's Channel A and Channel B video memory.
+
+
+// **** Block copy functions ****
+
+// Copy a full screen of attr from an off-screen buffer
+// returns false on any error/invalid input.
+boolean Text_CopyAttrMemToScreen(signed int the_screen_id, unsigned char* the_source_buffer)
+{
+	unsigned char*	the_vram_loc;
+	unsigned long	the_write_len;
+	
+	if (the_screen_id != ID_CHANNEL_A && the_screen_id != ID_CHANNEL_B)
+	{
+		LOG_ERR(("%s %d: illegal screen id", __func__, __LINE__));
+		return false;
+	}
+	
+	the_vram_loc = global_screen[the_screen_id].text_attr_ram_;
+	the_write_len = global_screen[the_screen_id].text_cols_ * global_screen[the_screen_id].text_rows_;
+	
+	memcpy(the_vram_loc, the_source_buffer, the_write_len);
+
+	return true;
+}
+
+// Copy a full screen of attr to an off-screen buffer
+// returns false on any error/invalid input.
+boolean Text_CopyAttrMemFromScreen(signed int the_screen_id, unsigned char* the_target_buffer)
+{
+	unsigned char*	the_vram_loc;
+	unsigned long	the_write_len;
+	
+	if (the_screen_id != ID_CHANNEL_A && the_screen_id != ID_CHANNEL_B)
+	{
+		LOG_ERR(("%s %d: illegal screen id", __func__, __LINE__));
+		return false;
+	}
+	
+	the_vram_loc = global_screen[the_screen_id].text_attr_ram_;
+	the_write_len = global_screen[the_screen_id].text_cols_ * global_screen[the_screen_id].text_rows_;
+	
+	memcpy(the_target_buffer, the_vram_loc, the_write_len);
+
+	return true;
+}
+
+// Copy a full screen of text from an off-screen buffer
+// returns false on any error/invalid input.
+boolean Text_CopyCharMemToScreen(signed int the_screen_id, unsigned char* the_source_buffer)
+{
+	unsigned char*	the_vram_loc;
+	unsigned long	the_write_len;
+	
+	if (the_screen_id != ID_CHANNEL_A && the_screen_id != ID_CHANNEL_B)
+	{
+		LOG_ERR(("%s %d: illegal screen id", __func__, __LINE__));
+		return false;
+	}
+	
+	the_vram_loc = global_screen[the_screen_id].text_ram_;
+	the_write_len = global_screen[the_screen_id].text_cols_ * global_screen[the_screen_id].text_rows_;
+	
+	memcpy(the_vram_loc, the_source_buffer, the_write_len);
+
+	return true;
+}
+
+// Copy a full screen of text to an off-screen buffer
+// returns false on any error/invalid input.
+boolean Text_CopyCharMemFromScreen(signed int the_screen_id, unsigned char* the_target_buffer)
+{
+	unsigned char*	the_vram_loc;
+	unsigned long	the_write_len;
+	
+	if (the_screen_id != ID_CHANNEL_A && the_screen_id != ID_CHANNEL_B)
+	{
+		LOG_ERR(("%s %d: illegal screen id", __func__, __LINE__));
+		return false;
+	}
+	
+	the_vram_loc = global_screen[the_screen_id].text_ram_;
+	the_write_len = global_screen[the_screen_id].text_cols_ * global_screen[the_screen_id].text_rows_;
+	
+	memcpy(the_target_buffer, the_vram_loc, the_write_len);
+
+	return true;
+}
+
+
+
+
+// **** Block fill functions ****
 
 
 // Fill attribute memory for the passed screen
@@ -451,7 +543,7 @@ boolean Text_InvertBox(signed int the_screen_id, signed int x1, signed int y1, s
 	the_write_loc = Text_GetMemLocForXY(the_screen_id, x1, y1, SCREEN_FOR_TEXT_ATTR);	
 	
 	// amount of cells to skip past once we have written the specified line len
-	skip_len = TEXT_COL_WIDTH_FOR_PLOTTING - (x2 - x1) - 1;
+	skip_len = TEXT_COL_COUNT_FOR_PLOTTING - (x2 - x1) - 1;
 
 	for (; y1 <= y2; y1++)
 	{
@@ -941,7 +1033,7 @@ boolean Text_DrawStringAtXY(signed int the_screen_id, signed int x, signed int y
 		return false;
 	}
 	
-	draw_len = General_Strnlen(the_string, TEXT_COL_WIDTH_FOR_PLOTTING); // can't be wider than the screen anyway
+	draw_len = General_Strnlen(the_string, TEXT_COL_COUNT_FOR_PLOTTING); // can't be wider than the screen anyway
 	max_col = global_screen[the_screen_id].text_cols_ - 1;
 	
 	if ( x + draw_len > max_col)
