@@ -37,10 +37,13 @@ The A2650 kernel/OS doesn't support dynamically linked libraries yet, so for now
  * copy a full screen of text or attr TO an off-screen buffer
  * copy a full screen of text and attr between channel A and B
  * copy a rectangular area of text or attr TO/FROM an off-screen buffer
+ * display a pre-formatted string in a rectangular block on the screen, breaking on \n characters
  * Draw a string to a specified x, y coord (no wrap)
- * display a string in a rectangular block on the screen, with wrap
+ * format a string for a given height and width, wrapping words as necessary
+ * display a formatted string in a rectangular block on the screen, with wrap
  * display a string in a rectangular block on the screen, with wrap, taking a hook for a "display more" event, and scrolling text vertically up after hook func returns 'continue' (or exit, returning control to calling func, if hook returns 'stop')
  * replace current text font with another, loading from specified ram loc.
+ * configure at compile time for use in various Foenix machines
  
 ## Completed
  * work with either channel A or channel B
@@ -60,3 +63,14 @@ The A2650 kernel/OS doesn't support dynamically linked libraries yet, so for now
  * copy a full screen of text or attr TO an off-screen buffer
  * copy a rectangular area of text or attr TO/FROM an off-screen buffer
  * Draw a string to a specified x, y coord (no wrap)
+ * format a string for a given height and width, wrapping words as necessary
+ * display a formatted string in a rectangular block on the screen, with wrap
+
+## ToDo
+ * copy a full screen of text and attr between channel A and B
+ * display a string in a rectangular block on the screen, with wrap, taking a hook for a "display more" event, and scrolling text vertically up after hook func returns 'continue' (or exit, returning control to calling func, if hook returns 'stop')
+ * replace current text font with another, loading from specified ram loc.
+ * clean up the A2650U/K vs morfe addresses, default colors, etc.
+ * optimization
+ * prep and clean up to be a standalone static library
+ * documentation

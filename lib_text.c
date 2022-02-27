@@ -58,7 +58,7 @@ boolean Text_ValidateAll(signed int the_screen_id, signed int x, signed int y, u
 boolean Text_ValidateXY(signed int the_screen_id, signed int x, signed int y);
 
 // calculate the VRAM location of the specified coordinate
-unsigned char* Text_GetMemLocForXY(signed int the_screen_id, signed int x, signed int y, boolean for_attr);
+char* Text_GetMemLocForXY(signed int the_screen_id, signed int x, signed int y, boolean for_attr);
 
 // Fill attribute or text char memory. Writes to char memory if for_attr is false.
 // calling function must validate the screen ID before passing!
@@ -128,10 +128,10 @@ boolean Text_ValidateXY(signed int the_screen_id, signed int x, signed int y)
 
 
 // calculate the VRAM location of the specified coordinate
-unsigned char* Text_GetMemLocForXY(signed int the_screen_id, signed int x, signed int y, boolean for_attr)
+char* Text_GetMemLocForXY(signed int the_screen_id, signed int x, signed int y, boolean for_attr)
 {
-	unsigned char*	the_write_loc;
-	//signed int		num_cols;
+	char*			the_write_loc;
+	//signed int	num_cols;
 	
 	// LOGIC:
 	//   For plotting the VRAM, A2560 (or morfe?) uses a fixed with of 80 cols. 
@@ -163,7 +163,7 @@ unsigned char* Text_GetMemLocForXY(signed int the_screen_id, signed int x, signe
 // returns false on any error/invalid input.
 boolean Text_FillMemory(signed int the_screen_id, boolean for_attr, unsigned char the_fill)
 {
-	unsigned char*	the_write_loc;
+	char*			the_write_loc;
 	unsigned long	the_write_len;
 	
 	if (for_attr)
@@ -188,8 +188,8 @@ boolean Text_FillMemory(signed int the_screen_id, boolean for_attr, unsigned cha
 // returns false on any error/invalid input.
 boolean Text_FillMemoryBoxBoth(signed int the_screen_id, signed int x, signed int y, signed int width, signed int height, unsigned char the_char, unsigned char the_attribute_value)
 {
-	unsigned char*	the_char_loc;
-	unsigned char*	the_attr_loc;
+	char*			the_char_loc;
+	char*			the_attr_loc;
 	signed int		max_row;
 	
 	// set up char and attribute memory initial loc
@@ -215,7 +215,7 @@ boolean Text_FillMemoryBoxBoth(signed int the_screen_id, signed int x, signed in
 // returns false on any error/invalid input.
 boolean Text_FillMemoryBox(signed int the_screen_id, signed int x, signed int y, signed int width, signed int height, boolean for_attr, unsigned char the_fill)
 {
-	unsigned char*	the_write_loc;
+	char*			the_write_loc;
 	signed int		max_row;
 	
 	// set up initial loc
@@ -245,9 +245,9 @@ boolean Text_FillMemoryBox(signed int the_screen_id, signed int x, signed int y,
 
 // Copy a full screen of attr from an off-screen buffer
 // returns false on any error/invalid input.
-boolean Text_CopyAttrMemToScreen(signed int the_screen_id, unsigned char* the_source_buffer)
+boolean Text_CopyAttrMemToScreen(signed int the_screen_id, char* the_source_buffer)
 {
-	unsigned char*	the_vram_loc;
+	char*			the_vram_loc;
 	unsigned long	the_write_len;
 	
 	if (the_screen_id != ID_CHANNEL_A && the_screen_id != ID_CHANNEL_B)
@@ -266,9 +266,9 @@ boolean Text_CopyAttrMemToScreen(signed int the_screen_id, unsigned char* the_so
 
 // Copy a full screen of attr to an off-screen buffer
 // returns false on any error/invalid input.
-boolean Text_CopyAttrMemFromScreen(signed int the_screen_id, unsigned char* the_target_buffer)
+boolean Text_CopyAttrMemFromScreen(signed int the_screen_id, char* the_target_buffer)
 {
-	unsigned char*	the_vram_loc;
+	char*			the_vram_loc;
 	unsigned long	the_write_len;
 	
 	if (the_screen_id != ID_CHANNEL_A && the_screen_id != ID_CHANNEL_B)
@@ -287,9 +287,9 @@ boolean Text_CopyAttrMemFromScreen(signed int the_screen_id, unsigned char* the_
 
 // Copy a full screen of text from an off-screen buffer
 // returns false on any error/invalid input.
-boolean Text_CopyCharMemToScreen(signed int the_screen_id, unsigned char* the_source_buffer)
+boolean Text_CopyCharMemToScreen(signed int the_screen_id, char* the_source_buffer)
 {
-	unsigned char*	the_vram_loc;
+	char*			the_vram_loc;
 	unsigned long	the_write_len;
 	
 	if (the_screen_id != ID_CHANNEL_A && the_screen_id != ID_CHANNEL_B)
@@ -308,9 +308,9 @@ boolean Text_CopyCharMemToScreen(signed int the_screen_id, unsigned char* the_so
 
 // Copy a full screen of text to an off-screen buffer
 // returns false on any error/invalid input.
-boolean Text_CopyCharMemFromScreen(signed int the_screen_id, unsigned char* the_target_buffer)
+boolean Text_CopyCharMemFromScreen(signed int the_screen_id, char* the_target_buffer)
 {
-	unsigned char*	the_vram_loc;
+	char*			the_vram_loc;
 	unsigned long	the_write_len;
 	
 	if (the_screen_id != ID_CHANNEL_A && the_screen_id != ID_CHANNEL_B)
@@ -330,10 +330,10 @@ boolean Text_CopyCharMemFromScreen(signed int the_screen_id, unsigned char* the_
 
 // Copy a full screen of text or attr to or from an off-screen buffer
 // returns false on any error/invalid input.
-boolean Text_CopyScreen(signed int the_screen_id, unsigned char* the_buffer, boolean to_screen, boolean for_attr)
+boolean Text_CopyScreen(signed int the_screen_id, char* the_buffer, boolean to_screen, boolean for_attr)
 {
+	char*			the_vram_loc;
 	signed int		the_write_len;
-	unsigned char*	the_vram_loc;
 	
 	if (the_screen_id != ID_CHANNEL_A && the_screen_id != ID_CHANNEL_B)
 	{
@@ -376,12 +376,12 @@ boolean Text_CopyScreen(signed int the_screen_id, unsigned char* the_buffer, boo
 
 // Copy a rectangular area of text or attr to or from an off-screen buffer
 // returns false on any error/invalid input.
-boolean Text_CopyMemBox(signed int the_screen_id, unsigned char* the_buffer, signed int x1, signed int y1, signed int x2, signed int y2, boolean to_screen, boolean for_attr)
+boolean Text_CopyMemBox(signed int the_screen_id, char* the_buffer, signed int x1, signed int y1, signed int x2, signed int y2, boolean to_screen, boolean for_attr)
 {
+	char*			the_vram_loc;
+	char*			the_buffer_loc;
 	signed int		the_write_len;
 	signed int		initial_offset;
-	unsigned char*	the_vram_loc;
-	unsigned char*	the_buffer_loc;
 	
 	if (!Text_ValidateAll(the_screen_id, x1, y1, 0, 0))
 	{
@@ -634,7 +634,7 @@ boolean Text_InvertBox(signed int the_screen_id, signed int x1, signed int y1, s
 	unsigned char	skip_len;
 	unsigned char	the_attribute_value;
 	unsigned char	the_inversed_value;
-	unsigned char*	the_write_loc;
+	char*			the_write_loc;
 	signed int		the_col;
 	
 	if (!Text_ValidateAll(the_screen_id, x1, y1, 0, 0))
@@ -685,7 +685,7 @@ boolean Text_InvertBox(signed int the_screen_id, signed int x1, signed int y1, s
 // **** FONT RELATED *****
 
 // replace the current font data with the data at the passed memory buffer
-boolean Text_UpdateFontData(signed int the_screen_id, unsigned char* new_font_data)
+boolean Text_UpdateFontData(signed int the_screen_id, char* new_font_data)
 {
 	// TEST: check the mem locs I have work in morfe.
 	memset(FONT_MEMORY_BANK0, 55, 8*256*1);
@@ -698,8 +698,8 @@ boolean Text_UpdateFontData(signed int the_screen_id, unsigned char* new_font_da
 // test function to display all 256 font characters
 boolean Text_ShowFontChars(signed int the_screen_id)
 {
-	unsigned char	the_char = 0;
-	unsigned char*	the_write_loc;
+	unsigned char			the_char = 0;
+	char*			the_write_loc;
 	unsigned short	i;
 
 	if (the_screen_id != ID_CHANNEL_A && the_screen_id != ID_CHANNEL_B)
@@ -731,7 +731,7 @@ boolean Text_ShowFontChars(signed int the_screen_id)
 // Set a char at a specified x, y coord
 boolean Text_SetCharAtXY(signed int the_screen_id, signed int x, signed int y, unsigned char the_char)
 {
-	unsigned char*	the_write_loc;
+	char*	the_write_loc;
 	
 	if (!Text_ValidateAll(the_screen_id, x, y, 0, 0))
 	{
@@ -749,7 +749,7 @@ boolean Text_SetCharAtXY(signed int the_screen_id, signed int x, signed int y, u
 // Set the attribute value at a specified x, y coord
 boolean Text_SetAttrAtXY(signed int the_screen_id, signed int x, signed int y, unsigned char fore_color, unsigned char back_color)
 {
-	unsigned char*	the_write_loc;
+	char*	the_write_loc;
 	unsigned char	the_attribute_value;
 	
 	if (!Text_ValidateAll(the_screen_id, x, y, fore_color, back_color))
@@ -772,7 +772,7 @@ boolean Text_SetAttrAtXY(signed int the_screen_id, signed int x, signed int y, u
 // Draw a char at a specified x, y coord, also setting the color attributes
 boolean Text_SetCharAndColorAtXY(signed int the_screen_id, signed int x, signed int y, unsigned char the_char, unsigned char fore_color, unsigned char back_color)
 {
-	unsigned char*	the_write_loc;
+	char*	the_write_loc;
 	unsigned char	the_attribute_value;
 	
 	if (!Text_ValidateAll(the_screen_id, x, y, fore_color, back_color))
@@ -803,7 +803,7 @@ boolean Text_SetCharAndColorAtXY(signed int the_screen_id, signed int x, signed 
 // Get the char at a specified x, y coord
 unsigned char Text_GetCharAtXY(signed int the_screen_id, signed int x, signed int y)
 {
-	unsigned char*	the_read_loc;
+	char*	the_read_loc;
 	unsigned char	the_char;
 	
 	if (!Text_ValidateAll(the_screen_id, x, y, 0, 0))
@@ -822,7 +822,7 @@ unsigned char Text_GetCharAtXY(signed int the_screen_id, signed int x, signed in
 // Get the attribute value at a specified x, y coord
 unsigned char Text_GetAttrAtXY(signed int the_screen_id, signed int x, signed int y)
 {
-	unsigned char*	the_read_loc;
+	char*	the_read_loc;
 	unsigned char	the_value;
 	
 	if (!Text_ValidateAll(the_screen_id, x, y, 0, 0))
@@ -841,7 +841,7 @@ unsigned char Text_GetAttrAtXY(signed int the_screen_id, signed int x, signed in
 // Get the foreground color at a specified x, y coord
 unsigned char Text_GetForeColorAtXY(signed int the_screen_id, signed int x, signed int y)
 {
-	unsigned char*	the_read_loc;
+	char*	the_read_loc;
 	unsigned char	the_value;
 	unsigned char	the_color;
 	
@@ -862,7 +862,7 @@ unsigned char Text_GetForeColorAtXY(signed int the_screen_id, signed int x, sign
 // Get the background color at a specified x, y coord
 unsigned char Text_GetBackColorAtXY(signed int the_screen_id, signed int x, signed int y)
 {
-	unsigned char*	the_read_loc;
+	char*	the_read_loc;
 	unsigned char	the_value;
 	unsigned char	the_color;
 	
@@ -1134,11 +1134,11 @@ boolean Text_DrawBox(signed int the_screen_id, signed int x, signed int y, signe
 // Draw a string at a specified x, y coord, also setting the color attributes
 // Truncate, but still draw the string if it is too long to display on the line it started.
 // No word wrap is performed. 
-boolean Text_DrawStringAtXY(signed int the_screen_id, signed int x, signed int y, unsigned char* the_string, unsigned char fore_color, unsigned char back_color)
+boolean Text_DrawStringAtXY(signed int the_screen_id, signed int x, signed int y, char* the_string, unsigned char fore_color, unsigned char back_color)
 {
-	unsigned char*	the_char_loc;
-	unsigned char*	the_attr_loc;
-	unsigned char	the_attribute_value;
+	char*			the_char_loc;
+	char*			the_attr_loc;
+	unsigned char			the_attribute_value;
 	signed int		i;
 	signed int		max_col;
 	signed int		draw_len;
@@ -1173,6 +1173,123 @@ boolean Text_DrawStringAtXY(signed int the_screen_id, signed int x, signed int y
 		*the_char_loc++ = the_string[i];
 		*the_attr_loc++ = the_attribute_value;
 	}
+	
+	return true;
+}
+
+
+// Draw a string in a rectangular block on the screen, with wrap
+// If a word can't be wrapped, it will break the word and move on to the next line. So if you pass a rect with 1 char of width, it will draw a vertical line of chars down the screen.
+// returns false on any error/invalid input.
+boolean Text_DrawStringInBox(signed int the_screen_id, signed int x1, signed int y1, signed int x2, signed int y2, char* the_string, unsigned char fore_color, unsigned char back_color)
+{
+	char*			the_char_loc;
+	char*			the_attr_loc;
+	char*			orig_string;
+	char*			formatted_string;
+	char*			remaining_string;
+	unsigned char	the_attribute_value;
+	signed int		max_col;
+	signed int		remaining_len;
+	signed int		orig_len;
+	signed int		v_pixels = 0;
+	signed int		max_pix_width;
+	signed int		max_pix_height;
+	signed int		num_rows;
+	signed int		the_row;
+	signed int		this_line_len;
+char		temp_buff[256];
+char*		the_temp = temp_buff;
+	
+	if (!Text_ValidateAll(the_screen_id, x1, y1, fore_color, back_color))
+	{
+		LOG_ERR(("%s %d: illegal screen id, coordinate, or color", __func__, __LINE__));
+		return false;
+	}
+	
+	if (!Text_ValidateXY(the_screen_id, x2, y2))
+	{
+		LOG_ERR(("%s %d: illegal coordinate", __func__, __LINE__));
+		return false;
+	}
+
+	if (x1 > x2 || y1 > y2)
+	{
+		LOG_ERR(("%s %d: illegal coordinates", __func__, __LINE__));
+		return false;
+	}
+	
+	max_col = x2 - x1 + 1;
+	max_pix_width = (x2 - x1 + 1) * global_screen[the_screen_id].text_font_width_;
+	max_pix_height = (y2 - y1 + 1) * global_screen[the_screen_id].text_font_height_;
+	
+	remaining_len = General_Strnlen(the_string, TEXT_COL_COUNT_FOR_PLOTTING * TEXT_ROW_COUNT_FOR_PLOTTING + 1); // can't be bigger than the screen (80x60=4800). +1 for terminator. 
+	orig_len = remaining_len;
+
+	//DEBUG_OUT(("%s %d: draw_len=%i, max_col=%i, x=%i", __func__, __LINE__, draw_len, max_col, x));
+	
+	// calculate attribute value from passed fore and back colors
+	// LOGIC: text mode only supports 16 colors. lower 4 bits are back, upper 4 bits are foreground
+	the_attribute_value = ((fore_color << 4) | back_color);
+
+	// set up char and attribute memory initial loc
+	the_char_loc = Text_GetMemLocForXY(the_screen_id, x1, y1, SCREEN_FOR_TEXT_CHAR);
+	the_attr_loc = the_char_loc + (global_screen[the_screen_id].text_attr_ram_ - global_screen[the_screen_id].text_ram_);
+	
+	// format the string into chunks that will fit in the width specified, with line breaks on each line
+	orig_string = the_string;
+	formatted_string = global_screen[the_screen_id].text_temp_buffer_2_;
+	v_pixels = General_WrapAndTrimTextToFit(&global_screen[the_screen_id], &orig_string, &formatted_string, orig_len, max_pix_width, max_pix_height);
+	num_rows = v_pixels / global_screen[the_screen_id].text_font_height_;
+	//DEBUG_OUT(("%s %d: v_pixels=%i, num_rows=%i", __func__, __LINE__, v_pixels, num_rows));
+	remaining_string = formatted_string;
+	
+	// draw the string, one line at a time, until string is done or no more lines available
+	
+	//for (the_row = 0; the_row < num_rows; the_row++)
+	the_row = 0;
+	
+	do
+	{
+		signed int	this_write_len;
+		
+		this_line_len = General_StrFindNextLineBreak(remaining_string, max_col);
+// sprintf(the_temp, "%d: this_l=%i, rem_l=%i", __LINE__, this_line_len, remaining_len);
+// Text_DrawStringAtXY(ID_CHANNEL_A, 0, the_row, the_temp, FG_COLOR_BLACK_GREEN, BG_COLOR_BROWN);
+
+		if (this_line_len == 1)
+		{
+			// next/first character is a line break char
+			this_write_len = 0;
+// 			remaining_string++;
+// 			remaining_len--;
+			*(the_attr_loc) = the_attribute_value;
+// 			memset(the_attr_loc, the_attribute_value, 1);
+		}
+		else
+		{
+			if (this_line_len == 0)
+			{
+				// there is no other line break char left in the string.
+				this_write_len = General_Strnlen(remaining_string, remaining_len) - 1;
+			}
+			else
+			{
+				// there is a line break character, but some other chars come first. write up to be not including the line break
+				this_write_len = this_line_len - 1; // stop short of the the actual \n char.
+			}
+		
+			memcpy(the_char_loc, remaining_string, this_write_len);
+			memset(the_attr_loc, the_attribute_value, this_write_len);
+		}
+
+				remaining_string += this_write_len + 1; // skip past the actual \n char.
+				remaining_len -= (this_write_len + 1);
+		
+		the_char_loc += TEXT_COL_COUNT_FOR_PLOTTING;
+		the_attr_loc += TEXT_COL_COUNT_FOR_PLOTTING;		
+		the_row++;
+	} while (the_row < num_rows && this_line_len > 0);
 	
 	return true;
 }

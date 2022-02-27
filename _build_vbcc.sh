@@ -17,6 +17,9 @@ vc +/opt/vbcc/config/a2560-s28-micah -o text.s28 main.c lib_general.c lib_genera
 #vc +/opt/vbcc/config/a2560-s37-micah -o text.s37 main.c lib_general.c lib_general_a2560.c lib_text.c lib_text_test.c
 #vc +/opt/vbcc/config/a2560-ihex-micah -o text.ihex main.c lib_general.c lib_general_a2560.c lib_text.c lib_text_test.c
 
+# -lm
+# -lmieee
+ 
 # no tests
 #vc +/opt/vbcc/config/aos68k -o build_vbcc/wb2k about_window.c app.c dict.c dict_entry.c file.c file_mover.c folder.c file_type.c file_type_db.c general.c general_amiga.c icon.c info_file.c info_panel.c label.c list.c list_panel.c menu.c mouse.c localize.c prefs.c status_window.c window.c -g -lauto -lamiga -prof -lmieee -stack-check
 
@@ -58,9 +61,10 @@ vasmm68k_mot -Fsrec -o stub_user.srec $DEVA2560/m68k-misc/stub_user.asm
 mv stub_user.hex ../morfe/
 
 
-#cd $DEVA2560/f68-emulator/emulator/
+# cd $DEVA2560/f68-emulator/emulator/
+# nohup ./f68 $DEVA2560/lib_text/text.s28 &
+
 #./f68 $DEVA2560/lib_text/text.s19
-#./f68 $DEVA2560/lib_text/text.s28
 #./f68 $DEVA2560/lib_text/text.s37
 #./f68 $DEVA2560/lib_text/text.ihex
 

@@ -32,7 +32,8 @@
  * copy a full screen of text and attr between channel A and B
  * copy a rectangular area of text or attr TO/FROM an off-screen buffer
  * x display a string at a specified x, y coord (no wrap)
- * display a string in a rectangular block on the screen, with wrap
+ * x display a pre-formatted string in a rectangular block on the screen, breaking on \n characters
+ * x display a string in a rectangular block on the screen, with wrap
  * display a string in a rectangular block on the screen, with wrap, taking a hook for a "display more" event, and scrolling text vertically up after hook func returns 'continue' (or exit, returning control to calling func, if hook returns 'stop')
  * replace current text font with another, loading from specified ram loc.
  */
@@ -61,56 +62,56 @@
 // these are from my C-128 code, but they match up to what is shown in the VICKY II wiki page
 //   https://wiki.c256foenix.com/index.php?title=VICKY_II
 //   probably makes them the default colors
-#define COLOR_BLACK             0x00
-#define COLOR_WHITE             0x01
-#define COLOR_RED               0x02
-#define COLOR_CYAN              0x03
-#define COLOR_VIOLET            0x04
-#define COLOR_GREEN				0x05
-#define COLOR_BLUE              0x06
-#define COLOR_YELLOW            0x07
-#define COLOR_ORANGE            0x08
-#define COLOR_BROWN             0x09
-#define COLOR_LIGHTRED          0x0A
-#define COLOR_GRAY1             0x0B
-#define COLOR_GRAY2             0x0C
-#define COLOR_LIGHTGREEN        0x0D
-#define COLOR_LIGHTBLUE         0x0E
-#define COLOR_GRAY3             0x0F
+#define COLOR_BLACK				(unsigned char)0x00
+#define COLOR_WHITE				(unsigned char)0x01
+#define COLOR_RED				(unsigned char)0x02
+#define COLOR_CYAN				(unsigned char)0x03
+#define COLOR_VIOLET			(unsigned char)0x04
+#define COLOR_GREEN				(unsigned char)0x05
+#define COLOR_BLUE				(unsigned char)0x06
+#define COLOR_YELLOW			(unsigned char)0x07
+#define COLOR_ORANGE			(unsigned char)0x08
+#define COLOR_BROWN				(unsigned char)0x09
+#define COLOR_LIGHTRED          (unsigned char)0x0A
+#define COLOR_GRAY1             (unsigned char)0x0B
+#define COLOR_GRAY2             (unsigned char)0x0C
+#define COLOR_LIGHTGREEN        (unsigned char)0x0D
+#define COLOR_LIGHTBLUE         (unsigned char)0x0E
+#define COLOR_GRAY3             (unsigned char)0x0F
 //.... BUT... at least in morfe, vicky2/text_lug.go is defined differently:
-#define FG_COLOR_BLACK			0x00
-#define FG_COLOR_DK_RED			0x01
-#define FG_COLOR_GREEN			0x02
-#define FG_COLOR_BLUE			0x03
-#define FG_COLOR_OLIVE			0x04
-#define FG_COLOR_MED_CYAN		0x05
-#define FG_COLOR_VIOLET			0x06
-#define FG_COLOR_LT_GRAY		0x07
-#define FG_COLOR_ORANGE			0x08
-#define FG_COLOR_BROWN			0x09
-#define FG_COLOR_BLACK_RED		0x0A
-#define FG_COLOR_BLACK_GREEN	0x0B
-#define FG_COLOR_BLACK_BLUE		0x0C
-#define FG_COLOR_DK_GRAY		0x0D
-#define FG_COLOR_MED_GRAY		0x0E
-#define FG_COLOR_WHITE			0x0F
+#define FG_COLOR_BLACK			(unsigned char)0x00
+#define FG_COLOR_DK_RED			(unsigned char)0x01
+#define FG_COLOR_GREEN			(unsigned char)0x02
+#define FG_COLOR_BLUE			(unsigned char)0x03
+#define FG_COLOR_OLIVE			(unsigned char)0x04
+#define FG_COLOR_MED_CYAN		(unsigned char)0x05
+#define FG_COLOR_VIOLET			(unsigned char)0x06
+#define FG_COLOR_LT_GRAY		(unsigned char)0x07
+#define FG_COLOR_ORANGE			(unsigned char)0x08
+#define FG_COLOR_BROWN			(unsigned char)0x09
+#define FG_COLOR_BLACK_RED		(unsigned char)0x0A
+#define FG_COLOR_BLACK_GREEN	(unsigned char)0x0B
+#define FG_COLOR_BLACK_BLUE		(unsigned char)0x0C
+#define FG_COLOR_DK_GRAY		(unsigned char)0x0D
+#define FG_COLOR_MED_GRAY		(unsigned char)0x0E
+#define FG_COLOR_WHITE			(unsigned char)0x0F
 
-#define BG_COLOR_BLACK			0x00
-#define BG_COLOR_DK_RED			0x01
-#define BG_COLOR_GREEN			0x02
-#define BG_COLOR_BLUE			0x03
-#define BG_COLOR_DK_OLIVE		0x04
-#define BG_COLOR_DK_CYAN		0x05
-#define BG_COLOR_DK_VIOLET		0x06
-#define BG_COLOR_DK_GRAY		0x07
-#define BG_COLOR_DK_ORANGE		0x08
-#define BG_COLOR_BROWN			0x09
-#define BG_COLOR_BLACK_RED		0x0A
-#define BG_COLOR_BLACK_GREEN	0x0B
-#define BG_COLOR_BLACK_BLUE		0x0C
-#define BG_COLOR_MED_GRAY		0x0D
-#define BG_COLOR_LT_GRAY		0x0E
-#define BG_COLOR_WHITE			0x0F
+#define BG_COLOR_BLACK			(unsigned char)0x00
+#define BG_COLOR_DK_RED			(unsigned char)0x01
+#define BG_COLOR_GREEN			(unsigned char)0x02
+#define BG_COLOR_BLUE			(unsigned char)0x03
+#define BG_COLOR_DK_OLIVE		(unsigned char)0x04
+#define BG_COLOR_DK_CYAN		(unsigned char)0x05
+#define BG_COLOR_DK_VIOLET		(unsigned char)0x06
+#define BG_COLOR_DK_GRAY		(unsigned char)0x07
+#define BG_COLOR_DK_ORANGE		(unsigned char)0x08
+#define BG_COLOR_BROWN			(unsigned char)0x09
+#define BG_COLOR_BLACK_RED		(unsigned char)0x0A
+#define BG_COLOR_BLACK_GREEN	(unsigned char)0x0B
+#define BG_COLOR_BLACK_BLUE		(unsigned char)0x0C
+#define BG_COLOR_MED_GRAY		(unsigned char)0x0D
+#define BG_COLOR_LT_GRAY		(unsigned char)0x0E
+#define BG_COLOR_WHITE			(unsigned char)0x0F
 
 // update: the numbers shown in vicky2 file in morfe don't match up to what's shown on screen, at least with a2650 config. eg, 20/00/00 is not a super dark blue, it's some totally bright thing. need to spend some time mapping these out better. But since user configurable, will wait until real machine comes and I can make sure of what's in flash rom. 
 
@@ -119,28 +120,28 @@
 /*****************************************************************************/
 // https://en.wikipedia.org/wiki/Code_page_437
 
-#define CH_CHECKERED1	0xB0
-#define CH_CHECKERED2	0xB1
-#define CH_CHECKERED3	0xB2
-#define CH_SOLID		0xDB	// inverse space
-#define CH_WALL_H		0xCD
-#define CH_WALL_V		0xBA
-#define CH_WALL_UL		0xC9
-#define CH_WALL_UR		0xBB
-#define CH_WALL_LL		0xC8
-#define CH_WALL_LR		0xBC
-#define CH_INTERSECT	0xCE
-#define CH_SMILEY1		0x01 // 
-#define CH_SMILEY2		0x02 // 
-#define CH_HEART		0x03 // 
-#define CH_DIAMOND		0x04 // 
-#define CH_CLUB			0x05 // 
-#define CH_SPADE		0x06 // 
-#define CH_MIDDOT		0x07 // 
-#define CH_RIGHT		0x10 // Triangle pointing right
-#define CH_LEFT			0x11 // Triangle pointing left
-#define CH_UP			0x1E // Triangle pointing up
-#define CH_DOWN			0x1F // Triangle pointing down
+#define CH_CHECKERED1	(unsigned char)0xB0
+#define CH_CHECKERED2	(unsigned char)0xB1
+#define CH_CHECKERED3	(unsigned char)0xB2
+#define CH_SOLID		(unsigned char)0xDB	// inverse space
+#define CH_WALL_H		(unsigned char)0xCD
+#define CH_WALL_V		(unsigned char)0xBA
+#define CH_WALL_UL		(unsigned char)0xC9
+#define CH_WALL_UR		(unsigned char)0xBB
+#define CH_WALL_LL		(unsigned char)0xC8
+#define CH_WALL_LR		(unsigned char)0xBC
+#define CH_INTERSECT	(unsigned char)0xCE
+#define CH_SMILEY1		(unsigned char)0x01 // 
+#define CH_SMILEY2		(unsigned char)0x02 // 
+#define CH_HEART		(unsigned char)0x03 // 
+#define CH_DIAMOND		(unsigned char)0x04 // 
+#define CH_CLUB			(unsigned char)0x05 // 
+#define CH_SPADE		(unsigned char)0x06 // 
+#define CH_MIDDOT		(unsigned char)0x07 // 
+#define CH_RIGHT		(unsigned char)0x10 // Triangle pointing right
+#define CH_LEFT			(unsigned char)0x11 // Triangle pointing left
+#define CH_UP			(unsigned char)0x1E // Triangle pointing up
+#define CH_DOWN			(unsigned char)0x1F // Triangle pointing down
 
 
 /*****************************************************************************/
@@ -177,27 +178,27 @@ typedef enum text_draw_choice
 
 // Copy a full screen of attr from an off-screen buffer
 // returns false on any error/invalid input.
-boolean Text_CopyAttrMemToScreen(signed int the_screen_id, unsigned char* the_source_buffer);
+boolean Text_CopyAttrMemToScreen(signed int the_screen_id, char* the_source_buffer);
 
 // Copy a full screen of attr to an off-screen buffer
 // returns false on any error/invalid input.
-boolean Text_CopyAttrMemFromScreen(signed int the_screen_id, unsigned char* the_target_buffer);
+boolean Text_CopyAttrMemFromScreen(signed int the_screen_id, char* the_target_buffer);
 
 // Copy a full screen of text from an off-screen buffer
 // returns false on any error/invalid input.
-boolean Text_CopyCharMemToScreen(signed int the_screen_id, unsigned char* the_source_buffer);
+boolean Text_CopyCharMemToScreen(signed int the_screen_id, char* the_source_buffer);
 
 // Copy a full screen of text to an off-screen buffer
 // returns false on any error/invalid input.
-boolean Text_CopyCharMemFromScreen(signed int the_screen_id, unsigned char* the_target_buffer);
+boolean Text_CopyCharMemFromScreen(signed int the_screen_id, char* the_target_buffer);
 
 // Copy a full screen of text or attr to or from an off-screen buffer
 // returns false on any error/invalid input.
-boolean Text_CopyScreen(signed int the_screen_id, unsigned char* the_buffer, boolean to_screen, boolean for_attr);
+boolean Text_CopyScreen(signed int the_screen_id, char* the_buffer, boolean to_screen, boolean for_attr);
 
 // Copy a rectangular area of text or attr to or from an off-screen buffer
 // returns false on any error/invalid input.
-boolean Text_CopyMemBox(signed int the_screen_id, unsigned char* the_buffer, signed int x1, signed int y1, signed int x2, signed int y2, boolean to_screen, boolean for_attr);
+boolean Text_CopyMemBox(signed int the_screen_id, char* the_buffer, signed int x1, signed int y1, signed int x2, signed int y2, boolean to_screen, boolean for_attr);
 
 
 // **** Block fill functions ****
@@ -231,7 +232,7 @@ boolean Text_InvertBox(signed int the_screen_id, signed int x1, signed int y1, s
 
 
 // replace the current font data with the data at the passed memory buffer
-boolean Text_UpdateFontData(signed int the_screen_id, unsigned char* new_font_data);
+boolean Text_UpdateFontData(signed int the_screen_id, char* new_font_data);
 
 // test function to display all 256 font characters
 boolean Text_ShowFontChars(signed int the_screen_id);
@@ -297,8 +298,12 @@ boolean Text_DrawBox(signed int the_screen_id, signed int x, signed int y, signe
 // Draw a string at a specified x, y coord, also setting the color attributes
 // Truncate, but still draw the string if it is too long to display on the line it started.
 // No word wrap is performed. 
-boolean Text_DrawStringAtXY(signed int the_screen_id, signed int x, signed int y, unsigned char* the_string, unsigned char fore_color, unsigned char back_color);
+boolean Text_DrawStringAtXY(signed int the_screen_id, signed int x, signed int y, char* the_string, unsigned char fore_color, unsigned char back_color);
 
+// Draw a string in a rectangular block on the screen, with wrap
+// If a word can't be wrapped, it will break the word and move on to the next line. So if you pass a rect with 1 char of width, it will draw a vertical line of chars down the screen.
+// returns false on any error/invalid input.
+boolean Text_DrawStringInBox(signed int the_screen_id, signed int x1, signed int y1, signed int x2, signed int y2, char* the_string, unsigned char fore_color, unsigned char back_color);
 
 
 #endif /* LIB_TEXT_H_ */

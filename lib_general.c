@@ -61,7 +61,7 @@ static FILE*			global_log_file;
 
 
 // Convert a (positive-only) string integer to an unsigned long integer. returns false in event of error
-boolean General_StringToUnsignedLong(const unsigned char* the_string_value, unsigned long* the_conversion);
+boolean General_StringToUnsignedLong(const char* the_string_value, unsigned long* the_conversion);
 
 
 
@@ -70,9 +70,9 @@ boolean General_StringToUnsignedLong(const unsigned char* the_string_value, unsi
 /*****************************************************************************/
 
 // Convert a (positive-only) string integer to an unsigned long integer. returns false in event of error
-boolean General_StringToUnsignedLong(const unsigned char* the_string_value, unsigned long* the_conversion)
+boolean General_StringToUnsignedLong(const char* the_string_value, unsigned long* the_conversion)
 {
-	unsigned char*	temp;
+	char*			temp;
 	unsigned long	val = 0;
 	boolean			safe_conversion = true;
 	
@@ -111,20 +111,19 @@ boolean General_StringToUnsignedLong(const unsigned char* the_string_value, unsi
 
 
 // extract file extension into the passed char pointer, as new lowercased string pointer, if any found. returns false if no file extension found.
-boolean General_ExtractFileExtensionFromFilename(const unsigned char* the_file_name, unsigned char* the_extension)
+boolean General_ExtractFileExtensionFromFilename(const char* the_file_name, char* the_extension)
 {
 	// LOGIC: 
 	//   if the first char is the first dot from right, we'll count the whole thing as an extension
 	//   if no dot char, then don't set extension, and return false
 	
-    char* dot = strrchr((char*)the_file_name, '.');
-    int i;
+    char*	dot = strrchr((char*)the_file_name, '.');
+    int		i;
 
     // (re) set the file extension to "" in case we have to return. It may have a value from whatever previous use was
     the_extension[0] = '\0';
 
 	if(!dot)
-	//if(!dot || dot == the_file_name)
     {
     	return false;
     }
@@ -135,17 +134,15 @@ boolean General_ExtractFileExtensionFromFilename(const unsigned char* the_file_n
 	}
 
 	the_extension[i-1] = '\0';
-	//General_PrintBufferCharacters(the_extension, i+5);
-//	printf("General_ExtractFileExtensionFromFilename: lowercased name = |%s|\n", the_extension);
 
 	return true;
 }
 
 
 // replacement for tolower() in c library, which doesn't seem to work here for some reason.
-unsigned char General_ToLower(unsigned char the_char)
+char General_ToLower(char the_char)
 {
-    unsigned char	lowered_value;
+    char	lowered_value;
     
     lowered_value = (the_char >='A' && the_char<='Z') ? (the_char + 32) : (the_char);
     
@@ -155,7 +152,7 @@ unsigned char General_ToLower(unsigned char the_char)
 /* NOTE: getting errors about IEEEDIVD float/etc symbols when this compiles for A2650
 // convert a file size in bytes to a human readable format using "10 bytes", "1.4 kb", "1 MB", etc. 
 //   NOTE: formatted_file_size string must have been allocated before passing here
-void General_MakeFileSizeReadable(unsigned long size_in_bytes, unsigned char* formatted_file_size)
+void General_MakeFileSizeReadable(unsigned long size_in_bytes, char* formatted_file_size)
 {
 	double			final_size;
 	
@@ -211,11 +208,11 @@ int General_Round(double the_float)
 */
 
 // allocates memory and copies the passed string into it. one stop shop for getting a copy of a string
-unsigned char* General_StrlcpyWithAlloc(const unsigned char* the_source, unsigned long max_len)
+char* General_StrlcpyWithAlloc(const char* the_source, unsigned long max_len)
 {
-	unsigned char* the_target;
+	char* the_target;
 
-	if ( (the_target = (unsigned char*)calloc(General_Strnlen(the_source, max_len) + 1, sizeof(char)) ) == NULL)
+	if ( (the_target = (char*)calloc(General_Strnlen(the_source, max_len) + 1, sizeof(char)) ) == NULL)
 	{
 		return NULL;
 	}
@@ -230,9 +227,9 @@ unsigned char* General_StrlcpyWithAlloc(const unsigned char* the_source, unsigne
 
 
 // strlcpy implementation from apple/bsd. the Amiga Strlcpy is only in 4.0. Modified with Amiga-isms
-unsigned long General_Strlcpy(unsigned char* dst, const unsigned char* src, unsigned long maxlen)
+unsigned long General_Strlcpy(char* dst, const char* src, unsigned long maxlen)
 {
-    const unsigned long srclen = strlen((char*)src);
+    const unsigned long		srclen = strlen(src);
 
     if (srclen + 1 < maxlen)
     {
@@ -248,10 +245,10 @@ unsigned long General_Strlcpy(unsigned char* dst, const unsigned char* src, unsi
 }
 
 // General_Strlcat implementation from apple/bsd. Modified with Amiga-isms
-unsigned long General_Strlcat(unsigned char* dst, const unsigned char* src, unsigned long maxlen)
+unsigned long General_Strlcat(char* dst, const char* src, unsigned long maxlen)
 {
-    const unsigned long srclen = strlen((char*)src);
-    const unsigned long dstlen = General_Strnlen(dst, maxlen);
+    const unsigned long		srclen = strlen(src);
+    const unsigned long 	dstlen = General_Strnlen(dst, maxlen);
 
     if (dstlen == maxlen)
     {
@@ -274,9 +271,9 @@ unsigned long General_Strlcat(unsigned char* dst, const unsigned char* src, unsi
 
 // strncmp implementation from Amiga site. Case sensitive
 // http://home.snafu.de/kdschem/c.dir/strings.dir/strncmp.c
-int General_Strncmp(const unsigned char* string_1, const unsigned char* string_2, long length)
+int General_Strncmp(const char* string_1, const char* string_2, long length)
 {
-	register unsigned char c;
+	register char	c;
 	
 	do ; while( (c = *string_1++) && (c == *string_2++) && --length );
 	if (c)
@@ -290,14 +287,14 @@ int General_Strncmp(const unsigned char* string_1, const unsigned char* string_2
 // strncasecmp (case insensitive comparison) based on code from slashdot and apple open source
 // https://stackoverflow.com/questions/5820810/case-insensitive-string-comparison-in-c
 // https://opensource.apple.com/source/tcl/tcl-10/tcl/compat/strncasecmp.c.auto.html
-signed int General_Strncasecmp(const unsigned char* string_1, const unsigned char* string_2, long max_len)
+signed int General_Strncasecmp(const char* string_1, const char* string_2, long max_len)
 {
 	//DEBUG_OUT(("%s %d: s1='%s'; s2='%s'; maxlen=%i", __func__ , __LINE__, string_1, string_2, max_len));
 
 	for (; max_len != 0; max_len--, string_1++, string_2++)
 	{
-		unsigned char	u1 = (unsigned char) *string_1;
-		unsigned char	u2 = (unsigned char) *string_2;
+		char	u1 = (char) *string_1;
+		char	u2 = (char) *string_2;
 		
 		if (General_ToLower(u1) != General_ToLower(u2))
 		{
@@ -315,9 +312,9 @@ signed int General_Strncasecmp(const unsigned char* string_1, const unsigned cha
 
 
 // strnlen implementation from apple/bsd. Modified with Amiga-isms
-unsigned long General_Strnlen(const unsigned char* s, unsigned long maxlen)
+unsigned long General_Strnlen(const char* s, unsigned long maxlen)
 {
-	unsigned long len;
+	unsigned long	len;
 
 	for (len = 0; len < maxlen; len++, s++)
 	{
@@ -334,8 +331,8 @@ unsigned long General_Strnlen(const unsigned char* s, unsigned long maxlen)
 // NOTE: compares to a maximum of MAX_STRING_COMP_LEN
 boolean General_CompareStringLength(void* first_payload, void* second_payload)
 {
-	unsigned char*		string_1 = (unsigned char*)first_payload;
-	unsigned char*		string_2 = (unsigned char*)second_payload;
+	char*		string_1 = (char*)first_payload;
+	char*		string_2 = (char*)second_payload;
 
 	if (General_Strnlen(string_1, MAX_STRING_COMP_LEN) > General_Strnlen(string_2, MAX_STRING_COMP_LEN))
 	{
@@ -349,7 +346,7 @@ boolean General_CompareStringLength(void* first_payload, void* second_payload)
 
 
 // Find the next space, dash, or other word break character and return its position within the string. If none found before end of string or max len, returns -1.
-signed int General_StrFindNextWordEnd(const unsigned char* the_string, unsigned int max_search_len)
+signed int General_StrFindNextWordEnd(const char* the_string, signed int max_search_len)
 {
 	char*	next_space;
 	char*	next_dash;
@@ -380,7 +377,7 @@ signed int General_StrFindNextWordEnd(const unsigned char* the_string, unsigned 
 
 
 // Find the next line break character and return its position within the string (+1: first char is '1'). If none found before end of string or max len, returns 0.
-unsigned int General_StrFindNextLineBreak(const unsigned char* the_string, unsigned int max_search_len)
+signed int General_StrFindNextLineBreak(const char* the_string, signed int max_search_len)
 {
 	char*	next_line_break;
 
@@ -388,7 +385,7 @@ unsigned int General_StrFindNextLineBreak(const unsigned char* the_string, unsig
 	
 	if (next_line_break)
 	{
-		return (unsigned int)((next_line_break - (char*)the_string) + 1);
+		return (signed int)((next_line_break - (char*)the_string) + 1);
 	}
 	else
 	{
@@ -435,14 +432,13 @@ boolean General_PointInRect(signed int x, signed int y, Rectangle r)
 }
 
 
-
 // Convert a positive or negative string integer to a signed long integer. returns false in event of error
-boolean General_StringToSignedLong(const unsigned char* the_string_value, signed long* the_conversion)
+boolean General_StringToSignedLong(const char* the_string_value, signed long* the_conversion)
 {
-	signed long				signed_val = 0;
-	unsigned long			unsigned_val = 0;
-	boolean					safe_conversion;
-	const unsigned char*	start_of_number = the_string_value;
+	signed long		signed_val = 0;
+	unsigned long	unsigned_val = 0;
+	boolean			safe_conversion;
+	const char*		start_of_number = the_string_value;
 	
 	// is this a negative number string?
 	if (*the_string_value == '-')
@@ -468,9 +464,9 @@ boolean General_StringToSignedLong(const unsigned char* the_string_value, signed
 // put the frame coords into the frame_rect, and the object to be centered into the hero_rect. ON return, the frame rect will hold the coords to be used.
 void General_CenterRectWithinRect(Rectangle* the_frame_rect, Rectangle* the_hero_rect, boolean at_25_percent_v)
 {
-	signed short		hero_height = the_hero_rect->MaxY - the_hero_rect->MinY;
-	signed short		hero_width = the_hero_rect->MaxX - the_hero_rect->MinX;
-	signed short		frame_height = the_frame_rect->MaxY - the_frame_rect->MinY;
+	signed short	hero_height = the_hero_rect->MaxY - the_hero_rect->MinY;
+	signed short	hero_width = the_hero_rect->MaxX - the_hero_rect->MinX;
+	signed short	frame_height = the_frame_rect->MaxY - the_frame_rect->MinY;
 	
 	// horizontal: center left/right
 	the_frame_rect->MinX = (the_frame_rect->MaxX - the_frame_rect->MinX - hero_width) / 2 + the_frame_rect->MinX;
@@ -478,7 +474,7 @@ void General_CenterRectWithinRect(Rectangle* the_frame_rect, Rectangle* the_hero
 
 	if (at_25_percent_v == true)
 	{
-		signed short		proposed_top;
+		signed short	proposed_top;
 
 		// set at 25% of vertical (good for showing an about window, for example)
 		proposed_top = frame_height / 4;
@@ -512,29 +508,29 @@ void General_CenterRectWithinRect(Rectangle* the_frame_rect, Rectangle* the_hero
 // if no path part detected, returns the original string
 // not guaranteed that this is a FILENAME, as if you passed a path to a dir, it would return the DIR name
 // amigaDOS compatibility function (see FilePart)
-unsigned char* General_NamePart(const unsigned char* the_file_path)
+char* General_NamePart(const char* the_file_path)
 {
-	unsigned char*	last_slash;
+	char*	last_slash;
 	
-	last_slash = (unsigned char*)strchr((char*)the_file_path, '/');
+	last_slash = strchr(the_file_path, '/');
 	
 	if (last_slash && ++last_slash)
 	{
 		return last_slash;
 	}
 	
-	return (unsigned char*)the_file_path;
+	return (char*)the_file_path;
 }
 
 
 // return everything to the left of the filename in a path. 
 // amigaDOS compatibility function
-unsigned char* General_PathPart(const unsigned char* the_file_path)
+char* General_PathPart(const char* the_file_path)
 {
-	unsigned char*	the_directory_path;
-	unsigned char*	this_point;
+	char*	the_directory_path;
+	char*	this_point;
 	
-	this_point = (unsigned char*)the_file_path;
+	this_point = (char*)the_file_path;
 	the_directory_path = this_point; // default to returning start of the string
 	
 	while (*this_point)
@@ -553,17 +549,17 @@ unsigned char* General_PathPart(const unsigned char* the_file_path)
 
 // allocate and return the portion of the path passed, minus the filename. In other words: return a path to the parent file.
 // calling method must free the string returned
-unsigned char* General_ExtractPathToParentFolderWithAlloc(const unsigned char* the_file_path)
+char* General_ExtractPathToParentFolderWithAlloc(const char* the_file_path)
 {
 	// LOGIC: 
 	//   PathPart includes the : if non-name part is for a volume. but doesn't not include trailing / if not a volume
 	//   we want in include the trailing : and /, so calling routine can always just append a file name and get a legit path
 	
 	unsigned long	path_len;
-	unsigned char*	the_directory_path;
+	char*			the_directory_path;
 
 	// get a string for the directory portion of the filepath
-	if ( (the_directory_path = (unsigned char*)calloc(FILE_MAX_PATHNAME_SIZE, sizeof(char)) ) == NULL)
+	if ( (the_directory_path = (char*)calloc(FILE_MAX_PATHNAME_SIZE, sizeof(char)) ) == NULL)
 	{
 		LOG_ERR(("%s %d: could not allocate memory for the directory path", __func__ , __LINE__));
 		return NULL;
@@ -590,20 +586,20 @@ unsigned char* General_ExtractPathToParentFolderWithAlloc(const unsigned char* t
 
 // allocate and return the filename portion of the path passed.
 // calling method must free the string returned
-unsigned char* General_ExtractFilenameFromPathWithAlloc(const unsigned char* the_file_path)
+char* General_ExtractFilenameFromPathWithAlloc(const char* the_file_path)
 {
-	unsigned char*	the_file_name;
+	char*	the_file_name;
 
 	// get a string for the file name portion of the filepath
-	if ( (the_file_name = (unsigned char*)calloc(FILE_MAX_PATHNAME_SIZE, sizeof(char)) ) == NULL)
+	if ( (the_file_name = (char*)calloc(FILE_MAX_PATHNAME_SIZE, sizeof(char)) ) == NULL)
 	{
 		LOG_ERR(("%s %d: could not allocate memory for the filename", __func__ , __LINE__));
 		return NULL;
 	}
 	else
 	{
-		unsigned char*	the_file_name_part = General_NamePart(the_file_path);
-		int				filename_len = General_Strnlen(the_file_name_part, FILE_MAX_PATHNAME_SIZE);
+		char*	the_file_name_part = General_NamePart(the_file_path);
+		int		filename_len = General_Strnlen(the_file_name_part, FILE_MAX_PATHNAME_SIZE);
 
 		if (filename_len == 0)
 		{
@@ -611,7 +607,7 @@ unsigned char* General_ExtractFilenameFromPathWithAlloc(const unsigned char* the
 			// in that case, we just use the file path minus : as the name
 
 			// copy the part of the path minus the last char into the file name
-			unsigned int path_len = General_Strnlen(the_file_path, FILE_MAX_PATHNAME_SIZE);
+			signed int	path_len = General_Strnlen(the_file_path, FILE_MAX_PATHNAME_SIZE);
 			General_Strlcpy(the_file_name, the_file_path, path_len);
 		}
 		else
@@ -626,7 +622,7 @@ unsigned char* General_ExtractFilenameFromPathWithAlloc(const unsigned char* the
 
 
 // populates the passed string by safely combining the passed file path and name, accounting for cases where path is a disk root
-void General_CreateFilePathFromFolderAndFile(unsigned char* the_combined_path, unsigned char* the_folder_path, unsigned char* the_file_name)
+void General_CreateFilePathFromFolderAndFile(char* the_combined_path, char* the_folder_path, char* the_file_name)
 {
 	signed int	path_len;
 	
@@ -730,7 +726,7 @@ void General_LogAlloc(const char* format, ...)
 // globals for the log file
 boolean General_LogInitialize(void)
 {
-	const char*	the_file_path = "wb2k_log.txt";
+	const char*		the_file_path = "wb2k_log.txt";
 
 	global_log_file = fopen( the_file_path, "w");
 	
@@ -758,9 +754,9 @@ void General_PrintBufferCharacters(char* the_data, unsigned short the_len)
 {
 	unsigned short	i;
 	unsigned short	bytes_out = 0;
-	char*	temp = the_data;
-	char	buffer[512];
-	char*	next_field = buffer;
+	char*			temp = the_data;
+	char			buffer[512];
+	char*			next_field = buffer;
 	
 	sprintf(next_field, "Buffer Print: ");
 	bytes_out += 14;
@@ -774,7 +770,7 @@ void General_PrintBufferCharacters(char* the_data, unsigned short the_len)
 		}
 		else
 		{
-			sprintf(next_field, "'%c' = %u,     ", (unsigned char)(*temp), (unsigned char)(*temp));
+			sprintf(next_field, "'%c' = %i,     ", (char)(*temp), (char)(*temp));
 		}
 		
 		bytes_out += 10;

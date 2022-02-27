@@ -35,15 +35,15 @@
 /*****************************************************************************/
 
 // A2560 OTHER
-#define EA_USER				(unsigned char*)0x020000	// start of user space. ie, put your program here.
-#define EA_STACK			(unsigned char*)0x080000	// stack location
+#define EA_USER				(char*)0x020000	// start of user space. ie, put your program here.
+#define EA_STACK			(char*)0x080000	// stack location
 
 // A2560 VICKY III
-#define VICKY				(unsigned char*)0xc40000	// vicky registers?
-#define TEXTA_RAM			(unsigned char*)0xc60000	// channel A text
-#define TEXTA_ATTR			(unsigned char*)0xc68000	// channel A attr
-#define TEXTB_RAM			(unsigned char*)0xca0000	// channel B text
-#define TEXTB_ATTR			(unsigned char*)0xca8000	// channel B attr
+#define VICKY				(char*)0xc40000	// vicky registers?
+#define TEXTA_RAM			(char*)0xc60000	// channel A text
+#define TEXTA_ATTR			(char*)0xc68000	// channel A attr
+#define TEXTB_RAM			(char*)0xca0000	// channel B text
+#define TEXTB_ATTR			(char*)0xca8000	// channel B attr
 
 // subtract 0xfe000000 from the UM map for Vicky (to get the old/morfe addresses)
 // size of some areas changed too:
@@ -68,13 +68,16 @@
 #define ID_CHANNEL_A			0	// for use in lib_text() calls, etc. 
 #define ID_CHANNEL_B			1	// for use in lib_text() calls, etc.
 
-//#define FONT_MEMORY_BANK0	(unsigned char*)0xAF8000	// $AF8000 - $AF87FF
-//#define FONT_MEMORY_BANK1	(unsigned char*)0xAF8800	// $AF8800 - $AF8FFF
+#define TEXT_FONT_WIDTH_A2650	8	// for text mode, the width of the fixed-sized font chars
+#define TEXT_FONT_HEIGHT_A2650	8	// for text mode, the height of the fixed-sized font chars. I believe this is supposed to be 16, but its 8 in morfe at the moment.
+
+//#define FONT_MEMORY_BANK0	(char*)0xAF8000	// $AF8000 - $AF87FF
+//#define FONT_MEMORY_BANK1	(char*)0xAF8800	// $AF8800 - $AF8FFF
 
 // from vicky3.go in morfe tho:
 //const FONT_MEMORY_BANK0           = 0x8000
-#define FONT_MEMORY_BANK0	(unsigned char*)0xc48000	// $AF8000 - $AF87FF
-#define FONT_MEMORY_BANK1	(unsigned char*)0xc48800	// $AF8800 - $AF8FFF
+#define FONT_MEMORY_BANK0	(char*)0xc48000	// $AF8000 - $AF87FF
+#define FONT_MEMORY_BANK1	(char*)0xc48800	// $AF8800 - $AF8FFF
 
 // gadget:
 // If it's the same as on the C256 line, each character consists of 8 bytes.  Upper left hand corner is the high-bit of byte zero, upper right is the low bit of byte zero, lower left is the high bit of byte 7, lower right is the low bit of byte 7.  The bytes are placed in memory from character zero to character 255, 0..7, 0..7, 0..7, etc.
@@ -153,8 +156,12 @@ typedef struct Screen
 	Rectangle		rect_;
 	unsigned short	text_cols_;
 	unsigned short	text_rows_;
-	unsigned char*	text_ram_;
-	unsigned char*	text_attr_ram_;
+	char*			text_ram_;
+	char*			text_attr_ram_;
+	signed int		text_font_height_;	// in text mode, the height in pixels for the fixed width font. Should be either 8 or 16, depending on which Foenix. used for calculating text fit.
+	signed int		text_font_width_;	// in text mode, the width in pixels for the fixed width font. Unlikely to be other than '8' with Foenix machines. used for calculating text fit.
+	char			text_temp_buffer_1_[TEXT_COL_COUNT_FOR_PLOTTING * TEXT_ROW_COUNT_FOR_PLOTTING + 1];	// general use temp buffer - do NOT use for real storage - any utility function clobber it
+	char			text_temp_buffer_2_[TEXT_COL_COUNT_FOR_PLOTTING * TEXT_ROW_COUNT_FOR_PLOTTING + 1];	// general use temp buffer - do NOT use for real storage - any utility function clobber it
 } Screen;
 
 
@@ -174,26 +181,32 @@ typedef enum
 /*****************************************************************************/
 // 
 // // pop up a requester box with message to user. var args are for the message. 
-// unsigned long General_ShowAlert(struct Window* the_window, const unsigned char* the_title, boolean is_error, boolean with_cancel, const char* message_format, ...);
-// 
-// // calculates how many characters of the passed string will fit into the passed rectangle
-// unsigned int General_TextFit(struct RastPort* the_rastport, unsigned char* the_string, unsigned int the_len, unsigned int the_width);
-// 
-// // format a string by wrapping and trimming to fit the passed width and height. returns number of vertical pixels required. passing a 0 for height disables the governor on allowed vertical space. if max_chars_to_format is less than len of string, processing will stop after that many characters.
-// unsigned int General_WrapAndTrimTextToFit(unsigned char** orig_string, unsigned char** formatted_string, unsigned int max_chars_to_format, struct RastPort*	the_rastport, unsigned int max_width, unsigned int max_height);
-// 
+// unsigned long General_ShowAlert(struct Window* the_window, const char* the_title, boolean is_error, boolean with_cancel, const char* message_format, ...);
+ 
+// calculates how many characters of the passed string will fit into the passed pixel width
+// TODO: adapt this to reference the currently selected screen font, once non-fixed width fonts are available (if ever)
+// returns -1 in any error condition
+signed int General_TextFit(struct Screen* the_screen, char* the_string, signed int the_len, signed int available_width);
+
+// Format a string by wrapping and trimming to fit the passed width and height. returns number of vertical pixels required. 
+// Passing a 0 for height disables the governor on allowed vertical space. 
+// If the string cannot be displayed in the specified height and width, processing will stop, but it is not an error condition
+// If max_chars_to_format is less than len of string, processing will stop after that many characters.
+// returns -1 in any error condition
+signed int General_WrapAndTrimTextToFit(struct Screen* the_screen, char** orig_string, char** formatted_string, signed int max_chars_to_format, signed int max_width, signed int max_height);
+ 
 // // draw a line in an intuition window
-// void General_DrawLine(struct RastPort* the_rastport, signed long x1, signed long y1, signed long x2, signed long y2, unsigned char the_color_pen);
+// void General_DrawLine(struct RastPort* the_rastport, signed long x1, signed long y1, signed long x2, signed long y2, char the_color_pen);
 // 
 // // draw a poly in an intuition window
-// void General_DrawPoly(struct RastPort* the_rastport, short num_coords, short* the_coordinates, unsigned char the_color_pen);
+// void General_DrawPoly(struct RastPort* the_rastport, short num_coords, short* the_coordinates, char the_color_pen);
 // 
 // // draw a rectangle in the rastport passed. If do_undraw is TRUE, try to undraw it (unimplemented TODO)
-// void General_DrawBox(struct RastPort* the_rastport, signed short x1, signed short y1, signed short x2, signed short y2, boolean do_undraw, unsigned char the_color_pen);
+// void General_DrawBox(struct RastPort* the_rastport, signed short x1, signed short y1, signed short x2, signed short y2, boolean do_undraw, char the_color_pen);
 // 
 // // checks a file exists without locking the file. tries to get a lock on the dir containing the file, then checks contents until it matches
 // // SLOW, and probably pointless, but struggling with issue of locks not unlocking when checking for existence of an icon file.
-// boolean General_CheckFileExists(unsigned char* the_file_path);
+// boolean General_CheckFileExists(char* the_file_path);
 // 
 // // return current date/time as a timestamp. 
 // struct DateStamp* General_GetCurrentDateStampWithAlloc(void);

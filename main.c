@@ -72,9 +72,9 @@ boolean font_test(void)
 	// alloc a block of memory for overwriting font data
 	// need 256 chars * 8 bytes each
 	
-	unsigned char*	the_new_font_data;
+	char*	the_new_font_data;
 	
-	if ( (the_new_font_data = (unsigned char*)calloc(256 * 8, sizeof(char)) ) == NULL)
+	if ( (the_new_font_data = (char*)calloc(256 * 8, sizeof(char)) ) == NULL)
 	{
 		return false;
 	}
@@ -85,7 +85,7 @@ boolean font_test(void)
 	
 	return true;
 	//Text_ShowFontChars(ID_CHANNEL_B);
-	//Text_UpdateFontData(ID_CHANNEL_B, (unsigned int*)0x000000);
+	//Text_UpdateFontData(ID_CHANNEL_B, (char*)0x000000);
 }
 
 
@@ -102,6 +102,11 @@ int main(int argc, char* argv[])
 	global_screen[ID_CHANNEL_A].text_rows_ = TEXTA_HEIGHT;
 	global_screen[ID_CHANNEL_A].text_ram_ = TEXTA_RAM;
 	global_screen[ID_CHANNEL_A].text_attr_ram_ = TEXTA_ATTR;
+	global_screen[ID_CHANNEL_A].text_font_height_ = TEXT_FONT_HEIGHT_A2650;
+	global_screen[ID_CHANNEL_A].text_font_width_ = TEXT_FONT_WIDTH_A2650;
+	global_screen[ID_CHANNEL_A].text_temp_buffer_1_[0] = '\0';
+	global_screen[ID_CHANNEL_A].text_temp_buffer_2_[0] = '\0';
+	
 
 	global_screen[ID_CHANNEL_B].id_ = ID_CHANNEL_B;
 	global_screen[ID_CHANNEL_B].rect_.MinX = 0;
@@ -112,11 +117,17 @@ int main(int argc, char* argv[])
 	global_screen[ID_CHANNEL_B].text_rows_ = TEXTB_HEIGHT;
 	global_screen[ID_CHANNEL_B].text_ram_ = TEXTB_RAM;
 	global_screen[ID_CHANNEL_B].text_attr_ram_ = TEXTB_ATTR;
-	
+	global_screen[ID_CHANNEL_B].text_font_height_ = TEXT_FONT_HEIGHT_A2650;
+	global_screen[ID_CHANNEL_B].text_font_width_ = TEXT_FONT_WIDTH_A2650;
+	global_screen[ID_CHANNEL_B].text_temp_buffer_1_[0] = '\0';
+	global_screen[ID_CHANNEL_B].text_temp_buffer_2_[0] = '\0';
+
+	//General_LogInitialize();
+
 	//printf("is this thing on?");
 
 #if defined(RUN_TESTS)
-	Text_RunTests();
+ 	Text_RunTests();
 #endif
 	
 	
