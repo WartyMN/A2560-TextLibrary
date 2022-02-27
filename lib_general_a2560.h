@@ -39,11 +39,15 @@
 #define EA_STACK			(char*)0x080000	// stack location
 
 // A2560 VICKY III
-#define VICKY				(char*)0xc40000	// vicky registers?
-#define TEXTA_RAM			(char*)0xc60000	// channel A text
-#define TEXTA_ATTR			(char*)0xc68000	// channel A attr
-#define TEXTB_RAM			(char*)0xca0000	// channel B text
-#define TEXTB_ATTR			(char*)0xca8000	// channel B attr
+#define VICKY					(char*)0xc40000	// vicky registers?
+#define TEXTA_RAM_A2560_MORFE	(char*)0xc60000	// channel A text
+#define TEXTA_ATTR_A2560_MORFE	(char*)0xc68000	// channel A attr
+#define TEXTB_RAM_A2560_MORFE	(char*)0xca0000	// channel B text
+#define TEXTB_ATTR_A2560_MORFE	(char*)0xca8000	// channel B attr
+#define TEXTA_RAM_A2560K		(char*)0xfec60000	// channel A text
+#define TEXTA_ATTR_A2560K		(char*)0xfec68000	// channel A attr
+#define TEXTB_RAM_A2560K		(char*)0xfeca0000	// channel B text
+#define TEXTB_ATTR_A2560K		(char*)0xfeca8000	// channel B attr
 
 // subtract 0xfe000000 from the UM map for Vicky (to get the old/morfe addresses)
 // size of some areas changed too:
@@ -76,8 +80,10 @@
 
 // from vicky3.go in morfe tho:
 //const FONT_MEMORY_BANK0           = 0x8000
-#define FONT_MEMORY_BANK0	(char*)0xc48000	// $AF8000 - $AF87FF
-#define FONT_MEMORY_BANK1	(char*)0xc48800	// $AF8800 - $AF8FFF
+#define FONT_MEMORY_BANK0_A2560_MORFE	(char*)0xc48000	// $AF8000 - $AF87FF
+#define FONT_MEMORY_BANK1_A2560_MORFE	(char*)0xc48800	// $AF8800 - $AF8FFF
+#define FONT_MEMORY_BANK0_A2560K		(char*)0xfec68000	//
+#define FONT_MEMORY_BANK1_A2560K		(char*)0xfec68000	// only 1 font bank on A2560K?
 
 // gadget:
 // If it's the same as on the C256 line, each character consists of 8 bytes.  Upper left hand corner is the high-bit of byte zero, upper right is the low bit of byte zero, lower left is the high bit of byte 7, lower right is the low bit of byte 7.  The bytes are placed in memory from character zero to character 255, 0..7, 0..7, 0..7, etc.
@@ -158,6 +164,8 @@ typedef struct Screen
 	unsigned short	text_rows_;
 	char*			text_ram_;
 	char*			text_attr_ram_;
+	char*			text_font0_ram_;	// 1K of memory holding font definitions. Some Foenix computers have 2 banks. Some only 1.
+	char*			text_font1_ram_;	// 1K of memory holding font definitions. Some Foenix computers have 2 banks. Some only 1.
 	signed int		text_font_height_;	// in text mode, the height in pixels for the fixed width font. Should be either 8 or 16, depending on which Foenix. used for calculating text fit.
 	signed int		text_font_width_;	// in text mode, the width in pixels for the fixed width font. Unlikely to be other than '8' with Foenix machines. used for calculating text fit.
 	char			text_temp_buffer_1_[TEXT_COL_COUNT_FOR_PLOTTING * TEXT_ROW_COUNT_FOR_PLOTTING + 1];	// general use temp buffer - do NOT use for real storage - any utility function clobber it

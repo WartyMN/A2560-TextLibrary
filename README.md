@@ -9,7 +9,7 @@ Web site: https://c256foenix.com/?v=3e8d115eb4b3
 This is a learning project for me, to build experience on the A2650. Aside from learning, the goal is to be able to build a library of functions that can be used to place characters, colors, strings, etc., on the screen, and to be able to query the screen about what is at a particular location. Think of it as a basic curses for the A2650 (but not at all related to curses, and using a completely different interface). 
 
 ## Status
-Non-functional, 5% complete.
+Building out functionality, 50% complete. No optimization done, no testing against hardware.
 I do not have any hardware yet. I'm doing all development against the "morfe" emulator, but that itself is also a tool in development. 
 
 ## Why you might want this:

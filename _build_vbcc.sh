@@ -62,11 +62,12 @@ mv stub_user.hex ../morfe/
 
 
 # cd $DEVA2560/f68-emulator/emulator/
-# nohup ./f68 $DEVA2560/lib_text/text.s28 &
+# nohup ./f68 $DEVA2560/lib_text/text.s28 go &
 
 #./f68 $DEVA2560/lib_text/text.s19
 #./f68 $DEVA2560/lib_text/text.s37
-#./f68 $DEVA2560/lib_text/text.ihex
+#./f68 $DEVA2560/lib_text/text.ihex go
+#./f68 $DEVA2560/morfe/text.hex go
 
 
 echo "VBCC build script complete\n"

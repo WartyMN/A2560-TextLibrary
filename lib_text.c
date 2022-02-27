@@ -482,7 +482,7 @@ boolean Text_FillCharMem(signed int the_screen_id, unsigned char the_fill)
 // this version uses char-by-char functions, so it is very slow.
 boolean Text_FillBoxSlow(signed int the_screen_id, signed int x1, signed int y1, signed int x2, signed int y2, unsigned char the_char, unsigned char fore_color, unsigned char back_color, text_draw_choice the_draw_choice)
 {
-	unsigned char dx;
+	signed int	dx;
 	
 	if (!Text_ValidateAll(the_screen_id, x1, y1,fore_color, back_color))
 	{
@@ -522,8 +522,8 @@ boolean Text_FillBoxSlow(signed int the_screen_id, signed int x1, signed int y1,
 // returns false on any error/invalid input.
 boolean Text_FillBox(signed int the_screen_id, signed int x1, signed int y1, signed int x2, signed int y2, unsigned char the_char, unsigned char fore_color, unsigned char back_color)
 {
-	unsigned char	dy;
-	unsigned char	dx;
+	signed int		dy;
+	signed int		dx;
 	unsigned char	the_attribute_value;
 	
 	if (!Text_ValidateAll(the_screen_id, x1, y1, fore_color, back_color))
@@ -560,8 +560,8 @@ boolean Text_FillBox(signed int the_screen_id, signed int x1, signed int y1, sig
 // returns false on any error/invalid input.
 boolean Text_FillBoxCharOnly(signed int the_screen_id, signed int x1, signed int y1, signed int x2, signed int y2, unsigned char the_char)
 {
-	unsigned char	dy;
-	unsigned char	dx;
+	signed int	dy;
+	signed int	dx;
 	
 	if (!Text_ValidateAll(the_screen_id, x1, y1, 0, 0))
 	{
@@ -593,8 +593,8 @@ boolean Text_FillBoxCharOnly(signed int the_screen_id, signed int x1, signed int
 // returns false on any error/invalid input.
 boolean Text_FillBoxAttrOnly(signed int the_screen_id, signed int x1, signed int y1, signed int x2, signed int y2, unsigned char fore_color, unsigned char back_color)
 {
-	unsigned char	dy;
-	unsigned char	dx;
+	signed int		dy;
+	signed int		dx;
 	unsigned char	the_attribute_value;
 	
 	if (!Text_ValidateAll(the_screen_id, x1, y1, 0, 0))
@@ -631,11 +631,11 @@ boolean Text_FillBoxAttrOnly(signed int the_screen_id, signed int x1, signed int
 // As this requires sampling each character cell, it is no faster to for entire screen as opposed to a subset box
 boolean Text_InvertBox(signed int the_screen_id, signed int x1, signed int y1, signed int x2, signed int y2)
 {
-	unsigned char	skip_len;
 	unsigned char	the_attribute_value;
 	unsigned char	the_inversed_value;
 	char*			the_write_loc;
 	signed int		the_col;
+	signed int		skip_len;
 	
 	if (!Text_ValidateAll(the_screen_id, x1, y1, 0, 0))
 	{
@@ -688,7 +688,7 @@ boolean Text_InvertBox(signed int the_screen_id, signed int x1, signed int y1, s
 boolean Text_UpdateFontData(signed int the_screen_id, char* new_font_data)
 {
 	// TEST: check the mem locs I have work in morfe.
-	memset(FONT_MEMORY_BANK0, 55, 8*256*1);
+	memset(global_screen[the_screen_id].text_font0_ram_, 55, 8*256*1);
 	// NO EFFECT: memset(FONT_MEMORY_BANK1, 255, 8*256*1);
 	// seems to be expected: apparently the second font is no longer a thing
 
@@ -698,7 +698,7 @@ boolean Text_UpdateFontData(signed int the_screen_id, char* new_font_data)
 // test function to display all 256 font characters
 boolean Text_ShowFontChars(signed int the_screen_id)
 {
-	unsigned char			the_char = 0;
+	unsigned char	the_char = 0;
 	char*			the_write_loc;
 	unsigned short	i;
 
@@ -749,7 +749,7 @@ boolean Text_SetCharAtXY(signed int the_screen_id, signed int x, signed int y, u
 // Set the attribute value at a specified x, y coord
 boolean Text_SetAttrAtXY(signed int the_screen_id, signed int x, signed int y, unsigned char fore_color, unsigned char back_color)
 {
-	char*	the_write_loc;
+	char*			the_write_loc;
 	unsigned char	the_attribute_value;
 	
 	if (!Text_ValidateAll(the_screen_id, x, y, fore_color, back_color))
@@ -772,7 +772,7 @@ boolean Text_SetAttrAtXY(signed int the_screen_id, signed int x, signed int y, u
 // Draw a char at a specified x, y coord, also setting the color attributes
 boolean Text_SetCharAndColorAtXY(signed int the_screen_id, signed int x, signed int y, unsigned char the_char, unsigned char fore_color, unsigned char back_color)
 {
-	char*	the_write_loc;
+	char*			the_write_loc;
 	unsigned char	the_attribute_value;
 	
 	if (!Text_ValidateAll(the_screen_id, x, y, fore_color, back_color))
@@ -803,7 +803,7 @@ boolean Text_SetCharAndColorAtXY(signed int the_screen_id, signed int x, signed 
 // Get the char at a specified x, y coord
 unsigned char Text_GetCharAtXY(signed int the_screen_id, signed int x, signed int y)
 {
-	char*	the_read_loc;
+	char*			the_read_loc;
 	unsigned char	the_char;
 	
 	if (!Text_ValidateAll(the_screen_id, x, y, 0, 0))
@@ -822,7 +822,7 @@ unsigned char Text_GetCharAtXY(signed int the_screen_id, signed int x, signed in
 // Get the attribute value at a specified x, y coord
 unsigned char Text_GetAttrAtXY(signed int the_screen_id, signed int x, signed int y)
 {
-	char*	the_read_loc;
+	char*			the_read_loc;
 	unsigned char	the_value;
 	
 	if (!Text_ValidateAll(the_screen_id, x, y, 0, 0))
@@ -841,7 +841,7 @@ unsigned char Text_GetAttrAtXY(signed int the_screen_id, signed int x, signed in
 // Get the foreground color at a specified x, y coord
 unsigned char Text_GetForeColorAtXY(signed int the_screen_id, signed int x, signed int y)
 {
-	char*	the_read_loc;
+	char*			the_read_loc;
 	unsigned char	the_value;
 	unsigned char	the_color;
 	
@@ -862,7 +862,7 @@ unsigned char Text_GetForeColorAtXY(signed int the_screen_id, signed int x, sign
 // Get the background color at a specified x, y coord
 unsigned char Text_GetBackColorAtXY(signed int the_screen_id, signed int x, signed int y)
 {
-	char*	the_read_loc;
+	char*			the_read_loc;
 	unsigned char	the_value;
 	unsigned char	the_color;
 	
@@ -967,8 +967,8 @@ boolean Text_DrawVLine(signed int the_screen_id, signed int x, signed int y, sig
 // draws a basic box based on 2 sets of coords, using the specified char and/or attribute for all cells
 boolean Text_DrawBoxCoords(signed int the_screen_id, signed int x1, signed int y1, signed int x2, signed int y2, unsigned char the_char, unsigned char fore_color, unsigned char back_color, text_draw_choice the_draw_choice)
 {
-	unsigned char dy;
-	unsigned char dx;
+	signed int	dy;
+	signed int	dx;
 	
 	if (!Text_ValidateAll(the_screen_id, x1, y1,fore_color, back_color))
 	{
@@ -1023,10 +1023,10 @@ boolean Text_DrawBoxCoords(signed int the_screen_id, signed int x1, signed int y
 // draws a box based on 2 sets of coords, using the predetermined line and corner "graphics", and the passed colors
 boolean Text_DrawBoxCoordsFancy(signed int the_screen_id, signed int x1, signed int y1, signed int x2, signed int y2, unsigned char fore_color, unsigned char back_color)
 {
-	unsigned char	dy;
-	unsigned char	dx;
+	signed int	dy;
+	signed int	dx;
 	
-	if (!Text_ValidateAll(the_screen_id, x1, y1,fore_color, back_color))
+	if (!Text_ValidateAll(the_screen_id, x1, y1, fore_color, back_color))
 	{
 		LOG_ERR(("%s %d: illegal screen id, coordinate, or color", __func__, __LINE__));
 		return false;
@@ -1138,7 +1138,7 @@ boolean Text_DrawStringAtXY(signed int the_screen_id, signed int x, signed int y
 {
 	char*			the_char_loc;
 	char*			the_attr_loc;
-	unsigned char			the_attribute_value;
+	unsigned char	the_attribute_value;
 	signed int		i;
 	signed int		max_col;
 	signed int		draw_len;
@@ -1247,7 +1247,7 @@ char*		the_temp = temp_buff;
 	// draw the string, one line at a time, until string is done or no more lines available
 	
 	//for (the_row = 0; the_row < num_rows; the_row++)
-	the_row = 0;
+	the_row = 1;
 	
 	do
 	{
