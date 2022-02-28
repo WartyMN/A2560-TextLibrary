@@ -688,7 +688,7 @@ boolean Text_InvertBox(signed int the_screen_id, signed int x1, signed int y1, s
 boolean Text_UpdateFontData(signed int the_screen_id, char* new_font_data)
 {
 	// TEST: check the mem locs I have work in morfe.
-	memset(global_screen[the_screen_id].text_font0_ram_, 55, 8*256*1);
+	memcpy(global_screen[the_screen_id].text_font0_ram_, new_font_data, 8*256*1);
 	// NO EFFECT: memset(FONT_MEMORY_BANK1, 255, 8*256*1);
 	// seems to be expected: apparently the second font is no longer a thing
 
