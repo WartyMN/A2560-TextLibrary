@@ -115,8 +115,8 @@ boolean Text_ValidateXY(signed int the_screen_id, signed int x, signed int y)
 	signed int		max_row;
 	signed int		max_col;
 	
-	max_col = global_screen[the_screen_id].text_cols_ - 1;
-	max_row = global_screen[the_screen_id].text_rows_ - 1;
+	max_col = global_screen[the_screen_id].text_cols_vis_ - 1;
+	max_row = global_screen[the_screen_id].text_rows_vis_ - 1;
 	
 	if (x < 0 || x > max_col || y < 0 || y > max_row)
 	{
@@ -137,22 +137,22 @@ char* Text_GetMemLocForXY(signed int the_screen_id, signed int x, signed int y, 
 	//   For plotting the VRAM, A2560 (or morfe?) uses a fixed with of 80 cols. 
 	//   So even if only 72 are showing, the screen is arranged from 0-71 for row 1, then 80-151 for row 2, etc. 
 	
-	//num_cols = global_screen[the_screen_id].text_cols_;
+	//num_cols = global_screen[the_screen_id].text_cols_vis_;
 	
-//	the_write_loc = global_screen[the_screen_id].text_ram_ + (TEXT_COL_COUNT_FOR_PLOTTING * y) + x;
+//	the_write_loc = global_screen[the_screen_id].text_ram_ + (global_screen[the_screen_id].text_mem_cols_ * y) + x;
 	//the_write_loc = global_screen[the_screen_id].text_ram_ + (num_cols * y) + x;
 	//DEBUG_OUT(("%s %d: screen=%i, x=%i, y=%i, num_cols=%i, calc=%i", __func__, __LINE__, (signed int)the_screen_id, x, y, num_cols, (num_cols * y) + x));
 	
 	if (for_attr)
 	{
-		the_write_loc = global_screen[the_screen_id].text_attr_ram_ + (TEXT_COL_COUNT_FOR_PLOTTING * y) + x;
+		the_write_loc = global_screen[the_screen_id].text_attr_ram_ + (global_screen[the_screen_id].text_mem_cols_ * y) + x;
 	}
 	else
 	{
-		the_write_loc = global_screen[the_screen_id].text_ram_ + (TEXT_COL_COUNT_FOR_PLOTTING * y) + x;
+		the_write_loc = global_screen[the_screen_id].text_ram_ + (global_screen[the_screen_id].text_mem_cols_ * y) + x;
 	}
 	
-	//DEBUG_OUT(("%s %d: screen=%i, x=%i, y=%i, for-attr=%i, calc=%i, loc=%p", __func__, __LINE__, (signed int)the_screen_id, x, y, for_attr, (TEXT_COL_COUNT_FOR_PLOTTING * y) + x, the_write_loc));
+	//DEBUG_OUT(("%s %d: screen=%i, x=%i, y=%i, for-attr=%i, calc=%i, loc=%p", __func__, __LINE__, (signed int)the_screen_id, x, y, for_attr, (global_screen[the_screen_id].text_mem_cols_ * y) + x, the_write_loc));
 	
 	return the_write_loc;
 }
@@ -175,7 +175,7 @@ boolean Text_FillMemory(signed int the_screen_id, boolean for_attr, unsigned cha
 		the_write_loc = global_screen[the_screen_id].text_ram_;
 	}
 
-	the_write_len = global_screen[the_screen_id].text_cols_ * global_screen[the_screen_id].text_rows_;
+	the_write_len = global_screen[the_screen_id].text_cols_vis_ * global_screen[the_screen_id].text_rows_vis_;
 	
 	memset(the_write_loc, the_fill, the_write_len);
 
@@ -202,8 +202,8 @@ boolean Text_FillMemoryBoxBoth(signed int the_screen_id, signed int x, signed in
 	{
 		memset(the_char_loc, the_char, width);
 		memset(the_attr_loc, the_attribute_value, width);
-		the_char_loc += TEXT_COL_COUNT_FOR_PLOTTING;
-		the_attr_loc += TEXT_COL_COUNT_FOR_PLOTTING;
+		the_char_loc += global_screen[the_screen_id].text_mem_cols_;
+		the_attr_loc += global_screen[the_screen_id].text_mem_cols_;
 	}
 			
 	return true;
@@ -226,7 +226,7 @@ boolean Text_FillMemoryBox(signed int the_screen_id, signed int x, signed int y,
 	for (; y <= max_row; y++)
 	{
 		memset(the_write_loc, the_fill, width);
-		the_write_loc += TEXT_COL_COUNT_FOR_PLOTTING;
+		the_write_loc += global_screen[the_screen_id].text_mem_cols_;
 	}
 			
 	return true;
@@ -257,7 +257,7 @@ boolean Text_CopyAttrMemToScreen(signed int the_screen_id, char* the_source_buff
 	}
 	
 	the_vram_loc = global_screen[the_screen_id].text_attr_ram_;
-	the_write_len = global_screen[the_screen_id].text_cols_ * global_screen[the_screen_id].text_rows_;
+	the_write_len = global_screen[the_screen_id].text_cols_vis_ * global_screen[the_screen_id].text_rows_vis_;
 	
 	memcpy(the_vram_loc, the_source_buffer, the_write_len);
 
@@ -278,7 +278,7 @@ boolean Text_CopyAttrMemFromScreen(signed int the_screen_id, char* the_target_bu
 	}
 	
 	the_vram_loc = global_screen[the_screen_id].text_attr_ram_;
-	the_write_len = global_screen[the_screen_id].text_cols_ * global_screen[the_screen_id].text_rows_;
+	the_write_len = global_screen[the_screen_id].text_cols_vis_ * global_screen[the_screen_id].text_rows_vis_;
 	
 	memcpy(the_target_buffer, the_vram_loc, the_write_len);
 
@@ -299,7 +299,7 @@ boolean Text_CopyCharMemToScreen(signed int the_screen_id, char* the_source_buff
 	}
 	
 	the_vram_loc = global_screen[the_screen_id].text_ram_;
-	the_write_len = global_screen[the_screen_id].text_cols_ * global_screen[the_screen_id].text_rows_;
+	the_write_len = global_screen[the_screen_id].text_cols_vis_ * global_screen[the_screen_id].text_rows_vis_;
 	
 	memcpy(the_vram_loc, the_source_buffer, the_write_len);
 
@@ -320,7 +320,7 @@ boolean Text_CopyCharMemFromScreen(signed int the_screen_id, char* the_target_bu
 	}
 	
 	the_vram_loc = global_screen[the_screen_id].text_ram_;
-	the_write_len = global_screen[the_screen_id].text_cols_ * global_screen[the_screen_id].text_rows_;
+	the_write_len = global_screen[the_screen_id].text_cols_vis_ * global_screen[the_screen_id].text_rows_vis_;
 	
 	memcpy(the_target_buffer, the_vram_loc, the_write_len);
 
@@ -357,8 +357,8 @@ boolean Text_CopyScreen(signed int the_screen_id, char* the_buffer, boolean to_s
 		the_vram_loc = global_screen[the_screen_id].text_ram_;
 	}
 	
-	//the_write_len = global_screen[the_screen_id].text_cols_ * global_screen[the_screen_id].text_rows_;
-	the_write_len = TEXT_COL_COUNT_FOR_PLOTTING * TEXT_ROW_COUNT_FOR_PLOTTING;
+	//the_write_len = global_screen[the_screen_id].text_cols_vis_ * global_screen[the_screen_id].text_rows_vis_;
+	the_write_len = global_screen[the_screen_id].text_mem_cols_ * global_screen[the_screen_id].text_mem_rows_;
 
 	if (to_screen)
 	{
@@ -409,7 +409,7 @@ boolean Text_CopyMemBox(signed int the_screen_id, char* the_buffer, signed int x
 // 	}
 
 	// get initial read/write locs
-	initial_offset = (TEXT_COL_COUNT_FOR_PLOTTING * y1) + x1;
+	initial_offset = (global_screen[the_screen_id].text_mem_cols_ * y1) + x1;
 	the_buffer_loc = the_buffer + initial_offset;
 
 	if (for_attr)
@@ -438,8 +438,8 @@ boolean Text_CopyMemBox(signed int the_screen_id, char* the_buffer, signed int x
 			memcpy(the_buffer_loc, the_vram_loc, the_write_len);
 		}
 		
-		the_buffer_loc += TEXT_COL_COUNT_FOR_PLOTTING;
-		the_vram_loc += TEXT_COL_COUNT_FOR_PLOTTING;
+		the_buffer_loc += global_screen[the_screen_id].text_mem_cols_;
+		the_vram_loc += global_screen[the_screen_id].text_mem_cols_;
 	}
 
 	return true;
@@ -659,7 +659,7 @@ boolean Text_InvertBox(signed int the_screen_id, signed int x1, signed int y1, s
 	the_write_loc = Text_GetMemLocForXY(the_screen_id, x1, y1, SCREEN_FOR_TEXT_ATTR);	
 	
 	// amount of cells to skip past once we have written the specified line len
-	skip_len = TEXT_COL_COUNT_FOR_PLOTTING - (x2 - x1) - 1;
+	skip_len = global_screen[the_screen_id].text_mem_cols_ - (x2 - x1) - 1;
 
 	for (; y1 <= y2; y1++)
 	{
@@ -1149,8 +1149,8 @@ boolean Text_DrawStringAtXY(signed int the_screen_id, signed int x, signed int y
 		return false;
 	}
 	
-	draw_len = General_Strnlen(the_string, TEXT_COL_COUNT_FOR_PLOTTING); // can't be wider than the screen anyway
-	max_col = global_screen[the_screen_id].text_cols_ - 1;
+	draw_len = General_Strnlen(the_string, global_screen[the_screen_id].text_mem_cols_); // can't be wider than the screen anyway
+	max_col = global_screen[the_screen_id].text_cols_vis_ - 1;
 	
 	if ( x + draw_len > max_col)
 	{
@@ -1223,7 +1223,7 @@ char*		the_temp = temp_buff;
 	max_pix_width = (x2 - x1 + 1) * global_screen[the_screen_id].text_font_width_;
 	max_pix_height = (y2 - y1 + 1) * global_screen[the_screen_id].text_font_height_;
 	
-	remaining_len = General_Strnlen(the_string, TEXT_COL_COUNT_FOR_PLOTTING * TEXT_ROW_COUNT_FOR_PLOTTING + 1); // can't be bigger than the screen (80x60=4800). +1 for terminator. 
+	remaining_len = General_Strnlen(the_string, global_screen[the_screen_id].text_mem_cols_ * global_screen[the_screen_id].text_mem_rows_ + 1); // can't be bigger than the screen (80x60=4800). +1 for terminator. 
 	orig_len = remaining_len;
 
 	//DEBUG_OUT(("%s %d: draw_len=%i, max_col=%i, x=%i", __func__, __LINE__, draw_len, max_col, x));
@@ -1286,8 +1286,8 @@ char*		the_temp = temp_buff;
 				remaining_string += this_write_len + 1; // skip past the actual \n char.
 				remaining_len -= (this_write_len + 1);
 		
-		the_char_loc += TEXT_COL_COUNT_FOR_PLOTTING;
-		the_attr_loc += TEXT_COL_COUNT_FOR_PLOTTING;		
+		the_char_loc += global_screen[the_screen_id].text_mem_cols_;
+		the_attr_loc += global_screen[the_screen_id].text_mem_cols_;		
 		the_row++;
 	} while (the_row < num_rows && this_line_len > 0);
 	

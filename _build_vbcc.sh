@@ -61,8 +61,8 @@ vasmm68k_mot -Fsrec -o stub_user.srec $DEVA2560/m68k-misc/stub_user.asm
 mv stub_user.hex ../morfe/
 
 
-# cd $DEVA2560/f68-emulator/emulator/
-# nohup ./f68 $DEVA2560/lib_text/text.s28 go &
+#cd $DEVA2560/f68-emulator/emulator/
+#./f68 $DEVA2560/lib_text/text.s28 go
 
 #./f68 $DEVA2560/lib_text/text.s19
 #./f68 $DEVA2560/lib_text/text.s37

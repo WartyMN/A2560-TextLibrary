@@ -44,6 +44,10 @@
 #define TEXTA_ATTR_A2560_MORFE	(char*)0xc68000	// channel A attr
 #define TEXTB_RAM_A2560_MORFE	(char*)0xca0000	// channel B text
 #define TEXTB_ATTR_A2560_MORFE	(char*)0xca8000	// channel B attr
+#define TEXTA_RAM_A2560U		(char*)0xb60000	// text (A2560U only has one video channel)
+#define TEXTA_ATTR_A2560U		(char*)0xb68000	// attr (A2560U only has one video channel)
+#define TEXTB_RAM_A2560U		(char*)0xb60000	// text (A2560U only has one video channel)
+#define TEXTB_ATTR_A2560U		(char*)0xb68000	// attr (A2560U only has one video channel)
 #define TEXTA_RAM_A2560K		(char*)0xfec60000	// channel A text
 #define TEXTA_ATTR_A2560K		(char*)0xfec68000	// channel A attr
 #define TEXTB_RAM_A2560K		(char*)0xfeca0000	// channel B text
@@ -56,13 +60,41 @@
 // btw, one thing to keep in mind is device-mem access granularity -- while in morfe you can do 8-32bit accesses, on the actual hw you will need to adhere to the area access granularity
 //  see user manual, the "SIZE" columns
 
-#define TEXTA_WIDTH			72	// channel A width
-#define TEXTA_HEIGHT		56	// channel A height
-#define TEXTB_WIDTH			80	// channel B width
-#define TEXTB_HEIGHT		60	// channel B height
+// c256foenix on 2/27:
+// I will have to look into that. Suffice to say that Channel A, has 2 Video Modes, 800x600 and 1024x768 with no doubling. Channel B has 6 modes, 640x480@60, 800x600@60 and 640x400@70 and with the equivalent Pixel Doubling, 320x240, 400x300 and 320x200. 
+// Now, in the K, for Channel A, to not be confusing (although I might have created what I was trying to avoid) and to not have competing Regiters bit with different function (from Channel B and A), I moved the Resolution selection bit to bit# (Something I have to check), but it is farther down the Control Register.
+// the Video mode bit for Channel A (that I call Auxiliary) would be bit 11 of the Control Register
+// assign Mstr_Ctrl_Video_Mode_PLL_Aux_o = VICKY_MASTER_REG1_RESYNC_AUX[2][11];
+// So, that is the bit that selects either 800x600 or 1024x768 and bit[9:8] are ignored.
 
-#define TEXT_COL_COUNT_FOR_PLOTTING		80	// regardless of visible cols (between borders), VRAM seems to be fixed at 80 cols across.
-#define TEXT_ROW_COUNT_FOR_PLOTTING		60	// regardless of visible rows (between borders), VRAM seems to be fixed at 60 rows up/down.
+//    so: 1024x768 = 128x96
+//    800x600 = 100x75
+//    640x480 = 80x60
+//    640x400 = 80x50
+//    400x300 = 50x37.5
+//    320x240 = 40x30
+//    320x200 = 40x25
+//    (these are all maximums, as borders can be configured, which reduces the number of usable rows/cols.)
+//
+// c256 foenix on 2/27:
+// To answer, in the traditional Text Mode (Channel B). When you are double pixel mode, everything is reajusted automatically. The Channel A doesn't have a text doubling mode (anymore). And the text matrix and FONT dimension are all manual (needs to be programmed). This is to allow the usage of different sizes of FONT.
+
+
+#define TEXTA_NUM_COLS_MORFE		72	// channel A width
+#define TEXTA_NUM_ROWS_MORFE		56	// channel A height
+#define TEXTB_NUM_COLS_MORFE		80	// channel B width
+#define TEXTB_NUM_ROWS_MORFE		60	// channel B height
+#define TEXTA_NUM_COLS_A2560K		100	// channel A width
+#define TEXTA_NUM_ROWS_A2560K		75	// channel A height
+#define TEXTB_NUM_COLS_A2560K		100	// channel B width
+#define TEXTB_NUM_ROWS_A2560K		75	// channel B height
+
+#define TEXT_COL_COUNT_FOR_PLOTTING_MORFE		80	// regardless of visible cols (between borders), VRAM seems to be fixed at 80 cols across.
+#define TEXT_ROW_COUNT_FOR_PLOTTING_MORFE		60	// regardless of visible rows (between borders), VRAM seems to be fixed at 60 rows up/down.
+#define TEXT_COL_COUNT_FOR_PLOTTING_A2560K		100	// regardless of visible cols (between borders), VRAM seems to be fixed at 80 cols across.
+#define TEXT_ROW_COUNT_FOR_PLOTTING_A2560K		75	// regardless of visible rows (between borders), VRAM seems to be fixed at 60 rows up/down.
+#define TEXT_COL_COUNT_FOR_PLOTTING		TEXT_COL_COUNT_FOR_PLOTTING_A2560K	// regardless of visible cols (between borders), VRAM seems to be fixed at 80 cols across.
+#define TEXT_ROW_COUNT_FOR_PLOTTING		TEXT_ROW_COUNT_FOR_PLOTTING_A2560K	// regardless of visible rows (between borders), VRAM seems to be fixed at 60 rows up/down.
 
 #define CHANNEL_A_WIDTH		576	// pixels in between the borders
 #define CHANNEL_A_HEIGHT	448	// pixels in between the borders
@@ -80,8 +112,10 @@
 
 // from vicky3.go in morfe tho:
 //const FONT_MEMORY_BANK0           = 0x8000
-#define FONT_MEMORY_BANK0_A2560_MORFE	(char*)0xc48000	// $AF8000 - $AF87FF
-#define FONT_MEMORY_BANK1_A2560_MORFE	(char*)0xc48800	// $AF8800 - $AF8FFF
+#define FONT_MEMORY_BANK0_A2560_MORFE	(char*)0xc48000		// $AF8000 - $AF87FF
+#define FONT_MEMORY_BANK1_A2560_MORFE	(char*)0xc48800		// $AF8800 - $AF8FFF
+#define FONT_MEMORY_BANK0_A2560U		(char*)0xb48000		//
+#define FONT_MEMORY_BANK1_A2560U		(char*)0xb48000		// only 1 font bank on A2560U?
 #define FONT_MEMORY_BANK0_A2560K		(char*)0xfec68000	//
 #define FONT_MEMORY_BANK1_A2560K		(char*)0xfec68000	// only 1 font bank on A2560K?
 
@@ -158,18 +192,22 @@ typedef struct Rectangle
 
 typedef struct Screen
 {
-	signed int		id_;
-	Rectangle		rect_;
-	unsigned short	text_cols_;
-	unsigned short	text_rows_;
+	signed int		id_;				// 0 for channel A, 1 for channel B. not all foenix's have 2 channels.
+	Rectangle		rect_;				// the x1, y1, > x2, y2 coordinates of the screen, taking into account any borders. 
+	signed int		width_;				// for the current resolution, the max horizontal pixel count 
+	signed int		height_;			// for the current resolution, the max vertical pixel count 
+	signed int		text_cols_vis_;		// accounting for borders, the number of visible columns on screen
+	signed int		text_rows_vis_;		// accounting for borders, the number of visible rows on screen
+	signed int		text_mem_cols_;		// for the current resolution, the total number of columns per row in VRAM. Use for plotting x,y 
+	signed int		text_mem_rows_;		// for the current resolution, the total number of rows per row in VRAM. Use for plotting x,y 
 	char*			text_ram_;
 	char*			text_attr_ram_;
 	char*			text_font0_ram_;	// 1K of memory holding font definitions. Some Foenix computers have 2 banks. Some only 1.
 	char*			text_font1_ram_;	// 1K of memory holding font definitions. Some Foenix computers have 2 banks. Some only 1.
 	signed int		text_font_height_;	// in text mode, the height in pixels for the fixed width font. Should be either 8 or 16, depending on which Foenix. used for calculating text fit.
 	signed int		text_font_width_;	// in text mode, the width in pixels for the fixed width font. Unlikely to be other than '8' with Foenix machines. used for calculating text fit.
-	char			text_temp_buffer_1_[TEXT_COL_COUNT_FOR_PLOTTING * TEXT_ROW_COUNT_FOR_PLOTTING + 1];	// general use temp buffer - do NOT use for real storage - any utility function clobber it
-	char			text_temp_buffer_2_[TEXT_COL_COUNT_FOR_PLOTTING * TEXT_ROW_COUNT_FOR_PLOTTING + 1];	// general use temp buffer - do NOT use for real storage - any utility function clobber it
+	char			text_temp_buffer_1_[TEXT_COL_COUNT_FOR_PLOTTING_A2560K * TEXT_ROW_COUNT_FOR_PLOTTING_A2560K + 1];	// todo: replace with pointer, and allocate space on resolution switch. general use temp buffer - do NOT use for real storage - any utility function clobber it
+	char			text_temp_buffer_2_[TEXT_COL_COUNT_FOR_PLOTTING_A2560K * TEXT_ROW_COUNT_FOR_PLOTTING_A2560K + 1];	// todo: replace with pointer, and allocate space on resolution switch. general use temp buffer - do NOT use for real storage - any utility function clobber it
 } Screen;
 
 
