@@ -311,7 +311,7 @@ boolean keyboard_test(void)
 int main(int argc, char* argv[])
 {
 
-#define __f68x 1	// undefine '__f68' if running in morfe or addresses will be wrong for morfe
+#define __f68 1	// undefine '__f68' if running in morfe or addresses will be wrong for morfe
 
 	// move to startup function
 	global_screen[ID_CHANNEL_A].id_ = ID_CHANNEL_A;
@@ -323,8 +323,8 @@ int main(int argc, char* argv[])
 	global_screen[ID_CHANNEL_A].rect_.MinY = 0;
 	
 	#ifdef __f68
-		global_screen[ID_CHANNEL_A].width_ = 1024;	
-		global_screen[ID_CHANNEL_A].height_ = 768;
+		global_screen[ID_CHANNEL_A].width_ = 800;	
+		global_screen[ID_CHANNEL_A].height_ = 600;
 		global_screen[ID_CHANNEL_A].text_ram_ = TEXTA_RAM_A2560K;
 		global_screen[ID_CHANNEL_A].text_attr_ram_ = TEXTA_ATTR_A2560K;
 		global_screen[ID_CHANNEL_A].text_font0_ram_ = FONT_MEMORY_BANK0_A2560K;
