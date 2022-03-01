@@ -503,38 +503,8 @@ MU_TEST(text_test_fancy_box)
 // 	the_message = General_StrlcpyWithAlloc((char*)"\n\n\nLINE ONE\n\nLINE TWO", 80*60+1);
 //  	the_message = General_StrlcpyWithAlloc((char*)"THISISAREALLYBIGWORDBIGGERTHANANYYOUCANTHINK_OF_OR_AT_LEAST_I_THINK_SO", 80*60+1);
 
-	// medium box on chan B
-	x1 = 12;
-	y1 = 4;
-	x2 = 68;
-	y2 = 51;
 
-	mu_assert( Text_FillBox(ID_CHANNEL_B, x1+1, y1+1, x2-1, y2-1, CH_CHECKERED3, FG_COLOR_LT_GRAY, BG_COLOR_WHITE) == true, "Text_FillBox failed" );
- 	mu_assert(Text_DrawBoxCoordsFancy(ID_CHANNEL_B, x1, y1, x2, y2, FG_COLOR_LT_GRAY, BG_COLOR_DK_GRAY) == true, "Text_DrawBoxCoordsFancy failed" );
-
-	x1 = 13;
-	y1 = 5;
-	x2 = 67;
-	y2 = 50;
-  	mu_assert(Text_DrawStringInBox(ID_CHANNEL_B, x1, y1, x2, y2, the_message, FG_COLOR_BLACK, BG_COLOR_WHITE) == true, "Text_DrawStringInBox failed" );
-
-	// small box on chan B
-	x1 = 39;
-	y1 = 19;
-	x2 = 71;
-	y2 = 41;
-
-	mu_assert( Text_FillBox(ID_CHANNEL_B, x1+1, y1+1, x2-1, y2-1, CH_CHECKERED1, BG_COLOR_CYAN, BG_COLOR_DK_BLUE) == true, "Text_FillBox failed" );
- 	mu_assert(Text_DrawBoxCoordsFancy(ID_CHANNEL_B, x1, y1, x2, y2, FG_COLOR_LT_GRAY, BG_COLOR_BLACK) == true, "Text_DrawBoxCoordsFancy failed" );
-	
-	x1 = 40;
-	y1 = 20;
-	x2 = 70;
-	y2 = 40;
-  	mu_assert(Text_DrawStringInBox(ID_CHANNEL_B, x1, y1, x2, y2, the_message, FG_COLOR_WHITE, BG_COLOR_BLACK) == true, "Text_DrawStringInBox failed" );
-
-
-	// draw on channel A screen
+	// draw huge on channel A screen
 	x1 = 2;
 	y1 = 2;
 	x2 = 98;
@@ -546,6 +516,38 @@ MU_TEST(text_test_fancy_box)
 	y1 = 3;
 	x2 = 97;
 	y2 = 72;
+  	mu_assert(Text_DrawStringInBox(ID_CHANNEL_A, x1, y1, x2, y2, the_message, FG_COLOR_WHITE, BG_COLOR_BLACK) == true, "Text_DrawStringInBox failed" );
+
+
+	// medium box on chan B
+	x1 = 12;
+	y1 = 4;
+	x2 = 68;
+	y2 = 51;
+
+	mu_assert( Text_FillBox(ID_CHANNEL_A, x1+1, y1+1, x2-1, y2-1, CH_CHECKERED3, FG_COLOR_LT_GRAY, BG_COLOR_WHITE) == true, "Text_FillBox failed" );
+ 	mu_assert(Text_DrawBoxCoordsFancy(ID_CHANNEL_A, x1, y1, x2, y2, FG_COLOR_LT_GRAY, BG_COLOR_DK_GRAY) == true, "Text_DrawBoxCoordsFancy failed" );
+
+	x1 = 13;
+	y1 = 5;
+	x2 = 67;
+	y2 = 50;
+  	mu_assert(Text_DrawStringInBox(ID_CHANNEL_A, x1, y1, x2, y2, the_message, FG_COLOR_BLACK, BG_COLOR_WHITE) == true, "Text_DrawStringInBox failed" );
+
+
+	// small box on chan B
+	x1 = 39;
+	y1 = 19;
+	x2 = 71;
+	y2 = 41;
+
+	mu_assert( Text_FillBox(ID_CHANNEL_A, x1+1, y1+1, x2-1, y2-1, CH_CHECKERED1, BG_COLOR_CYAN, BG_COLOR_DK_BLUE) == true, "Text_FillBox failed" );
+ 	mu_assert(Text_DrawBoxCoordsFancy(ID_CHANNEL_A, x1, y1, x2, y2, FG_COLOR_LT_GRAY, BG_COLOR_BLACK) == true, "Text_DrawBoxCoordsFancy failed" );
+	
+	x1 = 40;
+	y1 = 20;
+	x2 = 70;
+	y2 = 40;
   	mu_assert(Text_DrawStringInBox(ID_CHANNEL_A, x1, y1, x2, y2, the_message, FG_COLOR_WHITE, BG_COLOR_BLACK) == true, "Text_DrawStringInBox failed" );
 
 }

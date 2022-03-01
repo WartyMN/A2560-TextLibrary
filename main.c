@@ -208,8 +208,15 @@ boolean font_replace_test2(void)
 	
 	unsigned char*	the_new_font_data = testfont;
 	
-	if ( Text_UpdateFontData(ID_CHANNEL_A, the_new_font_data))
+	if ( Text_UpdateFontData(ID_CHANNEL_A, (char*)the_new_font_data) == false)
 	{
+		DEBUG_OUT(("%s %d: Failed to update font data for Channel A", __func__, __LINE__));
+		return false;
+	}
+
+	if ( Text_UpdateFontData(ID_CHANNEL_B, (char*)the_new_font_data) == false)
+	{
+		DEBUG_OUT(("%s %d: Failed to update font data for Channel B", __func__, __LINE__));
 		return false;
 	}
 
@@ -250,7 +257,8 @@ boolean keyboard_test(void)
 	boolean					stop = false;
 	signed int				y = 30;
 	
-	Text_DrawStringAtXY(ID_CHANNEL_A, 0, y++, (char*)"Trying to open keyboard device...", FG_COLOR_DK_BLUE, BG_COLOR_YELLOW);
+// 	Text_DrawStringAtXY(ID_CHANNEL_B, 0, y++, (char*)"Trying to open keyboard device...", FG_COLOR_DK_BLUE, BG_COLOR_YELLOW);
+	DEBUG_OUT(("%s %d: Trying to open keyboard device...", __func__, __LINE__));
 	
 	// open keyboard console for reading. Console is on device 0 and 1. 
 	the_channel_id = sys_chan_open(the_device_id, (unsigned char*)"", 1);
@@ -258,26 +266,31 @@ boolean keyboard_test(void)
 	if (the_channel_id < 0)
 	{
 		//DEBUG_OUT(("%s %d: Failed to open channel for device %i. Error# %i", __func__, __LINE__, the_device_id, the_channel_id));
-		Text_DrawStringAtXY(ID_CHANNEL_A, 0, y++, (char*)"Failed to open keyboard device", FG_COLOR_DK_BLUE, BG_COLOR_YELLOW);
-		return false;
+		//Text_DrawStringAtXY(ID_CHANNEL_A, 0, y++, (char*)"Failed to open keyboard device", FG_COLOR_DK_BLUE, BG_COLOR_YELLOW);
+		DEBUG_OUT(("%s %d: Failed to open keyboard device. proceeding anyway...", __func__, __LINE__));
+// 		return false;
 	}
 	else
 	{
-		Text_DrawStringAtXY(ID_CHANNEL_A, 0, y++, (char*)"Opened keyboard device", FG_COLOR_DK_BLUE, BG_COLOR_YELLOW);
+		//Text_DrawStringAtXY(ID_CHANNEL_A, 0, y++, (char*)"Opened keyboard device", FG_COLOR_DK_BLUE, BG_COLOR_YELLOW);
+		DEBUG_OUT(("%s %d: Opened keyboard device", __func__, __LINE__));
 	}
 	
 	sys_chan_flush(the_channel_id);
 	
-	Text_DrawStringAtXY(ID_CHANNEL_A, 0, y++, (char*)"flushed channel", FG_COLOR_DK_BLUE, BG_COLOR_YELLOW);
+	//Text_DrawStringAtXY(ID_CHANNEL_A, 0, y++, (char*)"flushed channel", FG_COLOR_DK_BLUE, BG_COLOR_YELLOW);
+	DEBUG_OUT(("%s %d: Flushed channel", __func__, __LINE__));
 
 	if ( ((sys_chan_status(the_channel_id) & CDEV_STAT_ERROR) == 1) )
 	{
-		Text_DrawStringAtXY(ID_CHANNEL_A, 0, y++, (char*)"channel status had error (0x01)", FG_COLOR_DK_BLUE, BG_COLOR_YELLOW);
+		//Text_DrawStringAtXY(ID_CHANNEL_A, 0, y++, (char*)"channel status had error (0x01)", FG_COLOR_DK_BLUE, BG_COLOR_YELLOW);
+		DEBUG_OUT(("%s %d: channel status had error (0x01)", __func__, __LINE__));
 		return false;
 	}
 	else
 	{
-		Text_DrawStringAtXY(ID_CHANNEL_A, 0, y++, (char*)"channel status says no error condition", FG_COLOR_DK_BLUE, BG_COLOR_YELLOW);
+		//Text_DrawStringAtXY(ID_CHANNEL_A, 0, y++, (char*)"channel status says no error condition", FG_COLOR_DK_BLUE, BG_COLOR_YELLOW);
+		DEBUG_OUT(("%s %d: channel status says no error condition", __func__, __LINE__));
 	}
 	
 	// read and type characters to screen until there is an channel error, or the char typed is tab
@@ -327,8 +340,7 @@ int main(int argc, char* argv[])
 		global_screen[ID_CHANNEL_A].height_ = 768;
 		global_screen[ID_CHANNEL_A].text_ram_ = TEXTA_RAM_A2560K;
 		global_screen[ID_CHANNEL_A].text_attr_ram_ = TEXTA_ATTR_A2560K;
-		global_screen[ID_CHANNEL_A].text_font0_ram_ = FONT_MEMORY_BANK0_A2560K;
-		global_screen[ID_CHANNEL_A].text_font1_ram_ = FONT_MEMORY_BANK0_A2560K;
+		global_screen[ID_CHANNEL_A].text_font_ram_ = FONT_MEMORY_BANKA_A2560K;
 		global_screen[ID_CHANNEL_A].text_mem_cols_ = global_screen[ID_CHANNEL_A].width_ / global_screen[ID_CHANNEL_A].text_font_width_;
 		global_screen[ID_CHANNEL_A].text_mem_rows_ = global_screen[ID_CHANNEL_A].height_ / global_screen[ID_CHANNEL_A].text_font_height_;
 		global_screen[ID_CHANNEL_A].text_cols_vis_ = global_screen[ID_CHANNEL_A].text_mem_cols_ - 8; // how morfe has it defined. just guessing for f68
@@ -338,8 +350,7 @@ int main(int argc, char* argv[])
 		global_screen[ID_CHANNEL_A].height_ = 480;	
 		global_screen[ID_CHANNEL_A].text_ram_ = TEXTA_RAM_A2560_MORFE;
 		global_screen[ID_CHANNEL_A].text_attr_ram_ = TEXTA_ATTR_A2560_MORFE;
-		global_screen[ID_CHANNEL_A].text_font0_ram_ = FONT_MEMORY_BANK0_A2560_MORFE;
-		global_screen[ID_CHANNEL_A].text_font1_ram_ = FONT_MEMORY_BANK0_A2560_MORFE;	
+		global_screen[ID_CHANNEL_A].text_font_ram_ = FONT_MEMORY_BANKA_A2560_MORFE;
 		global_screen[ID_CHANNEL_A].text_mem_cols_ = global_screen[ID_CHANNEL_A].width_ / global_screen[ID_CHANNEL_A].text_font_width_;
 		global_screen[ID_CHANNEL_A].text_mem_rows_ = global_screen[ID_CHANNEL_A].height_ / global_screen[ID_CHANNEL_A].text_font_height_;
 		global_screen[ID_CHANNEL_A].text_cols_vis_ = global_screen[ID_CHANNEL_A].text_mem_cols_ - 8; // how morfe has it defined
@@ -362,8 +373,7 @@ int main(int argc, char* argv[])
 		global_screen[ID_CHANNEL_B].height_ = 480;	
 		global_screen[ID_CHANNEL_B].text_ram_ = TEXTB_RAM_A2560K;
 		global_screen[ID_CHANNEL_B].text_attr_ram_ = TEXTB_ATTR_A2560K;
-		global_screen[ID_CHANNEL_B].text_font0_ram_ = FONT_MEMORY_BANK0_A2560K;
-		global_screen[ID_CHANNEL_B].text_font1_ram_ = FONT_MEMORY_BANK0_A2560K;
+		global_screen[ID_CHANNEL_B].text_font_ram_ = FONT_MEMORY_BANKB_A2560K;
 		global_screen[ID_CHANNEL_B].text_mem_cols_ = global_screen[ID_CHANNEL_B].width_ / global_screen[ID_CHANNEL_B].text_font_width_;
 		global_screen[ID_CHANNEL_B].text_mem_rows_ = global_screen[ID_CHANNEL_B].height_ / global_screen[ID_CHANNEL_B].text_font_height_;
 		global_screen[ID_CHANNEL_B].text_cols_vis_ = global_screen[ID_CHANNEL_B].text_mem_cols_ - 0; // how morfe has it defined. just guessing for f68
@@ -373,8 +383,7 @@ int main(int argc, char* argv[])
 		global_screen[ID_CHANNEL_B].height_ = 480;	
 		global_screen[ID_CHANNEL_B].text_ram_ = TEXTB_RAM_A2560_MORFE;
 		global_screen[ID_CHANNEL_B].text_attr_ram_ = TEXTB_ATTR_A2560_MORFE;
-		global_screen[ID_CHANNEL_B].text_font0_ram_ = FONT_MEMORY_BANK0_A2560_MORFE;
-		global_screen[ID_CHANNEL_B].text_font1_ram_ = FONT_MEMORY_BANK0_A2560_MORFE;	
+		global_screen[ID_CHANNEL_B].text_font_ram_ = FONT_MEMORY_BANKB_A2560_MORFE;
 		global_screen[ID_CHANNEL_B].text_mem_cols_ = global_screen[ID_CHANNEL_B].width_ / global_screen[ID_CHANNEL_B].text_font_width_;
 		global_screen[ID_CHANNEL_B].text_mem_rows_ = global_screen[ID_CHANNEL_B].height_ / global_screen[ID_CHANNEL_B].text_font_height_;
 		global_screen[ID_CHANNEL_B].text_cols_vis_ = global_screen[ID_CHANNEL_B].text_mem_cols_ - 0; // how morfe has it defined
@@ -385,7 +394,7 @@ int main(int argc, char* argv[])
 
 	//printf("is this thing on?");
 	
-	//	keyboard_test();
+	//keyboard_test();
 
 	font_replace_test2();
 	

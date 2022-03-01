@@ -112,12 +112,12 @@
 
 // from vicky3.go in morfe tho:
 //const FONT_MEMORY_BANK0           = 0x8000
-#define FONT_MEMORY_BANK0_A2560_MORFE	(char*)0xc48000		// $AF8000 - $AF87FF
-#define FONT_MEMORY_BANK1_A2560_MORFE	(char*)0xc48800		// $AF8800 - $AF8FFF
-#define FONT_MEMORY_BANK0_A2560U		(char*)0xb48000		//
-#define FONT_MEMORY_BANK1_A2560U		(char*)0xb48000		// only 1 font bank on A2560U?
-#define FONT_MEMORY_BANK0_A2560K		(char*)0xfec48000	//
-#define FONT_MEMORY_BANK1_A2560K		(char*)0xfec48800	// only 1 font bank on A2560K?
+#define FONT_MEMORY_BANKA_A2560_MORFE	(char*)0xc48000		// $AF8000 - $AF87FF
+#define FONT_MEMORY_BANKB_A2560_MORFE	(char*)0xc48800		// $AF8800 - $AF8FFF
+#define FONT_MEMORY_BANKA_A2560U		(char*)0xb48000		// needs update
+#define FONT_MEMORY_BANKB_A2560U		(char*)0xb48000		// needs update
+#define FONT_MEMORY_BANKA_A2560K		(char*)0xfec48000	// chan A
+#define FONT_MEMORY_BANKB_A2560K		(char*)0xfec88000	// chan B
 
 // gadget:
 // If it's the same as on the C256 line, each character consists of 8 bytes.  Upper left hand corner is the high-bit of byte zero, upper right is the low bit of byte zero, lower left is the high bit of byte 7, lower right is the low bit of byte 7.  The bytes are placed in memory from character zero to character 255, 0..7, 0..7, 0..7, etc.
@@ -202,8 +202,7 @@ typedef struct Screen
 	signed int		text_mem_rows_;		// for the current resolution, the total number of rows per row in VRAM. Use for plotting x,y 
 	char*			text_ram_;
 	char*			text_attr_ram_;
-	char*			text_font0_ram_;	// 1K of memory holding font definitions. Some Foenix computers have 2 banks. Some only 1.
-	char*			text_font1_ram_;	// 1K of memory holding font definitions. Some Foenix computers have 2 banks. Some only 1.
+	char*			text_font_ram_;		// 2K of memory holding font definitions.
 	signed int		text_font_height_;	// in text mode, the height in pixels for the fixed width font. Should be either 8 or 16, depending on which Foenix. used for calculating text fit.
 	signed int		text_font_width_;	// in text mode, the width in pixels for the fixed width font. Unlikely to be other than '8' with Foenix machines. used for calculating text fit.
 	char			text_temp_buffer_1_[TEXT_COL_COUNT_FOR_PLOTTING_A2560K * TEXT_ROW_COUNT_FOR_PLOTTING_A2560K + 1];	// todo: replace with pointer, and allocate space on resolution switch. general use temp buffer - do NOT use for real storage - any utility function clobber it
