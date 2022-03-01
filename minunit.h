@@ -127,9 +127,9 @@ static void (*minunit_teardown)(void) = NULL;
 	printf("\n\n%d tests, %d assertions, %d failures\n", minunit_run, minunit_assert, minunit_fail);\
 	minunit_end_real_timer = mu_timer_real();\
 	minunit_end_proc_timer = mu_timer_cpu();\
-	printf("\nFinished in %li ticks (real) %li ticks (proc)\n\n",\
+	printf("\nFinished in %li ticks (real) %.8f seconds (real)\n\n",\
 		minunit_end_real_timer - minunit_real_timer,\
-		minunit_end_proc_timer - minunit_proc_timer);\
+		(double)(minunit_end_real_timer - minunit_real_timer)/SYS_TICKS_PER_SEC);\
 )
 #define MU_EXIT_CODE minunit_fail
 
@@ -178,21 +178,21 @@ static void (*minunit_teardown)(void) = NULL;
 	}\
 )
 
-// #define mu_assert_double_eq(expected, result) MU__SAFE_BLOCK(\
-// 	double minunit_tmp_e;\
-// 	double minunit_tmp_r;\
-// 	minunit_assert++;\
-// 	minunit_tmp_e = (expected);\
-// 	minunit_tmp_r = (result);\
-// 	if (fabs(minunit_tmp_e-minunit_tmp_r) > MINUNIT_EPSILON) {\
-// 		int minunit_significant_figures = 1 - log10(MINUNIT_EPSILON);\
-// 		sprintf(minunit_last_message, "%s failed:\n\t%s:%d: %.*g expected but was %.*g", __func__, __FILE__, __LINE__, minunit_significant_figures, minunit_tmp_e, minunit_significant_figures, minunit_tmp_r);\
-// 		minunit_status = 1;\
-// 		return;\
-// 	} else {\
-// 		printf(".");\
-// 	}\
-// )
+#define mu_assert_double_eq(expected, result) MU__SAFE_BLOCK(\
+	double minunit_tmp_e;\
+	double minunit_tmp_r;\
+	minunit_assert++;\
+	minunit_tmp_e = (expected);\
+	minunit_tmp_r = (result);\
+	if (fabs(minunit_tmp_e-minunit_tmp_r) > MINUNIT_EPSILON) {\
+		int minunit_significant_figures = 1 - log10(MINUNIT_EPSILON);\
+		sprintf(minunit_last_message, "%s failed:\n\t%s:%d: %.*g expected but was %.*g", __func__, __FILE__, __LINE__, minunit_significant_figures, minunit_tmp_e, minunit_significant_figures, minunit_tmp_r);\
+		minunit_status = 1;\
+		return;\
+	} else {\
+		printf(".");\
+	}\
+)
 
 #define mu_assert_string_eq(expected, result) MU__SAFE_BLOCK(\
 	const char* minunit_tmp_e = expected;\
@@ -231,11 +231,9 @@ static long mu_timer_real(void)
 	// A2650
 	long		the_ticks;
 
-// 	the_ticks = sys_time_jiffies();
-// 	printf("\nticks: %li ticks\n", the_ticks);
+	the_ticks = sys_time_jiffies();
 	
-//  	return the_ticks;
-	return 1;
+ 	return the_ticks;
 }
 
 /**

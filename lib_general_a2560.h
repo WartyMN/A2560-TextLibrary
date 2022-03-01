@@ -128,7 +128,7 @@
 // beethead:
 // The 2nd font was removed when the U line came in since it was not being used.  Atleast on the C256's.
 
-
+#define SYS_TICKS_PER_SEC		60	// per syscalls.h in MCP, "a jiffie is 1/60 of a second."
 
 
 
