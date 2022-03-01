@@ -124,13 +124,13 @@
 #define CH_CHECKERED2	(unsigned char)0xB1
 #define CH_CHECKERED3	(unsigned char)0xB2
 #define CH_SOLID		(unsigned char)0xDB	// inverse space
-#define CH_WALL_H		(unsigned char)0xCD
-#define CH_WALL_V		(unsigned char)0xBA
-#define CH_WALL_UL		(unsigned char)0xC9
-#define CH_WALL_UR		(unsigned char)0xBB
-#define CH_WALL_LL		(unsigned char)0xC8
-#define CH_WALL_LR		(unsigned char)0xBC
-#define CH_INTERSECT	(unsigned char)0xCE
+#define CH_WALL_H		(unsigned char)0xC4
+#define CH_WALL_V		(unsigned char)0xB3
+#define CH_WALL_UL		(unsigned char)0xDA
+#define CH_WALL_UR		(unsigned char)0xBF
+#define CH_WALL_LL		(unsigned char)0xC0
+#define CH_WALL_LR		(unsigned char)0xD9
+#define CH_INTERSECT	(unsigned char)0xC5
 #define CH_SMILEY1		(unsigned char)0x01 // 
 #define CH_SMILEY2		(unsigned char)0x02 // 
 #define CH_HEART		(unsigned char)0x03 // 

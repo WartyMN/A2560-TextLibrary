@@ -116,8 +116,8 @@
 #define FONT_MEMORY_BANK1_A2560_MORFE	(char*)0xc48800		// $AF8800 - $AF8FFF
 #define FONT_MEMORY_BANK0_A2560U		(char*)0xb48000		//
 #define FONT_MEMORY_BANK1_A2560U		(char*)0xb48000		// only 1 font bank on A2560U?
-#define FONT_MEMORY_BANK0_A2560K		(char*)0xfec68000	//
-#define FONT_MEMORY_BANK1_A2560K		(char*)0xfec68000	// only 1 font bank on A2560K?
+#define FONT_MEMORY_BANK0_A2560K		(char*)0xfec48000	//
+#define FONT_MEMORY_BANK1_A2560K		(char*)0xfec48800	// only 1 font bank on A2560K?
 
 // gadget:
 // If it's the same as on the C256 line, each character consists of 8 bytes.  Upper left hand corner is the high-bit of byte zero, upper right is the low bit of byte zero, lower left is the high bit of byte 7, lower right is the low bit of byte 7.  The bytes are placed in memory from character zero to character 255, 0..7, 0..7, 0..7, etc.
