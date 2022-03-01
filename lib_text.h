@@ -59,26 +59,24 @@
 #define SCREEN_COPY_TO_SCREEN	true	// param for functions doing block copy to/from screen / off-screen buffer
 #define SCREEN_COPY_FROM_SCREEN	false	// param for functions doing block copy to/from screen / off-screen buffer
 
-// these are from my C-128 code, but they match up to what is shown in the VICKY II wiki page
-//   https://wiki.c256foenix.com/index.php?title=VICKY_II
-//   probably makes them the default colors
+// based on observations in morfe:
 #define COLOR_BLACK				(unsigned char)0x00
-#define COLOR_WHITE				(unsigned char)0x01
-#define COLOR_RED				(unsigned char)0x02
-#define COLOR_CYAN				(unsigned char)0x03
-#define COLOR_VIOLET			(unsigned char)0x04
-#define COLOR_GREEN				(unsigned char)0x05
-#define COLOR_BLUE				(unsigned char)0x06
-#define COLOR_YELLOW			(unsigned char)0x07
-#define COLOR_ORANGE			(unsigned char)0x08
-#define COLOR_BROWN				(unsigned char)0x09
-#define COLOR_LIGHTRED          (unsigned char)0x0A
-#define COLOR_GRAY1             (unsigned char)0x0B
-#define COLOR_GRAY2             (unsigned char)0x0C
-#define COLOR_LIGHTGREEN        (unsigned char)0x0D
-#define COLOR_LIGHTBLUE         (unsigned char)0x0E
-#define COLOR_GRAY3             (unsigned char)0x0F
-//.... BUT... at least in morfe, vicky2/text_lug.go is defined differently:
+#define COLOR_DK_RED			(unsigned char)0x01
+#define COLOR_DK_GREEN			(unsigned char)0x02
+#define COLOR_DK_YELLOW			(unsigned char)0x03
+#define COLOR_DK_BLUE			(unsigned char)0x04
+#define COLOR_ORANGE			(unsigned char)0x05
+#define COLOR_DK_CYAN			(unsigned char)0x06
+#define COLOR_LT_GRAY			(unsigned char)0x07
+#define COLOR_DK_GRAY			(unsigned char)0x08
+#define COLOR_RED				(unsigned char)0x09
+#define COLOR_GREEN				(unsigned char)0x0A
+#define COLOR_YELLOW			(unsigned char)0x0B
+#define COLOR_BLUE				(unsigned char)0x0C
+#define COLOR_VIOLET			(unsigned char)0x0D
+#define COLOR_CYAN				(unsigned char)0x0E
+#define COLOR_WHITE				(unsigned char)0x0F
+// I believe foreground and background colors can be defined differently, but from testing on morfe, they seem to be the same at least by default.
 #define FG_COLOR_BLACK			(unsigned char)0x00
 #define FG_COLOR_DK_RED			(unsigned char)0x01
 #define FG_COLOR_DK_GREEN		(unsigned char)0x02
