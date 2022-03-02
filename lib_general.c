@@ -672,6 +672,9 @@ void General_LogError(const char* format, ...)
 	va_end(args);
 
 	printf("%s %s\n", kDebugFlag[LogError], debug_buffer);
+
+	// f68 emulator has a log to console feature:
+	*((long *)-4) = (long)&debug_buffer;
 }
 
 void General_LogWarning(const char* format, ...)
@@ -684,6 +687,9 @@ void General_LogWarning(const char* format, ...)
 	va_end(args);
 
 	printf("%s %s\n", kDebugFlag[LogWarning], debug_buffer);
+
+	// f68 emulator has a log to console feature:
+	*((long *)-4) = (long)&debug_buffer;
 }
 
 void General_LogInfo(const char* format, ...)
@@ -696,6 +702,9 @@ void General_LogInfo(const char* format, ...)
 	va_end(args);
 
 	//printf("General_LogInfo: %s %s\n", kDebugFlag[LogInfo], debug_buffer);
+
+	// f68 emulator has a log to console feature:
+	*((long *)-4) = (long)&debug_buffer;
 }
 
 void General_DebugOut(const char* format, ...)
@@ -708,6 +717,9 @@ void General_DebugOut(const char* format, ...)
 	va_end(args);
 	
 	printf("%s %s\n", kDebugFlag[LogDebug], debug_buffer);
+	
+	// f68 emulator has a log to console feature:
+	*((long *)-4) = (long)&debug_buffer;
 }
 
 void General_LogAlloc(const char* format, ...)
@@ -720,6 +732,9 @@ void General_LogAlloc(const char* format, ...)
 	va_end(args);
 	
 	printf("%s %s\n", kDebugFlag[LogAlloc], debug_buffer);
+
+	// f68 emulator has a log to console feature:
+	*((long *)-4) = (long)&debug_buffer;
 }
 
 // initialize log file

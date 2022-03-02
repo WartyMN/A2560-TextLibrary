@@ -212,9 +212,8 @@ int main(int argc, char* argv[])
 
 	//keyboard_test();
 	
-#if defined(RUN_TESTS)
-  	Text_RunTests();
-#endif
-
+	#if defined(RUN_TESTS)
+		Text_RunTests();
+	#endif
 	
 }
