@@ -274,6 +274,9 @@ unsigned char Text_GetBackColorAtXY(signed int the_screen_id, signed int x, sign
 
 
 // draws a horizontal line from specified coords, for n characters, using the specified char and/or attribute
+boolean Text_DrawHLineSlow(signed int the_screen_id, signed int x, signed int y, signed int the_line_len, unsigned char the_char, unsigned char fore_color, unsigned char back_color, text_draw_choice the_draw_choice);
+
+// draws a horizontal line from specified coords, for n characters, using the specified char and/or attribute
 boolean Text_DrawHLine(signed int the_screen_id, signed int x, signed int y, signed int the_line_len, unsigned char the_char, unsigned char fore_color, unsigned char back_color, text_draw_choice the_draw_choice);
 
 // draws a vertical line from specified coords, for n characters, using the specified char and/or attribute

@@ -56,7 +56,38 @@ Screen	global_screen[2];
 /*                       Private Function Definitions                        */
 /*****************************************************************************/
 
+// test using sys_kbd_scancode() instead of a channel driver
+boolean keyboard_test_2(void);
 
+boolean keyboard_test_2(void)
+{
+	// LOGIC: 
+	//   page 34 of FoenixMCP Manual
+	//   try a simple loop that just keeps banging on the keyboard scanner
+	
+	//   keys return their keycode when pushed, and their keyboard + 128 when released.
+	
+	unsigned short	the_code;
+	
+	do
+	{
+		the_code = sys_kbd_scancode();
+		
+		if (the_code > 127)
+		{
+			DEBUG_OUT(("%s %d: key released: code=%u, keycode=%u", __func__, __LINE__, the_code, the_code & 0xF0));
+			// handle_event_key_up()
+			
+		}
+		else
+		{
+			DEBUG_OUT(("%s %d: key pressed: code=%u", __func__, __LINE__, the_code));
+		}
+		
+	} while (the_code != 0);
+	
+	return true;
+}
 
 /*****************************************************************************/
 /*                        Public Function Definitions                        */
@@ -161,8 +192,8 @@ int main(int argc, char* argv[])
 		global_screen[ID_CHANNEL_A].text_font_ram_ = FONT_MEMORY_BANKA_A2560K;
 		global_screen[ID_CHANNEL_A].text_mem_cols_ = global_screen[ID_CHANNEL_A].width_ / global_screen[ID_CHANNEL_A].text_font_width_;
 		global_screen[ID_CHANNEL_A].text_mem_rows_ = global_screen[ID_CHANNEL_A].height_ / global_screen[ID_CHANNEL_A].text_font_height_;
-		global_screen[ID_CHANNEL_A].text_cols_vis_ = global_screen[ID_CHANNEL_A].text_mem_cols_ - 8; // how morfe has it defined. just guessing for f68
-		global_screen[ID_CHANNEL_A].text_rows_vis_ = global_screen[ID_CHANNEL_A].text_mem_rows_ - 4; // how morfe has it defined. just guessing for f68
+		global_screen[ID_CHANNEL_A].text_cols_vis_ = global_screen[ID_CHANNEL_A].text_mem_cols_ - 0; // how morfe has it defined. just guessing for f68
+		global_screen[ID_CHANNEL_A].text_rows_vis_ = global_screen[ID_CHANNEL_A].text_mem_rows_ - 0; // how morfe has it defined. just guessing for f68
 	#else
 		global_screen[ID_CHANNEL_A].width_ = 640;	
 		global_screen[ID_CHANNEL_A].height_ = 480;	
@@ -211,7 +242,7 @@ int main(int argc, char* argv[])
 	//General_LogInitialize();
 
 	//keyboard_test();
-	
+	   
 	#if defined(RUN_TESTS)
 		Text_RunTests();
 	#endif

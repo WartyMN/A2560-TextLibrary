@@ -39,19 +39,25 @@
 #define EA_STACK			(char*)0x080000	// stack location
 
 // A2560 VICKY III
-#define VICKY					(char*)0xc40000	// vicky registers?
-#define TEXTA_RAM_A2560_MORFE	(char*)0xc60000	// channel A text
-#define TEXTA_ATTR_A2560_MORFE	(char*)0xc68000	// channel A attr
-#define TEXTB_RAM_A2560_MORFE	(char*)0xca0000	// channel B text
-#define TEXTB_ATTR_A2560_MORFE	(char*)0xca8000	// channel B attr
-#define TEXTA_RAM_A2560U		(char*)0xb60000	// text (A2560U only has one video channel)
-#define TEXTA_ATTR_A2560U		(char*)0xb68000	// attr (A2560U only has one video channel)
-#define TEXTB_RAM_A2560U		(char*)0xb60000	// text (A2560U only has one video channel)
-#define TEXTB_ATTR_A2560U		(char*)0xb68000	// attr (A2560U only has one video channel)
-#define TEXTA_RAM_A2560K		(char*)0xfec60000	// channel A text
-#define TEXTA_ATTR_A2560K		(char*)0xfec68000	// channel A attr
-#define TEXTB_RAM_A2560K		(char*)0xfeca0000	// channel B text
-#define TEXTB_ATTR_A2560K		(char*)0xfeca8000	// channel B attr
+#define VICKY						(char*)0xc40000	// vicky registers?
+#define VICKYA_A2560K				(char*)0xfec40000	// vicky III channel A offset
+#define VICKYA_CURSOR_CTRL_A2560K	(char*)0xfec40010	// vicky III channel A cursor control register
+#define VICKYA_CURSOR_POS_A2560K	(char*)0xfec40014	// vicky III channel A cursor position register (x pos is lower word, y pos is upper word)
+#define VICKYB_A2560K				(char*)0xfec80000	// vicky III channel B offset
+#define VICKYB_CURSOR_CTRL_A2560K	(char*)0xfec80010	// vicky III channel B cursor control register
+#define VICKYB_CURSOR_POS_A2560K	(char*)0xfec80014	// vicky III channel B cursor position register
+#define TEXTA_RAM_A2560_MORFE		(char*)0xc60000	// channel A text
+#define TEXTA_ATTR_A2560_MORFE		(char*)0xc68000	// channel A attr
+#define TEXTB_RAM_A2560_MORFE		(char*)0xca0000	// channel B text
+#define TEXTB_ATTR_A2560_MORFE		(char*)0xca8000	// channel B attr
+#define TEXTA_RAM_A2560U			(char*)0xb60000	// text (A2560U only has one video channel)
+#define TEXTA_ATTR_A2560U			(char*)0xb68000	// attr (A2560U only has one video channel)
+#define TEXTB_RAM_A2560U			(char*)0xb60000	// text (A2560U only has one video channel)
+#define TEXTB_ATTR_A2560U			(char*)0xb68000	// attr (A2560U only has one video channel)
+#define TEXTA_RAM_A2560K			(char*)0xfec60000	// channel A text
+#define TEXTA_ATTR_A2560K			(char*)0xfec68000	// channel A attr
+#define TEXTB_RAM_A2560K			(char*)0xfeca0000	// channel B text
+#define TEXTB_ATTR_A2560K			(char*)0xfeca8000	// channel B attr
 
 // subtract 0xfe000000 from the UM map for Vicky (to get the old/morfe addresses)
 // size of some areas changed too:

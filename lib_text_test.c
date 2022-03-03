@@ -9,30 +9,38 @@
 // class being tested
 #include "lib_text.h"
 
+// C includes
+
+
 // A2650 includes
+
+
 
 // variables needed for testing
 
 extern Screen global_screen[2];
 
 
+// have user hit a key, then clear B screen
+void text_test_pause_and_clear(void);
 
-// static int foo = 0;
-// static int bar = 0;
-// static double dbar = 0.1;
-// static const char* foostring = "Thisstring";
-// static const char* newkey1 = (char*)"newkey1";
-// static const char* newkey1case = (char*)"NewKey1";
-// static const char* newkey2 = (char*)"newkey2";
-// static const char* newvalue1 = (char*)"foo";
-// static const char* newvalue2 = (char*)"BAR";
-// static const char* boolkey1 = (char*)"mybool1";
-// static const char* boolkey2 = (char*)"mybool2";
-// static const char* boolkey3 = (char*)"mybool3";
-// static const char* boolstring = (char*)"false";
-// static const char* intkey = (char*)"myint";
-// static const char* intstring = (char*)"12345";
-// static int myint = 12345;
+
+// have user hit a key, then clear B screen
+void text_test_pause_and_clear(void)
+{
+	//printf("Hit any key to continue...");
+	getchar();
+	
+	Text_FillCharMem(ID_CHANNEL_A, ' ');
+	Text_FillAttrMem(ID_CHANNEL_A, 159);
+	Text_FillCharMem(ID_CHANNEL_B, ' ');
+	Text_FillAttrMem(ID_CHANNEL_B, 159);
+	// reset cursor to position 0 (upper left) (neither of the below things seemed to have worked, from point of view of resetting where next printf() happens
+// 	*(long *)VICKYA_CURSOR_POS_A2560K = 0;
+// 	*(long *)VICKYB_CURSOR_POS_A2560K = 0;
+// 	*(long *)VICKYA_CURSOR_CTRL_A2560K = 0;
+// 	*(long *)VICKYB_CURSOR_CTRL_A2560K = 0;
+}
 
 void text_test_setup(void)	// this is called EVERY test
 {
@@ -168,6 +176,11 @@ MU_TEST(text_test_fill_text)
 	mu_assert( Text_FillCharMem(ID_CHANNEL_A, 'Z'), "Could not fill character memory in channel A" );
 	mu_assert( Text_FillCharMem(ID_CHANNEL_B, 4), "Could not fill character memory in channel B" );
 	// 4 = diamond. good mix of fore/back color
+	
+	// bad values
+	mu_assert( Text_FillCharMem(-1, 4) == false, "Text_FillCharMem accepted bad parameter" );
+	mu_assert( Text_FillCharMem(2, 4) == false, "Text_FillCharMem accepted bad parameter" );
+	mu_assert( Text_FillCharMem(256, 4) == false, "Text_FillCharMem accepted bad parameter" );
 }
 
 
@@ -175,6 +188,12 @@ MU_TEST(text_test_fill_attr)
 {
 	mu_assert( Text_FillAttrMem(ID_CHANNEL_A, 127), "Could not fill attribute memory in channel A" );
 	mu_assert( Text_FillAttrMem(ID_CHANNEL_B, 148), "Could not fill attribute memory in channel B" );
+
+	// illegal values
+	mu_assert( Text_FillAttrMem(-1, 148) == false, "Text_FillAttrMem accepted bad parameter" );
+	mu_assert( Text_FillAttrMem(-65536, 148) == false, "Text_FillAttrMem accepted bad parameter" );
+	
+	
 		// 31=black on white
 		// 64=dark blue on black
 		// 96=dark cyan on black
@@ -215,7 +234,11 @@ MU_TEST(text_test_fill_box)
 
 	// bad values
 	mu_assert( Text_FillBoxSlow(200, 0, 6, 15, 8, CH_CHECKERED1, COLOR_VIOLET, COLOR_CYAN, char_and_attr) == false, "Text_FillBoxSlow accepted an illegal screen ID" );
+	mu_assert( Text_FillBox(-255, -67, 6, 72, 30, CH_CHECKERED3, COLOR_BLUE, COLOR_DK_BLUE) == false, "Text_FillBoxSlow accepted an illegal screen ID" );
 	mu_assert( Text_FillBox(ID_CHANNEL_B, -67, 6, 72, 30, CH_CHECKERED3, COLOR_BLUE, COLOR_DK_BLUE) == false, "Text_FillBoxSlow accepted an illegal x coord" );
+	mu_assert( Text_FillBox(ID_CHANNEL_B, 450000, 6, 72, 30, CH_CHECKERED3, COLOR_BLUE, COLOR_DK_BLUE) == false, "Text_FillBoxSlow accepted an illegal x coord" );
+	mu_assert( Text_FillBox(ID_CHANNEL_B, 5, -6, 72, 30, CH_CHECKERED3, COLOR_BLUE, COLOR_DK_BLUE) == false, "Text_FillBoxSlow accepted an illegal y coord" );
+	mu_assert( Text_FillBox(ID_CHANNEL_B, 5, 6000, 72, 30, CH_CHECKERED3, COLOR_BLUE, COLOR_DK_BLUE) == false, "Text_FillBoxSlow accepted an illegal y coord" );
 }
 
 
@@ -229,6 +252,12 @@ MU_TEST(text_test_invert_box)
 	}
 	
 	mu_assert( Text_InvertBox(ID_CHANNEL_B, 50, 13, 71, 16), "Could not invert color of a box" );
+
+	// bad values
+	mu_assert( Text_InvertBox(-200, 50, 13, 71, 16) == false, "Text_InvertBox accepted an illegal screen ID" );
+	mu_assert( Text_InvertBox(2000, 50, 13, 71, 16) == false, "Text_InvertBox accepted an illegal screen ID" );
+	mu_assert( Text_InvertBox(1, 71, 16, 50, 10) == false, "Text_InvertBox accepted illegal rect coordinates" );
+
 }
 
 
@@ -236,6 +265,10 @@ MU_TEST(text_test_font_overwrite)
 {
 	mu_assert( Text_UpdateFontData(ID_CHANNEL_A, (char*)0x000000), "Could not replace font data for channel A" );
 	mu_assert( Text_UpdateFontData(ID_CHANNEL_B, (char*)0x000000), "Could not replace font data for channel B" );
+
+	// bad values
+	mu_assert( Text_UpdateFontData(-200, (char*)0x000000) == false, "Text_UpdateFontData accepted an illegal screen ID" );
+	mu_assert( Text_UpdateFontData(2000, (char*)0x000000) == false, "Text_UpdateFontData accepted an illegal screen ID" );
 }
 
 
@@ -243,6 +276,10 @@ MU_TEST(text_test_show_font)
 {
 	mu_assert( Text_ShowFontChars(ID_CHANNEL_A), "Could not show font chars for channel A" );
 	mu_assert( Text_ShowFontChars(ID_CHANNEL_B), "Could not show font chars for channel B" );
+
+	// bad values
+	mu_assert( Text_ShowFontChars(-200) == false, "Text_ShowFontChars accepted an illegal screen ID" );
+	mu_assert( Text_ShowFontChars(2000) == false, "Text_ShowFontChars accepted an illegal screen ID" );
 }
 
 
@@ -260,12 +297,11 @@ MU_TEST(text_test_char_placement)
 		}
 	}
 	
-	// test some illegal parameters, and make sure the produce fails
+	// bad values
  	mu_assert( Text_SetCharAtXY(3, 0, 0, 'X') == false, "Text_SetCharAtXY accepted illegal screen ID" );
  	mu_assert( Text_SetCharAtXY(-1, 0, 2, 'a') == false, "Text_SetCharAtXY accepted illegal screen ID" );
 	mu_assert( Text_SetCharAtXY(ID_CHANNEL_A, -1, 3, 'b') == false, "Text_SetCharAtXY accepted illegal coordinates" );
 	mu_assert( Text_SetCharAtXY(ID_CHANNEL_A, -1, -1, 'c') == false, "Text_SetCharAtXY accepted illegal coordinates" );
-// no idea why, but it seems that any 4 of these can run safely, and the 5th or 6th will cause morfe to crash. 
 	mu_assert( Text_SetCharAtXY(ID_CHANNEL_A, 0, -1, 'd') == false, "Text_SetCharAtXY accepted illegal coordinates" );
 	mu_assert( Text_SetCharAtXY(ID_CHANNEL_A, 500, 4, 'e') == false, "Text_SetCharAtXY accepted illegal coordinates" );
 	mu_assert( Text_SetCharAtXY(ID_CHANNEL_A, 500, 500, 'f') == false, "Text_SetCharAtXY accepted illegal coordinates" );
@@ -277,8 +313,8 @@ MU_TEST(text_test_char_placement)
 MU_TEST(text_test_char_and_attr_writing)
 {
 // same story here: 4 or so works ok, add more, and it's likely to crash. 
- 	mu_assert( Text_SetCharAndColorAtXY(ID_CHANNEL_A, 0, 4, 33, FG_COLOR_BLACK, BG_COLOR_DK_GRAY) == true, "Text_SetCharAndColorAtXY failed" );
- 	mu_assert( Text_SetCharAndColorAtXY(ID_CHANNEL_A, 1, 4, 34, FG_COLOR_DK_RED, BG_COLOR_DK_GRAY) == true, "Text_SetCharAndColorAtXY failed" );
+ 	mu_assert( Text_SetCharAndColorAtXY(ID_CHANNEL_B, 0, 4, 33, FG_COLOR_BLACK, BG_COLOR_DK_GRAY) == true, "Text_SetCharAndColorAtXY failed" );
+ 	mu_assert( Text_SetCharAndColorAtXY(ID_CHANNEL_B, 1, 4, 34, FG_COLOR_DK_RED, BG_COLOR_DK_GRAY) == true, "Text_SetCharAndColorAtXY failed" );
  	mu_assert( Text_SetCharAndColorAtXY(ID_CHANNEL_B, 2, 4, 35, FG_COLOR_GREEN, BG_COLOR_DK_GRAY) == true, "Text_SetCharAndColorAtXY failed" );
  	mu_assert( Text_SetCharAndColorAtXY(ID_CHANNEL_B, 3, 4, 36, FG_COLOR_BLUE, BG_COLOR_DK_GRAY) == true, "Text_SetCharAndColorAtXY failed" );
  	mu_assert( Text_SetCharAndColorAtXY(ID_CHANNEL_B, 4, 4, 37, COLOR_LT_GRAY, BG_COLOR_DK_GRAY) == true, "Text_SetCharAndColorAtXY failed" );
@@ -309,6 +345,20 @@ MU_TEST(text_test_char_and_attr_writing)
  	mu_assert( Text_SetCharAndColorAtXY(ID_CHANNEL_B, 13, 5, 46, FG_COLOR_WHITE, COLOR_RED) == true, "Text_SetCharAndColorAtXY failed" );
  	mu_assert( Text_SetCharAndColorAtXY(ID_CHANNEL_B, 14, 5, 47, FG_COLOR_WHITE, BG_COLOR_LT_GRAY) == true, "Text_SetCharAndColorAtXY failed" );
  	mu_assert( Text_SetCharAndColorAtXY(ID_CHANNEL_B, 15, 5, 48, FG_COLOR_WHITE, BG_COLOR_WHITE) == true, "Text_SetCharAndColorAtXY failed" );
+
+	// bad values
+ 	mu_assert( Text_SetCharAndColorAtXY(3, 0, 0, 'X', FG_COLOR_WHITE, BG_COLOR_WHITE) == false, "Text_SetCharAndColorAtXY accepted illegal screen ID" );
+ 	mu_assert( Text_SetCharAndColorAtXY(-1, 0, 2, 'a', FG_COLOR_WHITE, BG_COLOR_WHITE) == false, "Text_SetCharAndColorAtXY accepted illegal screen ID" );
+	mu_assert( Text_SetCharAndColorAtXY(ID_CHANNEL_A, -1, 3, 'b', FG_COLOR_WHITE, BG_COLOR_WHITE) == false, "Text_SetCharAndColorAtXY accepted illegal coordinates" );
+	mu_assert( Text_SetCharAndColorAtXY(ID_CHANNEL_A, -1, -1, 'c', FG_COLOR_WHITE, BG_COLOR_WHITE) == false, "Text_SetCharAndColorAtXY accepted illegal coordinates" );
+	mu_assert( Text_SetCharAndColorAtXY(ID_CHANNEL_A, 0, -1, 'd', FG_COLOR_WHITE, BG_COLOR_WHITE) == false, "Text_SetCharAndColorAtXY accepted illegal coordinates" );
+	mu_assert( Text_SetCharAndColorAtXY(ID_CHANNEL_A, 500, 4, 'e', FG_COLOR_WHITE, BG_COLOR_WHITE) == false, "Text_SetCharAndColorAtXY accepted illegal coordinates" );
+	mu_assert( Text_SetCharAndColorAtXY(ID_CHANNEL_A, 500, 500, 'f', FG_COLOR_WHITE, BG_COLOR_WHITE) == false, "Text_SetCharAndColorAtXY accepted illegal coordinates" );
+	mu_assert( Text_SetCharAndColorAtXY(ID_CHANNEL_A, 0, 500, 'g', FG_COLOR_WHITE, BG_COLOR_WHITE) == false, "Text_SetCharAndColorAtXY accepted illegal coordinates" );
+	mu_assert( Text_SetCharAndColorAtXY(ID_CHANNEL_A, 1, 1, 'h', -1, 1) == false, "Text_SetCharAndColorAtXY accepted illegal color value" );
+	mu_assert( Text_SetCharAndColorAtXY(ID_CHANNEL_A, 1, 1, 'i', 17, 1) == false, "Text_SetCharAndColorAtXY accepted illegal color value" );
+	mu_assert( Text_SetCharAndColorAtXY(ID_CHANNEL_A, 1, 1, 'j', 1, -54) == false, "Text_SetCharAndColorAtXY accepted illegal color value" );
+	mu_assert( Text_SetCharAndColorAtXY(ID_CHANNEL_A, 1, 1, 'k', 1, 23) == false, "Text_SetCharAndColorAtXY accepted illegal color value" );
 }
 
 
@@ -387,50 +437,6 @@ MU_TEST(text_test_line_drawing)
 }
 
 
-// not a unit test per se, but just exploration of what default colors are in ROM
-MU_TEST(text_test_colors)
-{
-	signed int		x;
-	signed int		y;
-	signed int		line_len;
-	unsigned char	the_char;
-	signed int		i;
-	signed int		num_colors = 16;
-	
-	// draw 16 rows, 1 for each foreground color. 
-	// draw foreground as solid / inverse spaces at left, background with middot at right
-	x = 5;
-	y = 5;
-	line_len = 20;
-	the_char = CH_SOLID;	
-
-	for (i = 0; i < num_colors; i++)
-	{
-		mu_assert( Text_DrawHLine(ID_CHANNEL_A, x, y + i, line_len, the_char, i, BG_COLOR_BLUE, char_and_attr) == true, "Text_DrawHLine failed" );
-		mu_assert( Text_DrawHLine(ID_CHANNEL_A, x + 30, y + i, line_len, CH_MIDDOT, FG_COLOR_BLACK, i, char_and_attr) == true, "Text_DrawHLine failed" );
-	}
-
-	// manually line up named colors
-	mu_assert( Text_DrawHLine(ID_CHANNEL_A, x + line_len + 2, y + 0, 6, the_char, FG_COLOR_BLACK, BG_COLOR_BLUE, char_and_attr) == true, "Text_DrawHLine failed" );
-	mu_assert( Text_DrawHLine(ID_CHANNEL_A, x + line_len + 2, y + 1, 6, the_char, FG_COLOR_DK_RED, BG_COLOR_BLUE, char_and_attr) == true, "Text_DrawHLine failed" );
-	mu_assert( Text_DrawHLine(ID_CHANNEL_A, x + line_len + 2, y + 2, 6, the_char, FG_COLOR_DK_GREEN, BG_COLOR_BLUE, char_and_attr) == true, "Text_DrawHLine failed" );
-	mu_assert( Text_DrawHLine(ID_CHANNEL_A, x + line_len + 2, y + 3, 6, the_char, FG_COLOR_DK_YELLOW, BG_COLOR_BLUE, char_and_attr) == true, "Text_DrawHLine failed" );
-	mu_assert( Text_DrawHLine(ID_CHANNEL_A, x + line_len + 2, y + 4, 6, the_char, FG_COLOR_DK_BLUE, BG_COLOR_BLUE, char_and_attr) == true, "Text_DrawHLine failed" );
-	mu_assert( Text_DrawHLine(ID_CHANNEL_A, x + line_len + 2, y + 5, 6, the_char, FG_COLOR_ORANGE, BG_COLOR_BLUE, char_and_attr) == true, "Text_DrawHLine failed" );
-	mu_assert( Text_DrawHLine(ID_CHANNEL_A, x + line_len + 2, y + 6, 6, the_char, FG_COLOR_DK_CYAN, BG_COLOR_BLUE, char_and_attr) == true, "Text_DrawHLine failed" );
-	mu_assert( Text_DrawHLine(ID_CHANNEL_A, x + line_len + 2, y + 7, 6, the_char, FG_COLOR_LT_GRAY, BG_COLOR_BLUE, char_and_attr) == true, "Text_DrawHLine failed" );
-	mu_assert( Text_DrawHLine(ID_CHANNEL_A, x + line_len + 2, y + 8, 6, the_char, FG_COLOR_DK_GRAY, BG_COLOR_BLUE, char_and_attr) == true, "Text_DrawHLine failed" );
-	mu_assert( Text_DrawHLine(ID_CHANNEL_A, x + line_len + 2, y + 9, 6, the_char, FG_COLOR_ORANGE, BG_COLOR_BLUE, char_and_attr) == true, "Text_DrawHLine failed" );
-	mu_assert( Text_DrawHLine(ID_CHANNEL_A, x + line_len + 2, y + 10, 6, the_char, FG_COLOR_GREEN, BG_COLOR_BLUE, char_and_attr) == true, "Text_DrawHLine failed" );
-	mu_assert( Text_DrawHLine(ID_CHANNEL_A, x + line_len + 2, y + 11, 6, the_char, FG_COLOR_YELLOW, BG_COLOR_BLUE, char_and_attr) == true, "Text_DrawHLine failed" );
-	mu_assert( Text_DrawHLine(ID_CHANNEL_A, x + line_len + 2, y + 12, 6, the_char, FG_COLOR_BLUE, BG_COLOR_BLUE, char_and_attr) == true, "Text_DrawHLine failed" );
-	mu_assert( Text_DrawHLine(ID_CHANNEL_A, x + line_len + 2, y + 13, 6, the_char, FG_COLOR_VIOLET, BG_COLOR_BLUE, char_and_attr) == true, "Text_DrawHLine failed" );
-	mu_assert( Text_DrawHLine(ID_CHANNEL_A, x + line_len + 2, y + 14, 6, the_char, FG_COLOR_CYAN, BG_COLOR_BLUE, char_and_attr) == true, "Text_DrawHLine failed" );
-	mu_assert( Text_DrawHLine(ID_CHANNEL_A, x + line_len + 2, y + 15, 6, the_char, FG_COLOR_WHITE, BG_COLOR_BLUE, char_and_attr) == true, "Text_DrawHLine failed" );
-
-}
-
-
 MU_TEST(text_test_basic_box_coords)
 {
 	signed int		x;
@@ -491,14 +497,7 @@ MU_TEST(text_test_fancy_box)
 // 	signed int		v_line_len;
 	char*	the_message;
 	
-
 	// good values	
-   	//mu_assert((the_message = General_StrlcpyWithAlloc((char*)"This is a short sentence.", 80*60+1)) != NULL, "General_StrlcpyWithAlloc returned NULL" );
-  	//mu_assert((the_message = General_StrlcpyWithAlloc((char*)"This is a short sentence. Many are shorter. Like this. Heyo! Hello-Goodbye!", 80*60+1)) != NULL, "General_StrlcpyWithAlloc returned NULL" );
-//    	mu_assert((the_message = General_StrlcpyWithAlloc((char*)"This is a longish sentence but others are longer. Many are shorter. Like this. oooooh, what a nice thingamajig you've got there.", 80*60+1)) != NULL, "General_StrlcpyWithAlloc returned NULL" );
-// 		the_message = General_StrlcpyWithAlloc((char*)"This is a longish sentence but others are longer. Many are shorter. Like this. oooooh, what a nice thingamajig you've got there.", 80*60+1);
-// 		the_message = General_StrlcpyWithAlloc((char*)"\nThe Anecdote\n\nBill Atkinson worked mostly at home, but whenever he made significant progress he rushed in to Apple to show it off to anyone who would appreciate it. This time, he visited the Macintosh offices at Texaco Towers to show off his brand new oval routines in Quickdraw, which were implemented using a really clever algorithm.\n\nBill had added new code to QuickDraw (which was still called LisaGraf at this point) to draw circles and ovals very quickly. That was a bit hard to do on the Macintosh, since the math for circles usually involved taking square roots, and the 68000 processor in the Lisa and Macintosh didn't support floating point operations. But Bill had come up with a clever way to do the circle calculation that only used addition and subtraction, not even multiplication or division, which the 68000 could do, but was kind of slow at.\n\nBill's technique used the fact the sum of a sequence of odd numbers is always the next perfect square (For example, 1 + 3 = 4, 1 + 3 + 5 = 9, 1 + 3 + 5 + 7 = 16, etc). So he could figure out when to bump the dependent coordinate value by iterating in a loop until a threshold was exceeded. This allowed QuickDraw to draw ovals very quickly.\n\nBill fired up his demo and it quickly filled the Lisa screen with randomly-sized ovals, faster than you thought was possible. But something was bothering Steve Jobs. 'Well, circles and ovals are good, but how about drawing rectangles with rounded corners? Can we do that now, too?'\n\n'No, there's no way to do that. In fact it would be really hard to do, and I don't think we really need it'.", 80*60+1);
-// 		the_message = General_StrlcpyWithAlloc((char*)"\nThe Anecdote\n\nBill Atkinson worked mostly at home, but whenever he made significant progress he rushed in to Apple to show it off to anyone who would appreciate it. This time, he visited the Macintosh offices at Texaco Towers to show off his brand new oval routines in Quickdraw, which were implemented using a really clever algorithm.\n\nBill had added new code to QuickDraw (which was still called LisaGraf at this point) to draw circles and ovals very quickly. That was a bit hard to do on the Macintosh, since the math for circles usually involved taking square roots, and the 68000 processor in the Lisa and Macintosh didn't support floating point operations. But Bill had come up with a clever way to do the circle calculation that only used addition and subtraction, not even multiplication or division, which the 68000 could do, but was kind of slow at.\n\nBill's technique used the fact the sum of a sequence of odd numbers is always the next perfect square (For example, 1 + 3 = 4, 1 + 3 + 5 = 9, 1 + 3 + 5 + 7 = 16, etc). So he could figure out when to bump the dependent coordinate value by iterating in a loop until a threshold was exceeded. This allowed QuickDraw to draw ovals very quickly.\n\nBill fired up his demo and it quickly filled the Lisa screen with randomly-sized ovals, faster than you thought was possible. But something was bothering Steve Jobs. 'Well, circles and ovals are good, but how about drawing rectangles with rounded corners? Can we do that now, too?'\n\n'No, there's no way to do that. In fact it would be really hard to do, and I don't think we really need it'. I think Bill was a little miffed that Steve wasn't raving over the fast ovals and still wanted more.\n\nSteve suddenly got more intense. 'Rectangles with rounded corners are everywhere! Just look around this room!'. And sure enough, there were lots of them, like the whiteboard and some of the desks and tables. Then he pointed out the window. 'And look outside, there's even more, practically everywhere you look!'. He even persuaded Bill to take a quick walk around the block with him, pointing out every rectangle with rounded corners that he could find.\n\n\nWhen Steve and Bill passed a no-parking sign with rounded corners, it did the trick. 'OK, I give up', Bill pleaded. 'I'll see if it's as hard as I thought.' He went back home to work on it.\n\nBill returned to Texaco Towers the following afternoon, with a big smile on his face. His demo was now drawing rectangles with beautifully rounded corners blisteringly fast, almost at the speed of plain rectangles.", 80*60+1);
 	the_message = General_StrlcpyWithAlloc((char*)"\nThe Anecdote\n\nBill Atkinson worked mostly at home, but whenever he made significant progress he rushed in to Apple to show it off to anyone who would appreciate it. This time, he visited the Macintosh offices at Texaco Towers to show off his brand new oval routines in Quickdraw, which were implemented using a really clever algorithm.\n\nBill had added new code to QuickDraw (which was still called LisaGraf at this point) to draw circles and ovals very quickly. That was a bit hard to do on the Macintosh, since the math for circles usually involved taking square roots, and the 68000 processor in the Lisa and Macintosh didn't support floating point operations. But Bill had come up with a clever way to do the circle calculation that only used addition and subtraction, not even multiplication or division, which the 68000 could do, but was kind of slow at.\n\nBill's technique used the fact the sum of a sequence of odd numbers is always the next perfect square (For example, 1 + 3 = 4, 1 + 3 + 5 = 9, 1 + 3 + 5 + 7 = 16, etc). So he could figure out when to bump the dependent coordinate value by iterating in a loop until a threshold was exceeded. This allowed QuickDraw to draw ovals very quickly.\n\nBill fired up his demo and it quickly filled the Lisa screen with randomly-sized ovals, faster than you thought was possible. But something was bothering Steve Jobs. 'Well, circles and ovals are good, but how about drawing rectangles with rounded corners? Can we do that now, too?'\n\n'No, there's no way to do that. In fact it would be really hard to do, and I don't think we really need it'. I think Bill was a little miffed that Steve wasn't raving over the fast ovals and still wanted more.\n\nSteve suddenly got more intense. 'Rectangles with rounded corners are everywhere! Just look around this room!'. And sure enough, there were lots of them, like the whiteboard and some of the desks and tables. Then he pointed out the window. 'And look outside, there's even more, practically everywhere you look!'. He even persuaded Bill to take a quick walk around the block with him, pointing out every rectangle with rounded corners that he could find.\n\n\nWhen Steve and Bill passed a no-parking sign with rounded corners, it did the trick. 'OK, I give up', Bill pleaded. 'I'll see if it's as hard as I thought.' He went back home to work on it.\n\nBill returned to Texaco Towers the following afternoon, with a big smile on his face. His demo was now drawing rectangles with beautifully rounded corners blisteringly fast, almost at the speed of plain rectangles. When he added the code to LisaGraf, he named the new primitive 'RoundRects'. Over the next few months, roundrects worked their way into various parts of the user interface, and soon became indispensable.\n\nThe Code\n\nAuthor: Bill Atkinson\nYear: 1981\n\nQuickDraw is the Macintosh library for creating bit-mapped graphics, which was used by MacPaint and other applications. It consists of a total of 17,101 lines in 36 files, all written in assembler language for the 68000.\n\n               .INCLUDE  GRAFTYPES.TEXT\n;-----------------------------------------------------------\n;\n;\n;     ****   ****   *****   ***   *****   ***\n;     *   *  *   *  *      *   *    *    *   *\n;     *   *  *   *  *      *        *    *\n;     ****   ****   ***    *        *     ***\n;     * *    * *    *      *        *        *\n;     *  *   *  *   *      *   *    *    *   *\n;     *   *  *   *  *****   ***     *     ***\n;\n;\n;  procedures for operating on RoundRects.\n;\n;\n    .PROC StdRRect,4\n    .REF  CheckPic,DPutPicByte,PutPicVerb,PutPicLong,PutPicRect\n    .REF  PutOval,PushVerb,DrawArc\n;---------------------------------------------------------------\n;\n;  PROCEDURE StdRRect(verb: GrafVerb; r: Rect; ovWd,ovHt: INTEGER);\n;\n;  A6 OFFSETS OF PARAMS AFTER LINK:\n;\nPARAMSIZE       .EQU    10\nVERB            .EQU    PARAMSIZE+8-2           ;GRAFVERB\nRECT            .EQU    VERB-4                  ;LONG, ADDR OF RECT\nOVWD            .EQU    RECT-2                  ;WORD\nOVHT            .EQU    OVWD-2                  ;WORD\n            LINK    A6,#0                           ;NO LOCALS\n            MOVEM.L D7/A3-A4,-(SP)                  ;SAVE REGS\n            MOVE.B  VERB(A6),D7                     ;GET VERB\n            JSR     CHECKPIC                        ;SET UP A4,A3 AND CHECK PICSAVE\n            BLE.S   NOTPIC                          ;BRANCH IF NOT PICSAVE\n            MOVE.B  D7,-(SP)                        ;PUSH VERB\n            JSR     PutPicVerb                      ;PUT ADDIONAL PARAMS TO THEPIC\n;\n;  CHECK FOR NEW OVAL SIZE\n;\n            MOVE.L  PICSAVE(A3),A0                  ;GET PICSAVE HANDLE\n            MOVE.L  (A0),A0                         ;DE-REFERENCE PICSAVE\n            MOVE.L  OVHT(A6),D0                     ;GET OVWD AND OVHT\n            CMP.L   PICOVSIZE(A0),D0                ;SAME AS CURRENT OVAL SIZE ?\n            BEQ.S   OVALOK                          ;YES, CONTINUE\n            MOVE.L  D0,PICOVSIZE(A0)                ;NO, UPDATE STATE VARIABLE\n            MOVE.L  D0,-(SP)                        ;PUSH OVSIZE FOR PutPicLong CALL\n            MOVEQ   #$0B,D0\n            JSR     DPutPicByte                     ;PUT OVSIZE OPCODE\n            JSR     PutPicLong                      ;PUT NEW OVAL SIZE DATA\nOVALOK  MOVEQ   #$40,D0                         ;PUT RRECT NOUN IN HI NIBBLE\n            ADD     D7,D0                           ;PUT VERB IN LO NIBBLE\n            MOVE.B  D0,-(SP)                        ;PUSH OPCODE\n            MOVE.L  RECT(A6),-(SP)                  ;PUSH ADDR OF RECT\n            JSR     PutPicRect                      ;PUT OPCODE AND RECTANGLE\nNOTPIC  MOVE.L  RECT(A6),-(SP)                  ;PUSH ADDR OF RECT\n            CLR.B   -(SP)                           ;PUSH HOLLOW = FALSE\n            TST.B   D7                              ;IS VERB FRAME ?\n            BNE.S   DOIT                            ;NO, CONTINUE\n            TST.L   RGNSAVE(A3)                     ;YES, IS RGNSAVE TRUE ?\n            BEQ.S   NOTRGN                          ;NO, CONTINUE\n            MOVE.L  RECT(A6),-(SP)                  ;YES, PUSH ADDR OF RECT\n            MOVE.L  OVHT(A6),-(SP)                  ;PUSH OVWD, OVHT\n            MOVE.L  RGNBUF(A4),-(SP)                ;PUSH RGNBUF\n            PEA     RGNINDEX(A4)                    ;PUSH VAR RGNINDEX\n            PEA     RGNMAX(A4)                      ;PUSH VAR RGNMAX\n            JSR     PutOval                         ;ADD AN OVAL TO THERGN\nNOTRGN  MOVE.B  #1,(SP)                         ;REPLACE, PUSH HOLLOW = TRUE\nDOIT    MOVE.L  OVHT(A6),-(SP)                  ;PUSH OVWD,OVHT\n            JSR     PushVerb                        ;PUSH MODE AND PATTERN\n            CLR     -(SP)                           ;PUSH STARTANGLE = 0\n            MOVE    #360,-(SP)                      ;PUSH ARCANGLE = 360", 80*60+1);
 
 // 	the_message = General_StrlcpyWithAlloc((char*)"\nThe Anecdote\n\nBill Atkinson worked mostly at home, but whenever he made significant progress he rushed in to Apple to show it off to anyone who would appreciate it. This time, he visited the Macintosh offices at Texaco Towers to show off his brand new oval routines in Quickdraw, which were implemented using a really clever algorithm.\n\nBill had added new code to QuickDraw", 80*60+1);
@@ -731,73 +730,384 @@ MU_TEST(font_replace_test)
 	
 	unsigned char*	the_new_font_data = testfont;
 
-  	mu_assert(Text_UpdateFontData(ID_CHANNEL_A, (char*)the_new_font_data) == true, "Failed to update font data for Channel A" );
+//   	mu_assert(Text_UpdateFontData(ID_CHANNEL_A, (char*)the_new_font_data) == true, "Failed to update font data for Channel A" );
   	mu_assert(Text_UpdateFontData(ID_CHANNEL_B, (char*)the_new_font_data) == true, "Failed to update font data for Channel B" );
 }
 
 
-
-
-// MU_TEST(test_check)
-// {
-// 	mu_check(foo == 7);
-// }
-// 
-// MU_TEST(test_check_fail)
-// {
-// 	mu_check(foo != 7);
-// }
-// 
-// MU_TEST(test_assert)
-// {
-// 	mu_assert(foo == 7, "foo should be 7");
-// }
-// 
-// MU_TEST(test_assert_fail)
-// {
-// 	mu_assert(foo != 7, "foo should be <> 7");
-// }
-// 
-// MU_TEST(test_assert_int_eq)
-// {
-// 	mu_assert_int_eq(4, bar);
-// }
-// 
-// MU_TEST(test_assert_int_eq_fail)
-// {
-// 	mu_assert_int_eq(5, bar);
-// }
-// 
-// MU_TEST(test_assert_double_eq)
-// {
-// 	mu_assert_double_eq(0.1, dbar);
-// }
-// 
-// MU_TEST(test_assert_double_eq_fail)
-// {
-// 	mu_assert_double_eq(0.2, dbar);
-// }
-// 
-// MU_TEST(test_fail)
-// {
-// 	mu_fail("Fail now!");
-// }
-// 
-// MU_TEST(test_string_eq){
-// 	mu_assert_string_eq("Thisstring", foostring);
-// }
-// 
-// MU_TEST(test_string_eq_fail){
-// 	mu_assert_string_eq("Thatstring", foostring);
-// }
-
-MU_TEST_SUITE(text_test_suite)
+MU_TEST(text_interactive)
 {
-	long start;
-	long end;
+	printf("Starting interactive tests. Press any key to execute next test.\n");
+	printf("Next: Text_FillCharMem -> fill screen with the letter Z\n");	
+	text_test_pause_and_clear();
+	mu_assert( Text_FillCharMem(ID_CHANNEL_B, 'Z'), "Could not fill character memory in channel A" );
+
+	printf("Next: Text_FillCharMem -> fill screen with a diamond character\n");	
+	text_test_pause_and_clear();
+	mu_assert( Text_FillCharMem(ID_CHANNEL_B, CH_DIAMOND), "Could not fill character memory in channel B" );
+
+	printf("Next: Text_FillAttrMem -> fill screen with gray-on-black colors without changing characters\n");	
+	text_test_pause_and_clear();
+	mu_assert( Text_FillCharMem(ID_CHANNEL_B, CH_DIAMOND), "Could not fill character memory in channel B" );
+	mu_assert( Text_FillAttrMem(ID_CHANNEL_B, 127), "Could not fill attribute memory in channel A" );
+
+	printf("Next: Text_FillAttrMem -> fill screen with red-on-olive colors without changing characters\n");	
+	text_test_pause_and_clear();
+	mu_assert( Text_FillCharMem(ID_CHANNEL_B, CH_DIAMOND), "Could not fill character memory in channel B" );
+	mu_assert( Text_FillAttrMem(ID_CHANNEL_B, 147), "Could not fill attribute memory in channel A" );
+
+	printf("Next: Text_FillBoxSlow -> fill a square on screen with a checkered pattern, black on white (slow routine)\n");	
+	text_test_pause_and_clear();
+	mu_assert( Text_FillBoxSlow(ID_CHANNEL_B, 0, 2, 75, 35, CH_CHECKERED1, COLOR_BLACK, BG_COLOR_WHITE, char_and_attr) == true, "Text_FillBoxSlow failed" );
+
+	printf("Next: Text_FillBoxSlow -> fill a square on screen with a different checkered pattern, blue on dark blue (slow routine)\n");	
+	text_test_pause_and_clear();
+	mu_assert( Text_FillBoxSlow(ID_CHANNEL_B, 0, 2, 75, 35, CH_CHECKERED3, COLOR_BLUE, COLOR_DK_BLUE, char_and_attr) == true, "Text_FillBoxSlow failed" );
+
+	printf("Next: Text_FillBox -> fill a square on screen with a checkered pattern, black on white (fast routine)\n");	
+	text_test_pause_and_clear();
+	mu_assert( Text_FillBox(ID_CHANNEL_B, 0, 2, 75, 35, CH_CHECKERED1, COLOR_BLACK, BG_COLOR_WHITE) == true, "Text_FillBox failed" );
+
+	printf("Next: Text_FillBox -> fill a square on screen with a different checkered pattern, blue on dark blue (fast routine)\n");	
+	text_test_pause_and_clear();
+	mu_assert( Text_FillBox(ID_CHANNEL_B, 0, 2, 75, 35, CH_CHECKERED3, COLOR_BLUE, COLOR_DK_BLUE) == true, "Text_FillBox failed" );
+
+	printf("Next: Text_InvertBox -> invert a rectangle of colors\n");	
+	text_test_pause_and_clear();
+	mu_assert( Text_FillBox(ID_CHANNEL_B, 0, 2, 75, 35, CH_DIAMOND, COLOR_RED, BG_COLOR_WHITE) == true, "Text_FillBox failed" );
+	mu_assert( Text_InvertBox(ID_CHANNEL_B, 2, 4, 71, 33) == true, "Could not invert color of a box" );
+
+	printf("Next: Text_ShowFontChars -> show font characters on screen\n");	
+	text_test_pause_and_clear();
+	mu_assert( Text_ShowFontChars(ID_CHANNEL_B) == true, "Could not show font characters" );
+
+	printf("Next: Text_SetCharAndColorAtXY -> Draw various characters and colors at various locations on screen\n");	
+	MU_RUN_TEST(text_test_pause_and_clear);
+ 	mu_assert( Text_SetCharAndColorAtXY(ID_CHANNEL_B, 0, 4, 33, FG_COLOR_BLACK, BG_COLOR_DK_GRAY) == true, "Text_SetCharAndColorAtXY failed" );
+ 	mu_assert( Text_SetCharAndColorAtXY(ID_CHANNEL_B, 1, 4, 34, FG_COLOR_DK_RED, BG_COLOR_DK_GRAY) == true, "Text_SetCharAndColorAtXY failed" );
+ 	mu_assert( Text_SetCharAndColorAtXY(ID_CHANNEL_B, 2, 4, 35, FG_COLOR_GREEN, BG_COLOR_DK_GRAY) == true, "Text_SetCharAndColorAtXY failed" );
+ 	mu_assert( Text_SetCharAndColorAtXY(ID_CHANNEL_B, 3, 4, 36, FG_COLOR_BLUE, BG_COLOR_DK_GRAY) == true, "Text_SetCharAndColorAtXY failed" );
+ 	mu_assert( Text_SetCharAndColorAtXY(ID_CHANNEL_B, 4, 4, 37, COLOR_LT_GRAY, BG_COLOR_DK_GRAY) == true, "Text_SetCharAndColorAtXY failed" );
+ 	mu_assert( Text_SetCharAndColorAtXY(ID_CHANNEL_B, 5, 4, 38, COLOR_LT_GRAY, BG_COLOR_DK_GRAY) == true, "Text_SetCharAndColorAtXY failed" );
+ 	mu_assert( Text_SetCharAndColorAtXY(ID_CHANNEL_B, 6, 4, 39, FG_COLOR_VIOLET, BG_COLOR_DK_GRAY) == true, "Text_SetCharAndColorAtXY failed" );
+ 	mu_assert( Text_SetCharAndColorAtXY(ID_CHANNEL_B, 7, 4, 40, COLOR_LT_GRAY, BG_COLOR_DK_GRAY) == true, "Text_SetCharAndColorAtXY failed" );
+ 	mu_assert( Text_SetCharAndColorAtXY(ID_CHANNEL_B, 8, 4, 41, COLOR_BLACK, BG_COLOR_DK_GRAY) == true, "Text_SetCharAndColorAtXY failed" );
+ 	mu_assert( Text_SetCharAndColorAtXY(ID_CHANNEL_B, 9, 4, 42, COLOR_LT_GRAY, BG_COLOR_DK_GRAY) == true, "Text_SetCharAndColorAtXY failed" );
+ 	mu_assert( Text_SetCharAndColorAtXY(ID_CHANNEL_B, 10, 4, 43, COLOR_LT_GRAY, BG_COLOR_DK_GRAY) == true, "Text_SetCharAndColorAtXY failed" );
+ 	mu_assert( Text_SetCharAndColorAtXY(ID_CHANNEL_B, 11, 4, 44, COLOR_LT_GRAY, BG_COLOR_DK_GRAY) == true, "Text_SetCharAndColorAtXY failed" );
+ 	mu_assert( Text_SetCharAndColorAtXY(ID_CHANNEL_B, 12, 4, 45, FG_COLOR_DK_GRAY, BG_COLOR_DK_GRAY) == true, "Text_SetCharAndColorAtXY failed" );
+ 	mu_assert( Text_SetCharAndColorAtXY(ID_CHANNEL_B, 13, 4, 46, COLOR_LT_GRAY, BG_COLOR_DK_GRAY) == true, "Text_SetCharAndColorAtXY failed" );
+ 	mu_assert( Text_SetCharAndColorAtXY(ID_CHANNEL_B, 14, 4, 47, FG_COLOR_WHITE, BG_COLOR_DK_GRAY) == true, "Text_SetCharAndColorAtXY failed" );
+ 	mu_assert( Text_SetCharAndColorAtXY(ID_CHANNEL_B, 15, 4, 48, COLOR_LT_GRAY, BG_COLOR_DK_GRAY) == true, "Text_SetCharAndColorAtXY failed" );
+ 	mu_assert( Text_SetCharAndColorAtXY(ID_CHANNEL_B, 0, 5, 33, FG_COLOR_WHITE, BG_COLOR_BLACK) == true, "Text_SetCharAndColorAtXY failed" );
+ 	mu_assert( Text_SetCharAndColorAtXY(ID_CHANNEL_B, 1, 5, 34, FG_COLOR_WHITE, BG_COLOR_DK_RED) == true, "Text_SetCharAndColorAtXY failed" );
+ 	mu_assert( Text_SetCharAndColorAtXY(ID_CHANNEL_B, 2, 5, 35, FG_COLOR_WHITE, BG_COLOR_GREEN) == true, "Text_SetCharAndColorAtXY failed" );
+ 	mu_assert( Text_SetCharAndColorAtXY(ID_CHANNEL_B, 3, 5, 36, FG_COLOR_WHITE, BG_COLOR_BLUE) == true, "Text_SetCharAndColorAtXY failed" );
+ 	mu_assert( Text_SetCharAndColorAtXY(ID_CHANNEL_B, 4, 4, 37, FG_COLOR_WHITE, COLOR_RED) == true, "Text_SetCharAndColorAtXY failed" );
+ 	mu_assert( Text_SetCharAndColorAtXY(ID_CHANNEL_B, 5, 5, 38, FG_COLOR_WHITE, COLOR_RED) == true, "Text_SetCharAndColorAtXY failed" );
+ 	mu_assert( Text_SetCharAndColorAtXY(ID_CHANNEL_B, 6, 5, 39, FG_COLOR_WHITE, COLOR_RED) == true, "Text_SetCharAndColorAtXY failed" );
+ 	mu_assert( Text_SetCharAndColorAtXY(ID_CHANNEL_B, 7, 5, 40, FG_COLOR_WHITE, BG_COLOR_DK_GRAY) == true, "Text_SetCharAndColorAtXY failed" );
+ 	mu_assert( Text_SetCharAndColorAtXY(ID_CHANNEL_B, 8, 5, 41, FG_COLOR_WHITE, COLOR_RED) == true, "Text_SetCharAndColorAtXY failed" );
+ 	mu_assert( Text_SetCharAndColorAtXY(ID_CHANNEL_B, 9, 5, 42, FG_COLOR_WHITE, COLOR_RED) == true, "Text_SetCharAndColorAtXY failed" );
+ 	mu_assert( Text_SetCharAndColorAtXY(ID_CHANNEL_B, 10, 5, 43, FG_COLOR_WHITE, COLOR_RED) == true, "Text_SetCharAndColorAtXY failed" );
+ 	mu_assert( Text_SetCharAndColorAtXY(ID_CHANNEL_B, 11, 5, 44, FG_COLOR_WHITE, COLOR_RED) == true, "Text_SetCharAndColorAtXY failed" );
+ 	mu_assert( Text_SetCharAndColorAtXY(ID_CHANNEL_B, 12, 5, 45, FG_COLOR_WHITE, COLOR_RED) == true, "Text_SetCharAndColorAtXY failed" );
+ 	mu_assert( Text_SetCharAndColorAtXY(ID_CHANNEL_B, 13, 5, 46, FG_COLOR_WHITE, COLOR_RED) == true, "Text_SetCharAndColorAtXY failed" );
+ 	mu_assert( Text_SetCharAndColorAtXY(ID_CHANNEL_B, 14, 5, 47, FG_COLOR_WHITE, BG_COLOR_LT_GRAY) == true, "Text_SetCharAndColorAtXY failed" );
+ 	mu_assert( Text_SetCharAndColorAtXY(ID_CHANNEL_B, 15, 5, 48, FG_COLOR_WHITE, BG_COLOR_WHITE) == true, "Text_SetCharAndColorAtXY failed" );
+
+	printf("Next: Text_DrawHLine / Text_DrawVLine -> Draw straight lines using a specified character and color combo\n");	
+	MU_RUN_TEST(text_test_pause_and_clear);
+	{
+		signed int		x;
+		signed int		y;
+		signed int		line_len;
 	
-	start = mu_timer_real();
+		// good values	
+		x = 20;
+		y = 4;
+		line_len = 20;
+		mu_assert( Text_DrawHLine(ID_CHANNEL_B, x, y, line_len, CH_HEART, FG_COLOR_GREEN, BG_COLOR_BLACK, char_only) == true, "Text_DrawHLine failed" );
 	
+		y = 8;
+		mu_assert( Text_DrawHLine(ID_CHANNEL_B, x, y, line_len, CH_DIAMOND, FG_COLOR_GREEN, BG_COLOR_BLACK, char_and_attr) == true, "Text_DrawHLine failed" );
+	
+		y = 4;
+		line_len = 5;
+		mu_assert( Text_DrawVLine(ID_CHANNEL_B, x-1, y, line_len, CH_CLUB, FG_COLOR_YELLOW, BG_COLOR_BLACK, attr_only) == true, "Text_DrawVLine failed" );
+
+		x = x + 20;	
+		mu_assert( Text_DrawVLine(ID_CHANNEL_B, x, y, line_len, CH_SPADE, FG_COLOR_YELLOW, BG_COLOR_BLACK, char_and_attr) == true, "Text_DrawVLine failed" );
+	}
+	
+	printf("Next: (using named colors) -> Set foreground and background colors\n");	
+	MU_RUN_TEST(text_test_pause_and_clear);
+	{
+		signed int		x;
+		signed int		y;
+		signed int		line_len;
+		unsigned char	the_char;
+		signed int		i;
+		signed int		num_colors = 16;
+	
+		// draw 16 rows, 1 for each foreground color. 
+		// draw foreground as solid / inverse spaces at left, background with middot at right
+		x = 5;
+		y = 5;
+		line_len = 20;
+		the_char = CH_SOLID;	
+
+		for (i = 0; i < num_colors; i++)
+		{
+			mu_assert( Text_DrawHLine(ID_CHANNEL_B, x, y + i, line_len, the_char, i, BG_COLOR_BLUE, char_and_attr) == true, "Text_DrawHLine failed" );
+			mu_assert( Text_DrawHLine(ID_CHANNEL_B, x + 30, y + i, line_len, CH_MIDDOT, FG_COLOR_BLACK, i, char_and_attr) == true, "Text_DrawHLine failed" );
+		}
+
+		// manually line up named colors
+		mu_assert( Text_DrawHLine(ID_CHANNEL_B, x + line_len + 2, y + 0, 6, the_char, FG_COLOR_BLACK, BG_COLOR_BLUE, char_and_attr) == true, "Text_DrawHLine failed" );
+		mu_assert( Text_DrawHLine(ID_CHANNEL_B, x + line_len + 2, y + 1, 6, the_char, FG_COLOR_DK_RED, BG_COLOR_BLUE, char_and_attr) == true, "Text_DrawHLine failed" );
+		mu_assert( Text_DrawHLine(ID_CHANNEL_B, x + line_len + 2, y + 2, 6, the_char, FG_COLOR_DK_GREEN, BG_COLOR_BLUE, char_and_attr) == true, "Text_DrawHLine failed" );
+		mu_assert( Text_DrawHLine(ID_CHANNEL_B, x + line_len + 2, y + 3, 6, the_char, FG_COLOR_DK_YELLOW, BG_COLOR_BLUE, char_and_attr) == true, "Text_DrawHLine failed" );
+		mu_assert( Text_DrawHLine(ID_CHANNEL_B, x + line_len + 2, y + 4, 6, the_char, FG_COLOR_DK_BLUE, BG_COLOR_BLUE, char_and_attr) == true, "Text_DrawHLine failed" );
+		mu_assert( Text_DrawHLine(ID_CHANNEL_B, x + line_len + 2, y + 5, 6, the_char, FG_COLOR_ORANGE, BG_COLOR_BLUE, char_and_attr) == true, "Text_DrawHLine failed" );
+		mu_assert( Text_DrawHLine(ID_CHANNEL_A, x + line_len + 2, y + 6, 6, the_char, FG_COLOR_DK_CYAN, BG_COLOR_BLUE, char_and_attr) == true, "Text_DrawHLine failed" );
+		mu_assert( Text_DrawHLine(ID_CHANNEL_B, x + line_len + 2, y + 7, 6, the_char, FG_COLOR_LT_GRAY, BG_COLOR_BLUE, char_and_attr) == true, "Text_DrawHLine failed" );
+		mu_assert( Text_DrawHLine(ID_CHANNEL_B, x + line_len + 2, y + 8, 6, the_char, FG_COLOR_DK_GRAY, BG_COLOR_BLUE, char_and_attr) == true, "Text_DrawHLine failed" );
+		mu_assert( Text_DrawHLine(ID_CHANNEL_B, x + line_len + 2, y + 9, 6, the_char, FG_COLOR_ORANGE, BG_COLOR_BLUE, char_and_attr) == true, "Text_DrawHLine failed" );
+		mu_assert( Text_DrawHLine(ID_CHANNEL_B, x + line_len + 2, y + 10, 6, the_char, FG_COLOR_GREEN, BG_COLOR_BLUE, char_and_attr) == true, "Text_DrawHLine failed" );
+		mu_assert( Text_DrawHLine(ID_CHANNEL_B, x + line_len + 2, y + 11, 6, the_char, FG_COLOR_YELLOW, BG_COLOR_BLUE, char_and_attr) == true, "Text_DrawHLine failed" );
+		mu_assert( Text_DrawHLine(ID_CHANNEL_B, x + line_len + 2, y + 12, 6, the_char, FG_COLOR_BLUE, BG_COLOR_BLUE, char_and_attr) == true, "Text_DrawHLine failed" );
+		mu_assert( Text_DrawHLine(ID_CHANNEL_B, x + line_len + 2, y + 13, 6, the_char, FG_COLOR_VIOLET, BG_COLOR_BLUE, char_and_attr) == true, "Text_DrawHLine failed" );
+		mu_assert( Text_DrawHLine(ID_CHANNEL_B, x + line_len + 2, y + 14, 6, the_char, FG_COLOR_CYAN, BG_COLOR_BLUE, char_and_attr) == true, "Text_DrawHLine failed" );
+		mu_assert( Text_DrawHLine(ID_CHANNEL_B, x + line_len + 2, y + 15, 6, the_char, FG_COLOR_WHITE, BG_COLOR_BLUE, char_and_attr) == true, "Text_DrawHLine failed" );
+	}
+	
+	printf("Next: Text_DrawBoxCoords -> Draw a basic box using 4 coordinates. All characters of box  use the same character.\n");	
+	MU_RUN_TEST(text_test_pause_and_clear);
+	{
+		signed int		x1;
+		signed int		y1;
+		signed int		x2;
+		signed int		y2;
+		signed int		h_line_len;
+		signed int		v_line_len;
+		unsigned char	the_char;
+	
+		x1 = 45;
+		y1 = 4;
+		x2 = 65;
+		y2 = 35;
+		the_char = CH_CHECKERED1;
+
+		mu_assert( Text_DrawBoxCoords(ID_CHANNEL_B, x1, y1, x2, y2, the_char, FG_COLOR_LT_GRAY, BG_COLOR_DK_GRAY, char_and_attr) == true, "Text_DrawBoxCoords failed" );
+	}
+
+	printf("Next: Text_DrawBox -> Draw a basic box using start coordinates + width and height. All characters of box  use the same character.\n");	
+	MU_RUN_TEST(text_test_pause_and_clear);
+	{
+		signed int		x;
+		signed int		y;
+		signed int		h_line_len;
+		signed int		v_line_len;
+		unsigned char	the_char;
+	
+		x = 60;
+		y = 6;
+		h_line_len = 6;
+		v_line_len = 6;
+		the_char = CH_CHECKERED3;
+
+		mu_assert(Text_DrawBox(ID_CHANNEL_B, x, y, h_line_len, v_line_len, the_char, FG_COLOR_CYAN, BG_COLOR_DK_CYAN, char_and_attr) == true, "Text_DrawBox failed" );
+	}
+
+	printf("Next: Text_DrawBoxCoordsFancy -> Draw a box using 4 coordinates. The pre-defined 'wall' characters are used to build the box's outline. Text_FillBox() is used to add a fill.\n");	
+	MU_RUN_TEST(text_test_pause_and_clear);
+	{
+		signed int		x1;
+		signed int		y1;
+		signed int		x2;
+		signed int		y2;
+
+		// medium box on chan B
+		x1 = 12;
+		y1 = 4;
+		x2 = 68;
+		y2 = 51;
+
+		mu_assert( Text_FillBox(ID_CHANNEL_B, x1+1, y1+1, x2-1, y2-1, CH_CHECKERED3, FG_COLOR_LT_GRAY, BG_COLOR_WHITE) == true, "Text_FillBox failed" );
+		mu_assert( Text_DrawBoxCoordsFancy(ID_CHANNEL_B, x1, y1, x2, y2, FG_COLOR_LT_GRAY, BG_COLOR_DK_GRAY) == true, "Text_DrawBoxCoordsFancy failed" );
+	}
+	
+	printf("Next: Text_DrawStringAtXY -> Draw a string at the specified coordinates. No wrapping is performed. Will truncate at right edge of screen.\n");	
+	MU_RUN_TEST(text_test_pause_and_clear);
+	{
+		char*	the_message;
+		int		i;
+	
+		// good values	
+		mu_assert((the_message = General_StrlcpyWithAlloc((char*)"this is a string", 250)) != NULL, "General_StrlcpyWithAlloc returned NULL" );
+		mu_assert_string_eq("this is a string", (char*)the_message);
+		for (i = 5; i < 40; i = i + 10)
+		{	
+			mu_assert(Text_DrawStringAtXY(ID_CHANNEL_B, i*2, i, the_message, FG_COLOR_YELLOW, BG_COLOR_DK_BLUE) == true, "Text_DrawStringAtXY failed" );
+		}
+	}
+	
+	printf("Next: Text_DrawStringInBox -> Draw a string into the specified box coordinates. Wrap is performed. \n");	
+	MU_RUN_TEST(text_test_pause_and_clear);
+	{
+		signed int		x1;
+		signed int		y1;
+		signed int		x2;
+		signed int		y2;
+		char*	the_message;
+	
+ 		the_message = General_StrlcpyWithAlloc((char*)"\nThe Anecdote\n\nBill Atkinson worked mostly at home, but whenever he made significant progress he rushed in to Apple to show it off to anyone who would appreciate it. This time, he visited the Macintosh offices at Texaco Towers to show off his brand new oval routines in Quickdraw, which were implemented using a really clever algorithm.\n\nBill had added new code to QuickDraw (which was still called LisaGraf at this point) to draw circles and ovals very quickly. That was a bit hard to do on the Macintosh, since the math for circles usually involved taking square roots, and the 68000 processor in the Lisa and Macintosh didn't support floating point operations. But Bill had come up with a clever way to do the circle calculation that only used addition and subtraction, not even multiplication or division, which the 68000 could do, but was kind of slow at.\n\nBill's technique used the fact the sum of a sequence of odd numbers is always the next perfect square (For example, 1 + 3 = 4, 1 + 3 + 5 = 9, 1 + 3 + 5 + 7 = 16, etc). So he could figure out when to bump the dependent coordinate value by iterating in a loop until a threshold was exceeded. This allowed QuickDraw to draw ovals very quickly.\n\nBill fired up his demo and it quickly filled the Lisa screen with randomly-sized ovals, faster than you thought was possible. But something was bothering Steve Jobs. 'Well, circles and ovals are good, but how about drawing rectangles with rounded corners? Can we do that now, too?'\n\n'No, there's no way to do that. In fact it would be really hard to do, and I don't think we really need it'. I think Bill was a little miffed that Steve wasn't raving over the fast ovals and still wanted more.\n\nSteve suddenly got more intense. 'Rectangles with rounded corners are everywhere! Just look around this room!'. And sure enough, there were lots of them, like the whiteboard and some of the desks and tables. Then he pointed out the window. 'And look outside, there's even more, practically everywhere you look!'. He even persuaded Bill to take a quick walk around the block with him, pointing out every rectangle with rounded corners that he could find.\n\n\nWhen Steve and Bill passed a no-parking sign with rounded corners, it did the trick. 'OK, I give up', Bill pleaded. 'I'll see if it's as hard as I thought.' He went back home to work on it.\n\nBill returned to Texaco Towers the following afternoon, with a big smile on his face. His demo was now drawing rectangles with beautifully rounded corners blisteringly fast, almost at the speed of plain rectangles.", 80*60+1);
+
+		// medium box on chan B
+		x1 = 12;
+		y1 = 4;
+		x2 = 68;
+		y2 = 51;
+
+		mu_assert( Text_FillBox(ID_CHANNEL_B, x1+1, y1+1, x2-1, y2-1, ' ', FG_COLOR_LT_GRAY, BG_COLOR_WHITE) == true, "Text_FillBox failed" );
+		mu_assert( Text_DrawBoxCoordsFancy(ID_CHANNEL_B, x1, y1, x2, y2, FG_COLOR_BLACK, BG_COLOR_WHITE) == true, "Text_DrawBoxCoordsFancy failed" );
+
+		x1 = 13;
+		y1 = 5;
+		x2 = 67;
+		y2 = 50;
+		mu_assert( Text_DrawStringInBox(ID_CHANNEL_B, x1, y1, x2, y2, the_message, FG_COLOR_BLACK, BG_COLOR_WHITE) == true, "Text_DrawStringInBox failed" );
+
+
+		// small box on chan B
+		x1 = 39;
+		y1 = 19;
+		x2 = 71;
+		y2 = 41;
+
+		mu_assert( Text_FillBox(ID_CHANNEL_B, x1+1, y1+1, x2-1, y2-1, ' ', BG_COLOR_CYAN, BG_COLOR_BLACK) == true, "Text_FillBox failed" );
+		mu_assert(Text_DrawBoxCoordsFancy(ID_CHANNEL_B, x1, y1, x2, y2, FG_COLOR_LT_GRAY, BG_COLOR_BLACK) == true, "Text_DrawBoxCoordsFancy failed" );
+	
+		x1 = 40;
+		y1 = 20;
+		x2 = 70;
+		y2 = 40;
+		mu_assert(Text_DrawStringInBox(ID_CHANNEL_B, x1, y1, x2, y2, the_message, BG_COLOR_CYAN, BG_COLOR_BLACK) == true, "Text_DrawStringInBox failed" );
+
+	}
+	
+	printf("Next: Text_UpdateFontData -> Change the font characters with 2K of data from the specified buffer. See screen A as comparison.\n");	
+	MU_RUN_TEST(text_test_pause_and_clear);
+	mu_assert( Text_ShowFontChars(ID_CHANNEL_A) == true, "Could not show font characters" );
+	mu_assert( Text_ShowFontChars(ID_CHANNEL_B) == true, "Could not show font characters" );
+	MU_RUN_TEST(font_replace_test);
+
+}
+
+
+// **** speed tests
+
+MU_TEST(text_test_hline_speed)
+{
+	long start1;
+	long end1;
+	long start2;
+	long end2;
+	signed int		x;
+	signed int		y;
+	signed int		line_len;
+	unsigned char	the_char;
+	signed int		i;
+	signed int		num_passes = 90;
+	signed int		j;
+	signed int		num_cycles = 10;
+
+	x = 1;
+	y = 1;
+	line_len = 120;
+	the_char = CH_WALL_H;	
+	
+	// test speed of first variant
+	start1 = mu_timer_real();
+	
+	for (j = 0; j < num_cycles; j++)
+	{
+		for (i=0; i < num_passes; i++)
+		{
+			mu_assert( Text_DrawHLineSlow(ID_CHANNEL_A, x, y + i, line_len, the_char, FG_COLOR_GREEN, BG_COLOR_BLACK, char_only) == true, "Text_DrawHLine failed" );
+		}
+	}
+		
+	end1 = mu_timer_real();
+	
+	// test speed of second variant
+	x++;
+	start2 = mu_timer_real();
+	
+	for (j = 0; j < num_cycles; j++)
+	{
+		for (i=0; i < num_passes; i++)
+		{
+			mu_assert( Text_DrawHLine(ID_CHANNEL_A, x, y + i, line_len, the_char, FG_COLOR_RED, BG_COLOR_BLACK, char_only) == true, "Text_DrawHLine failed" );
+		}
+	}
+	
+	end2 = mu_timer_real();
+	
+	printf("\nSpeed results: first routine completed in %li ticks; second in %li ticks\n", end1 - start1, end2 - start2);
+	
+	// run again, with different values
+	
+	x = 1;
+	y = 1;
+	line_len = 120;
+	the_char = CH_WALL_H;	
+	
+	// test speed of first variant
+	start1 = mu_timer_real();
+	
+	for (j = 0; j < num_cycles; j++)
+	{
+		for (i=0; i < num_passes; i++)
+		{
+			mu_assert( Text_DrawHLineSlow(ID_CHANNEL_A, x, y + i, line_len, the_char, FG_COLOR_GREEN, BG_COLOR_BLACK, char_and_attr) == true, "Text_DrawHLine failed" );
+		}
+	}
+	
+	end1 = mu_timer_real();
+	
+	// test speed of second variant
+	x++;
+	start2 = mu_timer_real();
+	
+	for (j = 0; j < num_cycles; j++)
+	{
+		for (i=0; i < num_passes; i++)
+		{
+			mu_assert( Text_DrawHLine(ID_CHANNEL_A, x, y + i, line_len, the_char, FG_COLOR_RED, BG_COLOR_BLACK, char_and_attr) == true, "Text_DrawHLine failed" );
+		}
+	}
+	
+	end2 = mu_timer_real();
+	
+	printf("\nSpeed results: first routine completed in %li ticks; second in %li ticks\n", end1 - start1, end2 - start2);
+}
+
+
+
+	// speed tests
+MU_TEST_SUITE(text_test_suite_speed)
+{	
+	MU_SUITE_CONFIGURE(&text_test_setup, &text_test_teardown);
+	
+	MU_RUN_TEST(text_test_hline_speed);
+}
+
+
+// unit tests
+MU_TEST_SUITE(text_test_suite_units)
+{	
 	MU_SUITE_CONFIGURE(&text_test_setup, &text_test_teardown);
 
 	MU_RUN_TEST(text_test_fill_text);
@@ -826,34 +1136,27 @@ MU_TEST_SUITE(text_test_suite)
 
 	MU_RUN_TEST(text_test_invert_box);
 	
-//	MU_RUN_TEST(text_test_block_copy);
-	
-	MU_RUN_TEST(text_test_colors);
+	MU_RUN_TEST(text_test_block_copy);
 	
 	MU_RUN_TEST(font_replace_test);
-	
-// 	MU_RUN_TEST(test_check);
-// 	MU_RUN_TEST(test_assert);
-// 	MU_RUN_TEST(test_assert_int_eq);
-// 	MU_RUN_TEST(test_assert_double_eq);
-// 
-// 	MU_RUN_TEST(test_check_fail);
-// 	MU_RUN_TEST(test_assert_fail);
-// 	MU_RUN_TEST(test_assert_int_eq_fail);
-// 	MU_RUN_TEST(test_assert_double_eq_fail);
-// 	
-// 	MU_RUN_TEST(test_string_eq);
-// 	MU_RUN_TEST(test_string_eq_fail);
-// 
-// 	MU_RUN_TEST(test_fail);
-
-	end = mu_timer_real();
-
 }
+
+
+// interactive tests
+MU_TEST_SUITE(text_test_suite_interactive)
+{	
+	MU_SUITE_CONFIGURE(&text_test_setup, &text_test_teardown);
+
+	MU_RUN_TEST(text_interactive);
+// 	text_test_pause_and_clear();
+}
+
 
 int Text_RunTests(void)
 {
-	MU_RUN_SUITE(text_test_suite);
+//  MU_RUN_SUITE(text_test_suite_units);
+	MU_RUN_SUITE(text_test_suite_interactive);
+// 	MU_RUN_SUITE(text_test_suite_speed);
 	MU_REPORT();
 	return MU_EXIT_CODE;
 }

@@ -95,7 +95,7 @@ boolean Text_ValidateAll(signed int the_screen_id, signed int x, signed int y, u
 			
 	if (Text_ValidateXY(the_screen_id, x, y) == false)
 	{
-		LOG_INFO(("%s %d: illegal coordinates %li, %li", __func__, __LINE__, x, y));
+		LOG_ERR(("%s %d: illegal coordinates %li, %li", __func__, __LINE__, x, y));
 		return false;
 	}
 
@@ -341,12 +341,11 @@ boolean Text_CopyScreen(signed int the_screen_id, char* the_buffer, boolean to_s
 		return false;
 	}
 		
-// this check appears to cause morfe to die
-// 	if (the_buffer == NULL)
-// 	{
-// 		LOG_ERR(("%s %d: passed off-screen buffer was NULL", __func__, __LINE__));
-// 		return false;
-// 	}
+	if (the_buffer == NULL)
+	{
+		LOG_ERR(("%s %d: passed off-screen buffer was NULL", __func__, __LINE__));
+		return false;
+	}
 
 	if (for_attr)
 	{
@@ -363,7 +362,6 @@ boolean Text_CopyScreen(signed int the_screen_id, char* the_buffer, boolean to_s
 	if (to_screen)
 	{
 		memcpy(the_vram_loc, the_buffer, the_write_len);
-		//DEBUG_OUT(("%s %d: vramloc=%p, buffer=%p, to_screen=%i, the_write_len=%i", the_vram_loc, the_buffer, to_screen, the_write_len));
 	}
 	else
 	{
@@ -401,12 +399,11 @@ boolean Text_CopyMemBox(signed int the_screen_id, char* the_buffer, signed int x
 		return false;
 	}
 	
-// this check appears to cause morfe to die
-// 	if (the_buffer == NULL)
-// 	{
-// 		LOG_ERR(("%s %d: passed off-screen buffer was NULL", __func__, __LINE__));
-// 		return false;
-// 	}
+	if (the_buffer == NULL)
+	{
+		LOG_ERR(("%s %d: passed off-screen buffer was NULL", __func__, __LINE__));
+		return false;
+	}
 
 	// get initial read/write locs
 	initial_offset = (global_screen[the_screen_id].text_mem_cols_ * y1) + x1;
@@ -687,20 +684,19 @@ boolean Text_InvertBox(signed int the_screen_id, signed int x1, signed int y1, s
 // replace the current font data with the data at the passed memory buffer
 boolean Text_UpdateFontData(signed int the_screen_id, char* new_font_data)
 {
-	// TEST: check the mem locs I have work in morfe.
 	memcpy(global_screen[the_screen_id].text_font_ram_, new_font_data, 8*256*1);
-	// NO EFFECT: memset(FONT_MEMORY_BANK1, 255, 8*256*1);
-	// seems to be expected: apparently the second font is no longer a thing
 
 	return true;
 }
+
 
 // test function to display all 256 font characters
 boolean Text_ShowFontChars(signed int the_screen_id)
 {
 	unsigned char	the_char = 0;
 	char*			the_write_loc;
-	unsigned short	i;
+	signed short	i;
+	signed short	j;
 
 	if (the_screen_id != ID_CHANNEL_A && the_screen_id != ID_CHANNEL_B)
 	{
@@ -710,15 +706,16 @@ boolean Text_ShowFontChars(signed int the_screen_id)
 
 	the_write_loc = global_screen[the_screen_id].text_ram_;
 
-	//printf("\n");
-
-	for (i = 0; i < 256; i++)
+	// print rows of 32 characters at a time
+	for (j = 0; j < 8; j++)
 	{
-		*the_write_loc++ = the_char++;
-		//printf("%c", the_char++);
+		for (i = 0; i < 32; i++)
+		{
+			*the_write_loc++ = the_char++;
+		}
+		
+		the_write_loc += global_screen[the_screen_id].text_mem_cols_ - i;
 	}
-
-	//printf("\n");
 	
 	return true;
 }
@@ -886,6 +883,46 @@ unsigned char Text_GetBackColorAtXY(signed int the_screen_id, signed int x, sign
 
 // draws a horizontal line from specified coords, for n characters, using the specified char and/or attribute
 boolean Text_DrawHLine(signed int the_screen_id, signed int x, signed int y, signed int the_line_len, unsigned char the_char, unsigned char fore_color, unsigned char back_color, text_draw_choice the_draw_choice)
+{
+	signed int		dx;
+	unsigned char	the_attribute_value;
+	boolean			result;
+	
+	// LOGIC: 
+	//   an H line is just a box with 1 row, so we can re-use Text_FillMemoryBox(Both)(). These routines use memset, so are quicker than for loops. 
+	
+	if (!Text_ValidateAll(the_screen_id, x, y, fore_color, back_color))
+	{
+		LOG_ERR(("%s %d: illegal screen id, coordinate, or color", __func__, __LINE__));
+		return false;
+	}
+
+	if (the_draw_choice == char_only)
+	{
+		result = Text_FillMemoryBox(the_screen_id, x, y, the_line_len, 0, SCREEN_FOR_TEXT_CHAR, the_char);
+	}
+	else
+	{
+		// calculate attribute value from passed fore and back colors
+		// LOGIC: text mode only supports 16 colors. lower 4 bits are back, upper 4 bits are foreground
+		the_attribute_value = ((fore_color << 4) | back_color);
+	
+		if (the_draw_choice == attr_only)
+		{
+			result = Text_FillMemoryBox(the_screen_id, x, y, the_line_len, 0, SCREEN_FOR_TEXT_ATTR, the_attribute_value);
+		}
+		else
+		{
+			result = Text_FillMemoryBoxBoth(the_screen_id, x, y, the_line_len, 0, the_char, the_attribute_value);
+		}
+	}
+
+	return result;
+}
+
+
+// draws a horizontal line from specified coords, for n characters, using the specified char and/or attribute
+boolean Text_DrawHLineSlow(signed int the_screen_id, signed int x, signed int y, signed int the_line_len, unsigned char the_char, unsigned char fore_color, unsigned char back_color, text_draw_choice the_draw_choice)
 {
 	signed int	dx;
 	
@@ -1254,17 +1291,12 @@ char*		the_temp = temp_buff;
 		signed int	this_write_len;
 		
 		this_line_len = General_StrFindNextLineBreak(remaining_string, max_col);
-// sprintf(the_temp, "%d: this_l=%i, rem_l=%i", __LINE__, this_line_len, remaining_len);
-// Text_DrawStringAtXY(ID_CHANNEL_A, 0, the_row, the_temp, FG_COLOR_BLACK_GREEN, BG_COLOR_BROWN);
 
 		if (this_line_len == 1)
 		{
 			// next/first character is a line break char
 			this_write_len = 0;
-// 			remaining_string++;
-// 			remaining_len--;
 			*(the_attr_loc) = the_attribute_value;
-// 			memset(the_attr_loc, the_attribute_value, 1);
 		}
 		else
 		{
@@ -1283,8 +1315,8 @@ char*		the_temp = temp_buff;
 			memset(the_attr_loc, the_attribute_value, this_write_len);
 		}
 
-				remaining_string += this_write_len + 1; // skip past the actual \n char.
-				remaining_len -= (this_write_len + 1);
+		remaining_string += this_write_len + 1; // skip past the actual \n char.
+		remaining_len -= (this_write_len + 1);
 		
 		the_char_loc += global_screen[the_screen_id].text_mem_cols_;
 		the_attr_loc += global_screen[the_screen_id].text_mem_cols_;		
