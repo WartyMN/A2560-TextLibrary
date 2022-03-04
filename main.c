@@ -172,7 +172,8 @@ boolean keyboard_test(void)
 
 int main(int argc, char* argv[])
 {
-
+	
+	
 #define __f68 1	// undefine '__f68' if running in morfe or addresses will be wrong for morfe
 
 	// move to startup function

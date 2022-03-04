@@ -107,6 +107,13 @@ typedef enum LoggingLevel
 /*                       Public Function Prototypes                          */
 /*****************************************************************************/
 
+// Format a string by wrapping and trimming to fit the passed width and height. returns number of vertical pixels required. 
+// Passing a 0 for height disables the governor on allowed vertical space. 
+// If the string cannot be displayed in the specified height and width, processing will stop, but it is not an error condition
+// If max_chars_to_format is less than len of string, processing will stop after that many characters.
+// returns -1 in any error condition
+signed int General_WrapAndTrimTextToFit(Screen* the_screen, char** orig_string, char** formatted_string, signed int max_chars_to_format, signed int max_width, signed int max_height, signed int (* measure_function)(Screen*, char*, signed int, signed int));
+
 // replacement for tolower() in c library, which doesn't seem to work here for some reason.
 char General_ToLower(char the_char);
 

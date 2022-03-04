@@ -234,18 +234,6 @@ typedef enum
 // // pop up a requester box with message to user. var args are for the message. 
 // unsigned long General_ShowAlert(struct Window* the_window, const char* the_title, boolean is_error, boolean with_cancel, const char* message_format, ...);
  
-// calculates how many characters of the passed string will fit into the passed pixel width
-// TODO: adapt this to reference the currently selected screen font, once non-fixed width fonts are available (if ever)
-// returns -1 in any error condition
-signed int General_TextFit(struct Screen* the_screen, char* the_string, signed int the_len, signed int available_width);
-
-// Format a string by wrapping and trimming to fit the passed width and height. returns number of vertical pixels required. 
-// Passing a 0 for height disables the governor on allowed vertical space. 
-// If the string cannot be displayed in the specified height and width, processing will stop, but it is not an error condition
-// If max_chars_to_format is less than len of string, processing will stop after that many characters.
-// returns -1 in any error condition
-signed int General_WrapAndTrimTextToFit(struct Screen* the_screen, char** orig_string, char** formatted_string, signed int max_chars_to_format, signed int max_width, signed int max_height);
- 
 // // draw a line in an intuition window
 // void General_DrawLine(struct RastPort* the_rastport, signed long x1, signed long y1, signed long x2, signed long y2, char the_color_pen);
 // 

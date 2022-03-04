@@ -31,10 +31,10 @@ void text_test_pause_and_clear(void)
 	//printf("Hit any key to continue...");
 	getchar();
 	
-	Text_FillCharMem(ID_CHANNEL_A, ' ');
-	Text_FillAttrMem(ID_CHANNEL_A, 159);
-	Text_FillCharMem(ID_CHANNEL_B, ' ');
-	Text_FillAttrMem(ID_CHANNEL_B, 159);
+	Text_FillCharMem(&global_screen[ID_CHANNEL_A], ' ');
+	Text_FillAttrMem(&global_screen[ID_CHANNEL_A], 159);
+	Text_FillCharMem(&global_screen[ID_CHANNEL_B], ' ');
+	Text_FillAttrMem(&global_screen[ID_CHANNEL_B], 159);
 	// reset cursor to position 0 (upper left) (neither of the below things seemed to have worked, from point of view of resetting where next printf() happens
 // 	*(long *)VICKYA_CURSOR_POS_A2560K = 0;
 // 	*(long *)VICKYB_CURSOR_POS_A2560K = 0;
@@ -71,53 +71,53 @@ MU_TEST(text_test_block_copy)
 
 	
 	// copy text on channel B, to off-screen buffer 1	
-	mu_assert( Text_CopyScreen(ID_CHANNEL_B, buffer1, SCREEN_COPY_FROM_SCREEN, SCREEN_FOR_TEXT_CHAR == true), "Could not copy chan B char to buffer 1" );
+	mu_assert( Text_CopyScreen(&global_screen[ID_CHANNEL_B], buffer1, SCREEN_COPY_FROM_SCREEN, SCREEN_FOR_TEXT_CHAR == true), "Could not copy chan B char to buffer 1" );
  
  	// copy text on channel A, to off-screen buffer 2
- 	mu_assert( Text_CopyScreen(ID_CHANNEL_A, buffer2, SCREEN_COPY_FROM_SCREEN, SCREEN_FOR_TEXT_CHAR == true), "Could not copy chan A char to buffer 2" );
+ 	mu_assert( Text_CopyScreen(&global_screen[ID_CHANNEL_A], buffer2, SCREEN_COPY_FROM_SCREEN, SCREEN_FOR_TEXT_CHAR == true), "Could not copy chan A char to buffer 2" );
  	
  	// copy text in offscreen buffer 1, to channel A
- 	mu_assert( Text_CopyScreen(ID_CHANNEL_A, buffer1, SCREEN_COPY_TO_SCREEN, SCREEN_FOR_TEXT_CHAR == true), "Could not copy buffer1 to chan A char" );
+ 	mu_assert( Text_CopyScreen(&global_screen[ID_CHANNEL_A], buffer1, SCREEN_COPY_TO_SCREEN, SCREEN_FOR_TEXT_CHAR == true), "Could not copy buffer1 to chan A char" );
  
  	// copy text in offscreen buffer 2, to channel B
-	mu_assert( Text_CopyScreen(ID_CHANNEL_B, buffer2, SCREEN_COPY_TO_SCREEN, SCREEN_FOR_TEXT_CHAR == true), "Could not copy buffer2 to chan B char" );
+	mu_assert( Text_CopyScreen(&global_screen[ID_CHANNEL_B], buffer2, SCREEN_COPY_TO_SCREEN, SCREEN_FOR_TEXT_CHAR == true), "Could not copy buffer2 to chan B char" );
  	
  	// copy attr on channel B, to off-screen buffer 1	
-	mu_assert( Text_CopyScreen(ID_CHANNEL_B, buffer1, SCREEN_COPY_FROM_SCREEN, SCREEN_FOR_TEXT_ATTR == true), "Could not copy chan B attr to buffer 1" );
+	mu_assert( Text_CopyScreen(&global_screen[ID_CHANNEL_B], buffer1, SCREEN_COPY_FROM_SCREEN, SCREEN_FOR_TEXT_ATTR == true), "Could not copy chan B attr to buffer 1" );
  
  	// copy attr on channel A, to off-screen buffer 2
-	mu_assert( Text_CopyScreen(ID_CHANNEL_A, buffer2, SCREEN_COPY_FROM_SCREEN, SCREEN_FOR_TEXT_ATTR == true), "Could not copy chan A attr to buffer 2" );
+	mu_assert( Text_CopyScreen(&global_screen[ID_CHANNEL_A], buffer2, SCREEN_COPY_FROM_SCREEN, SCREEN_FOR_TEXT_ATTR == true), "Could not copy chan A attr to buffer 2" );
  	
  	// copy attr in offscreen buffer 1, to channel A
-	mu_assert( Text_CopyScreen(ID_CHANNEL_A, buffer1, SCREEN_COPY_TO_SCREEN, SCREEN_FOR_TEXT_ATTR == true), "Could not copy buffer1 to chan A attr" );
+	mu_assert( Text_CopyScreen(&global_screen[ID_CHANNEL_A], buffer1, SCREEN_COPY_TO_SCREEN, SCREEN_FOR_TEXT_ATTR == true), "Could not copy buffer1 to chan A attr" );
  
  	// copy attr in offscreen buffer 2, to channel B
-// 	mu_assert( Text_CopyScreen(ID_CHANNEL_B, buffer2, SCREEN_COPY_TO_SCREEN, SCREEN_FOR_TEXT_ATTR == true), "Could not copy buffer2 to chan B attr" );
+// 	mu_assert( Text_CopyScreen(&global_screen[ID_CHANNEL_B], buffer2, SCREEN_COPY_TO_SCREEN, SCREEN_FOR_TEXT_ATTR == true), "Could not copy buffer2 to chan B attr" );
 
 
 // 	// copy text on channel B, to off-screen buffer 1	
-// 	mu_assert( Text_CopyCharMemFromScreen(ID_CHANNEL_B, buffer1) == true, "Could not copy chan B char to buffer 1" );
+// 	mu_assert( Text_CopyCharMemFromScreen(&global_screen[ID_CHANNEL_B], buffer1) == true, "Could not copy chan B char to buffer 1" );
 // 
 // 	// copy text on channel A, to off-screen buffer 2
-// 	mu_assert( Text_CopyCharMemFromScreen(ID_CHANNEL_A, buffer2) == true, "Could not copy chan A char to buffer 2" );
+// 	mu_assert( Text_CopyCharMemFromScreen(&global_screen[ID_CHANNEL_A], buffer2) == true, "Could not copy chan A char to buffer 2" );
 // 	
 // 	// copy text in offscreen buffer 1, to channel A
-// 	mu_assert( Text_CopyCharMemToScreen(ID_CHANNEL_A, buffer1) == true, "Could not copy buffer1 to chan A char" );
+// 	mu_assert( Text_CopyCharMemToScreen(&global_screen[ID_CHANNEL_A], buffer1) == true, "Could not copy buffer1 to chan A char" );
 // 
 // 	// copy text in offscreen buffer 2, to channel B
-// 	mu_assert( Text_CopyCharMemToScreen(ID_CHANNEL_B, buffer2) == true, "Could not copy buffer2 to chan B char" );
+// 	mu_assert( Text_CopyCharMemToScreen(&global_screen[ID_CHANNEL_B], buffer2) == true, "Could not copy buffer2 to chan B char" );
 // 	
 // 	// copy attr on channel B, to off-screen buffer 1	
-// 	mu_assert( Text_CopyAttrMemFromScreen(ID_CHANNEL_B, buffer1) == true, "Could not copy chan B attr to buffer 1" );
+// 	mu_assert( Text_CopyAttrMemFromScreen(&global_screen[ID_CHANNEL_B], buffer1) == true, "Could not copy chan B attr to buffer 1" );
 // 
 // 	// copy attr on channel A, to off-screen buffer 2
-// 	mu_assert( Text_CopyAttrMemFromScreen(ID_CHANNEL_A, buffer2) == true, "Could not copy chan A attr to buffer 2" );
+// 	mu_assert( Text_CopyAttrMemFromScreen(&global_screen[ID_CHANNEL_A], buffer2) == true, "Could not copy chan A attr to buffer 2" );
 // 	
 // 	// copy attr in offscreen buffer 1, to channel A
-// 	mu_assert( Text_CopyAttrMemToScreen(ID_CHANNEL_A, buffer1) == true, "Could not copy buffer1 to chan A attr" );
+// 	mu_assert( Text_CopyAttrMemToScreen(&global_screen[ID_CHANNEL_A], buffer1) == true, "Could not copy buffer1 to chan A attr" );
 // 
 // 	// copy attr in offscreen buffer 2, to channel B
-// 	mu_assert( Text_CopyAttrMemToScreen(ID_CHANNEL_B, buffer2) == true, "Could not copy buffer2 to chan B attr" );
+// 	mu_assert( Text_CopyAttrMemToScreen(&global_screen[ID_CHANNEL_B], buffer2) == true, "Could not copy buffer2 to chan B attr" );
 	
 	free(buffer1);
 	free(buffer2);
@@ -143,28 +143,28 @@ MU_TEST(text_test_block_copy_box)
 	mu_assert( (buffer2 = (char*)calloc(global_screen[ID_CHANNEL_A].text_mem_cols_ * global_screen[ID_CHANNEL_A].text_mem_rows_, sizeof(char)) ) != NULL, "could not alloc space for screen buffer 2");
 	
 	// copy text on channel B, to off-screen buffer 1	
-	mu_assert( Text_CopyMemBox(ID_CHANNEL_B, buffer1, x, y, x+h_line_len, y+v_line_len, SCREEN_COPY_FROM_SCREEN, SCREEN_FOR_TEXT_CHAR == true), "Could not copy box of chan B char to buffer 1" );
+	mu_assert( Text_CopyMemBox(&global_screen[ID_CHANNEL_B], buffer1, x, y, x+h_line_len, y+v_line_len, SCREEN_COPY_FROM_SCREEN, SCREEN_FOR_TEXT_CHAR == true), "Could not copy box of chan B char to buffer 1" );
 
 	// copy text on channel A, to off-screen buffer 2
-	mu_assert( Text_CopyMemBox(ID_CHANNEL_A, buffer2, 0, 0, 71, 8, SCREEN_COPY_FROM_SCREEN, SCREEN_FOR_TEXT_CHAR == true), "Could not copy box of chan A char to buffer 2" );
+	mu_assert( Text_CopyMemBox(&global_screen[ID_CHANNEL_A], buffer2, 0, 0, 71, 8, SCREEN_COPY_FROM_SCREEN, SCREEN_FOR_TEXT_CHAR == true), "Could not copy box of chan A char to buffer 2" );
 	
 	// copy text in offscreen buffer 1, to channel A
-	mu_assert( Text_CopyMemBox(ID_CHANNEL_A, buffer1, x, y, x+h_line_len, y+v_line_len, SCREEN_COPY_TO_SCREEN, SCREEN_FOR_TEXT_CHAR == true),  "Could not copy box of buffer1 to chan A char" );
+	mu_assert( Text_CopyMemBox(&global_screen[ID_CHANNEL_A], buffer1, x, y, x+h_line_len, y+v_line_len, SCREEN_COPY_TO_SCREEN, SCREEN_FOR_TEXT_CHAR == true),  "Could not copy box of buffer1 to chan A char" );
 
 	// copy text in offscreen buffer 2, to channel B
-	mu_assert( Text_CopyMemBox(ID_CHANNEL_B, buffer2, 0, 0, 71, 8, SCREEN_COPY_TO_SCREEN, SCREEN_FOR_TEXT_CHAR == true), "Could not copy box of buffer2 to chan B char" );
+	mu_assert( Text_CopyMemBox(&global_screen[ID_CHANNEL_B], buffer2, 0, 0, 71, 8, SCREEN_COPY_TO_SCREEN, SCREEN_FOR_TEXT_CHAR == true), "Could not copy box of buffer2 to chan B char" );
 	
 	// copy attr on channel B, to off-screen buffer 1	
-	mu_assert( Text_CopyMemBox(ID_CHANNEL_B, buffer1, x, y, x+h_line_len, y+v_line_len, SCREEN_COPY_FROM_SCREEN, SCREEN_FOR_TEXT_ATTR == true), "Could not copy box of chan B attr to buffer 1" );
+	mu_assert( Text_CopyMemBox(&global_screen[ID_CHANNEL_B], buffer1, x, y, x+h_line_len, y+v_line_len, SCREEN_COPY_FROM_SCREEN, SCREEN_FOR_TEXT_ATTR == true), "Could not copy box of chan B attr to buffer 1" );
 
 	// copy attr on channel A, to off-screen buffer 2
-	mu_assert( Text_CopyMemBox(ID_CHANNEL_A, buffer2, 0, 0, 71, 8, SCREEN_COPY_FROM_SCREEN, SCREEN_FOR_TEXT_ATTR == true), "Could not copy box of chan A attr to buffer 2" );
+	mu_assert( Text_CopyMemBox(&global_screen[ID_CHANNEL_A], buffer2, 0, 0, 71, 8, SCREEN_COPY_FROM_SCREEN, SCREEN_FOR_TEXT_ATTR == true), "Could not copy box of chan A attr to buffer 2" );
 	
 	// copy attr in offscreen buffer 1, to channel A
-	mu_assert( Text_CopyMemBox(ID_CHANNEL_A, buffer1, x, y, x+h_line_len, y+v_line_len, SCREEN_COPY_TO_SCREEN, SCREEN_FOR_TEXT_ATTR == true), "Could not copy box of buffer1 to chan A attr" );
+	mu_assert( Text_CopyMemBox(&global_screen[ID_CHANNEL_A], buffer1, x, y, x+h_line_len, y+v_line_len, SCREEN_COPY_TO_SCREEN, SCREEN_FOR_TEXT_ATTR == true), "Could not copy box of buffer1 to chan A attr" );
 
 	// copy attr in offscreen buffer 2, to channel B
- 	mu_assert( Text_CopyMemBox(ID_CHANNEL_B, buffer2, 0, 0, 71, 8, SCREEN_COPY_TO_SCREEN, SCREEN_FOR_TEXT_ATTR == true), "Could not copy box of buffer2 to chan B attr" );
+ 	mu_assert( Text_CopyMemBox(&global_screen[ID_CHANNEL_B], buffer2, 0, 0, 71, 8, SCREEN_COPY_TO_SCREEN, SCREEN_FOR_TEXT_ATTR == true), "Could not copy box of buffer2 to chan B attr" );
 		
 	free(buffer1);
 	free(buffer2);
@@ -173,25 +173,22 @@ MU_TEST(text_test_block_copy_box)
 
 MU_TEST(text_test_fill_text)
 {
-	mu_assert( Text_FillCharMem(ID_CHANNEL_A, 'Z'), "Could not fill character memory in channel A" );
-	mu_assert( Text_FillCharMem(ID_CHANNEL_B, 4), "Could not fill character memory in channel B" );
+	mu_assert( Text_FillCharMem(&global_screen[ID_CHANNEL_A], 'Z'), "Could not fill character memory in channel A" );
+	mu_assert( Text_FillCharMem(&global_screen[ID_CHANNEL_B], 4), "Could not fill character memory in channel B" );
 	// 4 = diamond. good mix of fore/back color
 	
 	// bad values
-	mu_assert( Text_FillCharMem(-1, 4) == false, "Text_FillCharMem accepted bad parameter" );
-	mu_assert( Text_FillCharMem(2, 4) == false, "Text_FillCharMem accepted bad parameter" );
-	mu_assert( Text_FillCharMem(256, 4) == false, "Text_FillCharMem accepted bad parameter" );
+	mu_assert( Text_FillCharMem(NULL, 4) == false, "Text_FillCharMem accepted bad parameter" );
 }
 
 
 MU_TEST(text_test_fill_attr)
 {
-	mu_assert( Text_FillAttrMem(ID_CHANNEL_A, 127), "Could not fill attribute memory in channel A" );
-	mu_assert( Text_FillAttrMem(ID_CHANNEL_B, 148), "Could not fill attribute memory in channel B" );
+	mu_assert( Text_FillAttrMem(&global_screen[ID_CHANNEL_A], 127), "Could not fill attribute memory in channel A" );
+	mu_assert( Text_FillAttrMem(&global_screen[ID_CHANNEL_B], 148), "Could not fill attribute memory in channel B" );
 
 	// illegal values
-	mu_assert( Text_FillAttrMem(-1, 148) == false, "Text_FillAttrMem accepted bad parameter" );
-	mu_assert( Text_FillAttrMem(-65536, 148) == false, "Text_FillAttrMem accepted bad parameter" );
+	mu_assert( Text_FillAttrMem(NULL, 148) == false, "Text_FillAttrMem accepted bad parameter" );
 	
 	
 		// 31=black on white
@@ -227,18 +224,17 @@ MU_TEST(text_test_fill_attr)
 MU_TEST(text_test_fill_box)
 {
 	// good values
-	mu_assert( Text_FillBoxSlow(ID_CHANNEL_A, 0, 6, 15, 8, CH_CHECKERED1, COLOR_BLACK, BG_COLOR_WHITE, char_and_attr) == true, "Text_FillBoxSlow failed" );
-	mu_assert( Text_FillBoxSlow(ID_CHANNEL_A, 21, 5, 39, 7, CH_CHECKERED2, COLOR_DK_RED, COLOR_RED, char_and_attr) == true, "Text_FillBoxSlow failed" );
-	mu_assert( Text_FillBox(ID_CHANNEL_A, 3, 6, 67, 50, CH_CHECKERED3, COLOR_GREEN, COLOR_DK_GREEN) == true, "Text_FillBox failed" );
-	mu_assert( Text_FillBox(ID_CHANNEL_B, 21, 21, 40, 40, CH_CHECKERED3, COLOR_YELLOW, COLOR_DK_YELLOW) == true, "Text_FillBox failed" );
+	mu_assert( Text_FillBoxSlow(&global_screen[ID_CHANNEL_A], 0, 6, 15, 8, CH_CHECKERED1, COLOR_BLACK, BG_COLOR_WHITE, char_and_attr) == true, "Text_FillBoxSlow failed" );
+	mu_assert( Text_FillBoxSlow(&global_screen[ID_CHANNEL_A], 21, 5, 39, 7, CH_CHECKERED2, COLOR_DK_RED, COLOR_RED, char_and_attr) == true, "Text_FillBoxSlow failed" );
+	mu_assert( Text_FillBox(&global_screen[ID_CHANNEL_A], 3, 6, 67, 50, CH_CHECKERED3, COLOR_GREEN, COLOR_DK_GREEN) == true, "Text_FillBox failed" );
+	mu_assert( Text_FillBox(&global_screen[ID_CHANNEL_B], 21, 21, 40, 40, CH_CHECKERED3, COLOR_YELLOW, COLOR_DK_YELLOW) == true, "Text_FillBox failed" );
 
 	// bad values
-	mu_assert( Text_FillBoxSlow(200, 0, 6, 15, 8, CH_CHECKERED1, COLOR_VIOLET, COLOR_CYAN, char_and_attr) == false, "Text_FillBoxSlow accepted an illegal screen ID" );
-	mu_assert( Text_FillBox(-255, -67, 6, 72, 30, CH_CHECKERED3, COLOR_BLUE, COLOR_DK_BLUE) == false, "Text_FillBoxSlow accepted an illegal screen ID" );
-	mu_assert( Text_FillBox(ID_CHANNEL_B, -67, 6, 72, 30, CH_CHECKERED3, COLOR_BLUE, COLOR_DK_BLUE) == false, "Text_FillBoxSlow accepted an illegal x coord" );
-	mu_assert( Text_FillBox(ID_CHANNEL_B, 450000, 6, 72, 30, CH_CHECKERED3, COLOR_BLUE, COLOR_DK_BLUE) == false, "Text_FillBoxSlow accepted an illegal x coord" );
-	mu_assert( Text_FillBox(ID_CHANNEL_B, 5, -6, 72, 30, CH_CHECKERED3, COLOR_BLUE, COLOR_DK_BLUE) == false, "Text_FillBoxSlow accepted an illegal y coord" );
-	mu_assert( Text_FillBox(ID_CHANNEL_B, 5, 6000, 72, 30, CH_CHECKERED3, COLOR_BLUE, COLOR_DK_BLUE) == false, "Text_FillBoxSlow accepted an illegal y coord" );
+	mu_assert( Text_FillBoxSlow(NULL, 0, 6, 15, 8, CH_CHECKERED1, COLOR_VIOLET, COLOR_CYAN, char_and_attr) == false, "Text_FillBoxSlow accepted an illegal screen ID" );
+	mu_assert( Text_FillBox(&global_screen[ID_CHANNEL_B], -67, 6, 72, 30, CH_CHECKERED3, COLOR_BLUE, COLOR_DK_BLUE) == false, "Text_FillBoxSlow accepted an illegal x coord" );
+	mu_assert( Text_FillBox(&global_screen[ID_CHANNEL_B], 450000, 6, 72, 30, CH_CHECKERED3, COLOR_BLUE, COLOR_DK_BLUE) == false, "Text_FillBoxSlow accepted an illegal x coord" );
+	mu_assert( Text_FillBox(&global_screen[ID_CHANNEL_B], 5, -6, 72, 30, CH_CHECKERED3, COLOR_BLUE, COLOR_DK_BLUE) == false, "Text_FillBoxSlow accepted an illegal y coord" );
+	mu_assert( Text_FillBox(&global_screen[ID_CHANNEL_B], 5, 6000, 72, 30, CH_CHECKERED3, COLOR_BLUE, COLOR_DK_BLUE) == false, "Text_FillBoxSlow accepted an illegal y coord" );
 }
 
 
@@ -248,38 +244,36 @@ MU_TEST(text_test_invert_box)
 	
 	for (i = 0; i < 999; i++)
 	{
-		mu_assert( Text_InvertBox(ID_CHANNEL_B, 0, 6, 15, 8), "Could not invert color of a box" );
+		mu_assert( Text_InvertBox(&global_screen[ID_CHANNEL_B], 0, 6, 15, 8), "Could not invert color of a box" );
 	}
 	
-	mu_assert( Text_InvertBox(ID_CHANNEL_B, 50, 13, 71, 16), "Could not invert color of a box" );
+	mu_assert( Text_InvertBox(&global_screen[ID_CHANNEL_B], 50, 13, 71, 16), "Could not invert color of a box" );
 
 	// bad values
-	mu_assert( Text_InvertBox(-200, 50, 13, 71, 16) == false, "Text_InvertBox accepted an illegal screen ID" );
-	mu_assert( Text_InvertBox(2000, 50, 13, 71, 16) == false, "Text_InvertBox accepted an illegal screen ID" );
-	mu_assert( Text_InvertBox(1, 71, 16, 50, 10) == false, "Text_InvertBox accepted illegal rect coordinates" );
+	mu_assert( Text_InvertBox(NULL, 50, 13, 71, 16) == false, "Text_InvertBox accepted an illegal screen ID" );
+	mu_assert( Text_InvertBox(&global_screen[ID_CHANNEL_B], 50, 13, 1500, 16) == false, "Text_InvertBox accepted illegal rect coordinates" );
+	mu_assert( Text_InvertBox(&global_screen[ID_CHANNEL_B], 71, 16, 50, 10) == false, "Text_InvertBox accepted illegal rect coordinates" );
 
 }
 
 
 MU_TEST(text_test_font_overwrite)
 {
-	mu_assert( Text_UpdateFontData(ID_CHANNEL_A, (char*)0x000000), "Could not replace font data for channel A" );
-	mu_assert( Text_UpdateFontData(ID_CHANNEL_B, (char*)0x000000), "Could not replace font data for channel B" );
+	mu_assert( Text_UpdateFontData(&global_screen[ID_CHANNEL_A], (char*)0x000000), "Could not replace font data for channel A" );
+	mu_assert( Text_UpdateFontData(&global_screen[ID_CHANNEL_B], (char*)0x000000), "Could not replace font data for channel B" );
 
 	// bad values
-	mu_assert( Text_UpdateFontData(-200, (char*)0x000000) == false, "Text_UpdateFontData accepted an illegal screen ID" );
-	mu_assert( Text_UpdateFontData(2000, (char*)0x000000) == false, "Text_UpdateFontData accepted an illegal screen ID" );
+	mu_assert( Text_UpdateFontData(NULL, (char*)0x000000) == false, "Text_UpdateFontData accepted an illegal screen ID" );
 }
 
 
 MU_TEST(text_test_show_font)
 {
-	mu_assert( Text_ShowFontChars(ID_CHANNEL_A), "Could not show font chars for channel A" );
-	mu_assert( Text_ShowFontChars(ID_CHANNEL_B), "Could not show font chars for channel B" );
+	mu_assert( Text_ShowFontChars(&global_screen[ID_CHANNEL_A]), "Could not show font chars for channel A" );
+	mu_assert( Text_ShowFontChars(&global_screen[ID_CHANNEL_B]), "Could not show font chars for channel B" );
 
 	// bad values
-	mu_assert( Text_ShowFontChars(-200) == false, "Text_ShowFontChars accepted an illegal screen ID" );
-	mu_assert( Text_ShowFontChars(2000) == false, "Text_ShowFontChars accepted an illegal screen ID" );
+	mu_assert( Text_ShowFontChars(NULL) == false, "Text_ShowFontChars accepted an illegal screen ID" );
 }
 
 
@@ -293,19 +287,18 @@ MU_TEST(text_test_char_placement)
 	{
 		for (x = 0; x < 50; x++)
 		{
-			mu_assert( Text_SetCharAtXY(ID_CHANNEL_A, x, y, 'X'), "text char placement failed" );
+			mu_assert( Text_SetCharAtXY(&global_screen[ID_CHANNEL_A], x, y, 'X'), "text char placement failed" );
 		}
 	}
 	
 	// bad values
- 	mu_assert( Text_SetCharAtXY(3, 0, 0, 'X') == false, "Text_SetCharAtXY accepted illegal screen ID" );
- 	mu_assert( Text_SetCharAtXY(-1, 0, 2, 'a') == false, "Text_SetCharAtXY accepted illegal screen ID" );
-	mu_assert( Text_SetCharAtXY(ID_CHANNEL_A, -1, 3, 'b') == false, "Text_SetCharAtXY accepted illegal coordinates" );
-	mu_assert( Text_SetCharAtXY(ID_CHANNEL_A, -1, -1, 'c') == false, "Text_SetCharAtXY accepted illegal coordinates" );
-	mu_assert( Text_SetCharAtXY(ID_CHANNEL_A, 0, -1, 'd') == false, "Text_SetCharAtXY accepted illegal coordinates" );
-	mu_assert( Text_SetCharAtXY(ID_CHANNEL_A, 500, 4, 'e') == false, "Text_SetCharAtXY accepted illegal coordinates" );
-	mu_assert( Text_SetCharAtXY(ID_CHANNEL_A, 500, 500, 'f') == false, "Text_SetCharAtXY accepted illegal coordinates" );
-	mu_assert( Text_SetCharAtXY(ID_CHANNEL_A, 0, 500, 'g') == false, "Text_SetCharAtXY accepted illegal coordinates" );
+ 	mu_assert( Text_SetCharAtXY(NULL, 0, 0, 'X') == false, "Text_SetCharAtXY accepted illegal screen ID" );
+	mu_assert( Text_SetCharAtXY(&global_screen[ID_CHANNEL_A], -1, 3, 'b') == false, "Text_SetCharAtXY accepted illegal coordinates" );
+	mu_assert( Text_SetCharAtXY(&global_screen[ID_CHANNEL_A], -1, -1, 'c') == false, "Text_SetCharAtXY accepted illegal coordinates" );
+	mu_assert( Text_SetCharAtXY(&global_screen[ID_CHANNEL_A], 0, -1, 'd') == false, "Text_SetCharAtXY accepted illegal coordinates" );
+	mu_assert( Text_SetCharAtXY(&global_screen[ID_CHANNEL_A], 500, 4, 'e') == false, "Text_SetCharAtXY accepted illegal coordinates" );
+	mu_assert( Text_SetCharAtXY(&global_screen[ID_CHANNEL_A], 500, 500, 'f') == false, "Text_SetCharAtXY accepted illegal coordinates" );
+	mu_assert( Text_SetCharAtXY(&global_screen[ID_CHANNEL_A], 0, 500, 'g') == false, "Text_SetCharAtXY accepted illegal coordinates" );
 }
 
 
@@ -313,52 +306,51 @@ MU_TEST(text_test_char_placement)
 MU_TEST(text_test_char_and_attr_writing)
 {
 // same story here: 4 or so works ok, add more, and it's likely to crash. 
- 	mu_assert( Text_SetCharAndColorAtXY(ID_CHANNEL_B, 0, 4, 33, FG_COLOR_BLACK, BG_COLOR_DK_GRAY) == true, "Text_SetCharAndColorAtXY failed" );
- 	mu_assert( Text_SetCharAndColorAtXY(ID_CHANNEL_B, 1, 4, 34, FG_COLOR_DK_RED, BG_COLOR_DK_GRAY) == true, "Text_SetCharAndColorAtXY failed" );
- 	mu_assert( Text_SetCharAndColorAtXY(ID_CHANNEL_B, 2, 4, 35, FG_COLOR_GREEN, BG_COLOR_DK_GRAY) == true, "Text_SetCharAndColorAtXY failed" );
- 	mu_assert( Text_SetCharAndColorAtXY(ID_CHANNEL_B, 3, 4, 36, FG_COLOR_BLUE, BG_COLOR_DK_GRAY) == true, "Text_SetCharAndColorAtXY failed" );
- 	mu_assert( Text_SetCharAndColorAtXY(ID_CHANNEL_B, 4, 4, 37, COLOR_LT_GRAY, BG_COLOR_DK_GRAY) == true, "Text_SetCharAndColorAtXY failed" );
- 	mu_assert( Text_SetCharAndColorAtXY(ID_CHANNEL_B, 5, 4, 38, COLOR_LT_GRAY, BG_COLOR_DK_GRAY) == true, "Text_SetCharAndColorAtXY failed" );
- 	mu_assert( Text_SetCharAndColorAtXY(ID_CHANNEL_B, 6, 4, 39, FG_COLOR_VIOLET, BG_COLOR_DK_GRAY) == true, "Text_SetCharAndColorAtXY failed" );
- 	mu_assert( Text_SetCharAndColorAtXY(ID_CHANNEL_B, 7, 4, 40, COLOR_LT_GRAY, BG_COLOR_DK_GRAY) == true, "Text_SetCharAndColorAtXY failed" );
- 	mu_assert( Text_SetCharAndColorAtXY(ID_CHANNEL_B, 8, 4, 41, COLOR_BLACK, BG_COLOR_DK_GRAY) == true, "Text_SetCharAndColorAtXY failed" );
- 	mu_assert( Text_SetCharAndColorAtXY(ID_CHANNEL_B, 9, 4, 42, COLOR_LT_GRAY, BG_COLOR_DK_GRAY) == true, "Text_SetCharAndColorAtXY failed" );
- 	mu_assert( Text_SetCharAndColorAtXY(ID_CHANNEL_B, 10, 4, 43, COLOR_LT_GRAY, BG_COLOR_DK_GRAY) == true, "Text_SetCharAndColorAtXY failed" );
- 	mu_assert( Text_SetCharAndColorAtXY(ID_CHANNEL_B, 11, 4, 44, COLOR_LT_GRAY, BG_COLOR_DK_GRAY) == true, "Text_SetCharAndColorAtXY failed" );
- 	mu_assert( Text_SetCharAndColorAtXY(ID_CHANNEL_B, 12, 4, 45, FG_COLOR_DK_GRAY, BG_COLOR_DK_GRAY) == true, "Text_SetCharAndColorAtXY failed" );
- 	mu_assert( Text_SetCharAndColorAtXY(ID_CHANNEL_B, 13, 4, 46, COLOR_LT_GRAY, BG_COLOR_DK_GRAY) == true, "Text_SetCharAndColorAtXY failed" );
- 	mu_assert( Text_SetCharAndColorAtXY(ID_CHANNEL_B, 14, 4, 47, FG_COLOR_WHITE, BG_COLOR_DK_GRAY) == true, "Text_SetCharAndColorAtXY failed" );
- 	mu_assert( Text_SetCharAndColorAtXY(ID_CHANNEL_B, 15, 4, 48, COLOR_LT_GRAY, BG_COLOR_DK_GRAY) == true, "Text_SetCharAndColorAtXY failed" );
- 	mu_assert( Text_SetCharAndColorAtXY(ID_CHANNEL_B, 0, 5, 33, FG_COLOR_WHITE, BG_COLOR_BLACK) == true, "Text_SetCharAndColorAtXY failed" );
- 	mu_assert( Text_SetCharAndColorAtXY(ID_CHANNEL_B, 1, 5, 34, FG_COLOR_WHITE, BG_COLOR_DK_RED) == true, "Text_SetCharAndColorAtXY failed" );
- 	mu_assert( Text_SetCharAndColorAtXY(ID_CHANNEL_B, 2, 5, 35, FG_COLOR_WHITE, BG_COLOR_GREEN) == true, "Text_SetCharAndColorAtXY failed" );
- 	mu_assert( Text_SetCharAndColorAtXY(ID_CHANNEL_B, 3, 5, 36, FG_COLOR_WHITE, BG_COLOR_BLUE) == true, "Text_SetCharAndColorAtXY failed" );
- 	mu_assert( Text_SetCharAndColorAtXY(ID_CHANNEL_B, 4, 4, 37, FG_COLOR_WHITE, COLOR_RED) == true, "Text_SetCharAndColorAtXY failed" );
- 	mu_assert( Text_SetCharAndColorAtXY(ID_CHANNEL_B, 5, 5, 38, FG_COLOR_WHITE, COLOR_RED) == true, "Text_SetCharAndColorAtXY failed" );
- 	mu_assert( Text_SetCharAndColorAtXY(ID_CHANNEL_B, 6, 5, 39, FG_COLOR_WHITE, COLOR_RED) == true, "Text_SetCharAndColorAtXY failed" );
- 	mu_assert( Text_SetCharAndColorAtXY(ID_CHANNEL_B, 7, 5, 40, FG_COLOR_WHITE, BG_COLOR_DK_GRAY) == true, "Text_SetCharAndColorAtXY failed" );
- 	mu_assert( Text_SetCharAndColorAtXY(ID_CHANNEL_B, 8, 5, 41, FG_COLOR_WHITE, COLOR_RED) == true, "Text_SetCharAndColorAtXY failed" );
- 	mu_assert( Text_SetCharAndColorAtXY(ID_CHANNEL_B, 9, 5, 42, FG_COLOR_WHITE, COLOR_RED) == true, "Text_SetCharAndColorAtXY failed" );
- 	mu_assert( Text_SetCharAndColorAtXY(ID_CHANNEL_B, 10, 5, 43, FG_COLOR_WHITE, COLOR_RED) == true, "Text_SetCharAndColorAtXY failed" );
- 	mu_assert( Text_SetCharAndColorAtXY(ID_CHANNEL_B, 11, 5, 44, FG_COLOR_WHITE, COLOR_RED) == true, "Text_SetCharAndColorAtXY failed" );
- 	mu_assert( Text_SetCharAndColorAtXY(ID_CHANNEL_B, 12, 5, 45, FG_COLOR_WHITE, COLOR_RED) == true, "Text_SetCharAndColorAtXY failed" );
- 	mu_assert( Text_SetCharAndColorAtXY(ID_CHANNEL_B, 13, 5, 46, FG_COLOR_WHITE, COLOR_RED) == true, "Text_SetCharAndColorAtXY failed" );
- 	mu_assert( Text_SetCharAndColorAtXY(ID_CHANNEL_B, 14, 5, 47, FG_COLOR_WHITE, BG_COLOR_LT_GRAY) == true, "Text_SetCharAndColorAtXY failed" );
- 	mu_assert( Text_SetCharAndColorAtXY(ID_CHANNEL_B, 15, 5, 48, FG_COLOR_WHITE, BG_COLOR_WHITE) == true, "Text_SetCharAndColorAtXY failed" );
+ 	mu_assert( Text_SetCharAndColorAtXY(&global_screen[ID_CHANNEL_B], 0, 4, 33, FG_COLOR_BLACK, BG_COLOR_DK_GRAY) == true, "Text_SetCharAndColorAtXY failed" );
+ 	mu_assert( Text_SetCharAndColorAtXY(&global_screen[ID_CHANNEL_B], 1, 4, 34, FG_COLOR_DK_RED, BG_COLOR_DK_GRAY) == true, "Text_SetCharAndColorAtXY failed" );
+ 	mu_assert( Text_SetCharAndColorAtXY(&global_screen[ID_CHANNEL_B], 2, 4, 35, FG_COLOR_GREEN, BG_COLOR_DK_GRAY) == true, "Text_SetCharAndColorAtXY failed" );
+ 	mu_assert( Text_SetCharAndColorAtXY(&global_screen[ID_CHANNEL_B], 3, 4, 36, FG_COLOR_BLUE, BG_COLOR_DK_GRAY) == true, "Text_SetCharAndColorAtXY failed" );
+ 	mu_assert( Text_SetCharAndColorAtXY(&global_screen[ID_CHANNEL_B], 4, 4, 37, COLOR_LT_GRAY, BG_COLOR_DK_GRAY) == true, "Text_SetCharAndColorAtXY failed" );
+ 	mu_assert( Text_SetCharAndColorAtXY(&global_screen[ID_CHANNEL_B], 5, 4, 38, COLOR_LT_GRAY, BG_COLOR_DK_GRAY) == true, "Text_SetCharAndColorAtXY failed" );
+ 	mu_assert( Text_SetCharAndColorAtXY(&global_screen[ID_CHANNEL_B], 6, 4, 39, FG_COLOR_VIOLET, BG_COLOR_DK_GRAY) == true, "Text_SetCharAndColorAtXY failed" );
+ 	mu_assert( Text_SetCharAndColorAtXY(&global_screen[ID_CHANNEL_B], 7, 4, 40, COLOR_LT_GRAY, BG_COLOR_DK_GRAY) == true, "Text_SetCharAndColorAtXY failed" );
+ 	mu_assert( Text_SetCharAndColorAtXY(&global_screen[ID_CHANNEL_B], 8, 4, 41, COLOR_BLACK, BG_COLOR_DK_GRAY) == true, "Text_SetCharAndColorAtXY failed" );
+ 	mu_assert( Text_SetCharAndColorAtXY(&global_screen[ID_CHANNEL_B], 9, 4, 42, COLOR_LT_GRAY, BG_COLOR_DK_GRAY) == true, "Text_SetCharAndColorAtXY failed" );
+ 	mu_assert( Text_SetCharAndColorAtXY(&global_screen[ID_CHANNEL_B], 10, 4, 43, COLOR_LT_GRAY, BG_COLOR_DK_GRAY) == true, "Text_SetCharAndColorAtXY failed" );
+ 	mu_assert( Text_SetCharAndColorAtXY(&global_screen[ID_CHANNEL_B], 11, 4, 44, COLOR_LT_GRAY, BG_COLOR_DK_GRAY) == true, "Text_SetCharAndColorAtXY failed" );
+ 	mu_assert( Text_SetCharAndColorAtXY(&global_screen[ID_CHANNEL_B], 12, 4, 45, FG_COLOR_DK_GRAY, BG_COLOR_DK_GRAY) == true, "Text_SetCharAndColorAtXY failed" );
+ 	mu_assert( Text_SetCharAndColorAtXY(&global_screen[ID_CHANNEL_B], 13, 4, 46, COLOR_LT_GRAY, BG_COLOR_DK_GRAY) == true, "Text_SetCharAndColorAtXY failed" );
+ 	mu_assert( Text_SetCharAndColorAtXY(&global_screen[ID_CHANNEL_B], 14, 4, 47, FG_COLOR_WHITE, BG_COLOR_DK_GRAY) == true, "Text_SetCharAndColorAtXY failed" );
+ 	mu_assert( Text_SetCharAndColorAtXY(&global_screen[ID_CHANNEL_B], 15, 4, 48, COLOR_LT_GRAY, BG_COLOR_DK_GRAY) == true, "Text_SetCharAndColorAtXY failed" );
+ 	mu_assert( Text_SetCharAndColorAtXY(&global_screen[ID_CHANNEL_B], 0, 5, 33, FG_COLOR_WHITE, BG_COLOR_BLACK) == true, "Text_SetCharAndColorAtXY failed" );
+ 	mu_assert( Text_SetCharAndColorAtXY(&global_screen[ID_CHANNEL_B], 1, 5, 34, FG_COLOR_WHITE, BG_COLOR_DK_RED) == true, "Text_SetCharAndColorAtXY failed" );
+ 	mu_assert( Text_SetCharAndColorAtXY(&global_screen[ID_CHANNEL_B], 2, 5, 35, FG_COLOR_WHITE, BG_COLOR_GREEN) == true, "Text_SetCharAndColorAtXY failed" );
+ 	mu_assert( Text_SetCharAndColorAtXY(&global_screen[ID_CHANNEL_B], 3, 5, 36, FG_COLOR_WHITE, BG_COLOR_BLUE) == true, "Text_SetCharAndColorAtXY failed" );
+ 	mu_assert( Text_SetCharAndColorAtXY(&global_screen[ID_CHANNEL_B], 4, 4, 37, FG_COLOR_WHITE, COLOR_RED) == true, "Text_SetCharAndColorAtXY failed" );
+ 	mu_assert( Text_SetCharAndColorAtXY(&global_screen[ID_CHANNEL_B], 5, 5, 38, FG_COLOR_WHITE, COLOR_RED) == true, "Text_SetCharAndColorAtXY failed" );
+ 	mu_assert( Text_SetCharAndColorAtXY(&global_screen[ID_CHANNEL_B], 6, 5, 39, FG_COLOR_WHITE, COLOR_RED) == true, "Text_SetCharAndColorAtXY failed" );
+ 	mu_assert( Text_SetCharAndColorAtXY(&global_screen[ID_CHANNEL_B], 7, 5, 40, FG_COLOR_WHITE, BG_COLOR_DK_GRAY) == true, "Text_SetCharAndColorAtXY failed" );
+ 	mu_assert( Text_SetCharAndColorAtXY(&global_screen[ID_CHANNEL_B], 8, 5, 41, FG_COLOR_WHITE, COLOR_RED) == true, "Text_SetCharAndColorAtXY failed" );
+ 	mu_assert( Text_SetCharAndColorAtXY(&global_screen[ID_CHANNEL_B], 9, 5, 42, FG_COLOR_WHITE, COLOR_RED) == true, "Text_SetCharAndColorAtXY failed" );
+ 	mu_assert( Text_SetCharAndColorAtXY(&global_screen[ID_CHANNEL_B], 10, 5, 43, FG_COLOR_WHITE, COLOR_RED) == true, "Text_SetCharAndColorAtXY failed" );
+ 	mu_assert( Text_SetCharAndColorAtXY(&global_screen[ID_CHANNEL_B], 11, 5, 44, FG_COLOR_WHITE, COLOR_RED) == true, "Text_SetCharAndColorAtXY failed" );
+ 	mu_assert( Text_SetCharAndColorAtXY(&global_screen[ID_CHANNEL_B], 12, 5, 45, FG_COLOR_WHITE, COLOR_RED) == true, "Text_SetCharAndColorAtXY failed" );
+ 	mu_assert( Text_SetCharAndColorAtXY(&global_screen[ID_CHANNEL_B], 13, 5, 46, FG_COLOR_WHITE, COLOR_RED) == true, "Text_SetCharAndColorAtXY failed" );
+ 	mu_assert( Text_SetCharAndColorAtXY(&global_screen[ID_CHANNEL_B], 14, 5, 47, FG_COLOR_WHITE, BG_COLOR_LT_GRAY) == true, "Text_SetCharAndColorAtXY failed" );
+ 	mu_assert( Text_SetCharAndColorAtXY(&global_screen[ID_CHANNEL_B], 15, 5, 48, FG_COLOR_WHITE, BG_COLOR_WHITE) == true, "Text_SetCharAndColorAtXY failed" );
 
 	// bad values
- 	mu_assert( Text_SetCharAndColorAtXY(3, 0, 0, 'X', FG_COLOR_WHITE, BG_COLOR_WHITE) == false, "Text_SetCharAndColorAtXY accepted illegal screen ID" );
- 	mu_assert( Text_SetCharAndColorAtXY(-1, 0, 2, 'a', FG_COLOR_WHITE, BG_COLOR_WHITE) == false, "Text_SetCharAndColorAtXY accepted illegal screen ID" );
-	mu_assert( Text_SetCharAndColorAtXY(ID_CHANNEL_A, -1, 3, 'b', FG_COLOR_WHITE, BG_COLOR_WHITE) == false, "Text_SetCharAndColorAtXY accepted illegal coordinates" );
-	mu_assert( Text_SetCharAndColorAtXY(ID_CHANNEL_A, -1, -1, 'c', FG_COLOR_WHITE, BG_COLOR_WHITE) == false, "Text_SetCharAndColorAtXY accepted illegal coordinates" );
-	mu_assert( Text_SetCharAndColorAtXY(ID_CHANNEL_A, 0, -1, 'd', FG_COLOR_WHITE, BG_COLOR_WHITE) == false, "Text_SetCharAndColorAtXY accepted illegal coordinates" );
-	mu_assert( Text_SetCharAndColorAtXY(ID_CHANNEL_A, 500, 4, 'e', FG_COLOR_WHITE, BG_COLOR_WHITE) == false, "Text_SetCharAndColorAtXY accepted illegal coordinates" );
-	mu_assert( Text_SetCharAndColorAtXY(ID_CHANNEL_A, 500, 500, 'f', FG_COLOR_WHITE, BG_COLOR_WHITE) == false, "Text_SetCharAndColorAtXY accepted illegal coordinates" );
-	mu_assert( Text_SetCharAndColorAtXY(ID_CHANNEL_A, 0, 500, 'g', FG_COLOR_WHITE, BG_COLOR_WHITE) == false, "Text_SetCharAndColorAtXY accepted illegal coordinates" );
-	mu_assert( Text_SetCharAndColorAtXY(ID_CHANNEL_A, 1, 1, 'h', -1, 1) == false, "Text_SetCharAndColorAtXY accepted illegal color value" );
-	mu_assert( Text_SetCharAndColorAtXY(ID_CHANNEL_A, 1, 1, 'i', 17, 1) == false, "Text_SetCharAndColorAtXY accepted illegal color value" );
-	mu_assert( Text_SetCharAndColorAtXY(ID_CHANNEL_A, 1, 1, 'j', 1, -54) == false, "Text_SetCharAndColorAtXY accepted illegal color value" );
-	mu_assert( Text_SetCharAndColorAtXY(ID_CHANNEL_A, 1, 1, 'k', 1, 23) == false, "Text_SetCharAndColorAtXY accepted illegal color value" );
+ 	mu_assert( Text_SetCharAndColorAtXY(NULL, 0, 0, 'X', FG_COLOR_WHITE, BG_COLOR_WHITE) == false, "Text_SetCharAndColorAtXY accepted illegal screen ID" );
+	mu_assert( Text_SetCharAndColorAtXY(&global_screen[ID_CHANNEL_A], -1, 3, 'b', FG_COLOR_WHITE, BG_COLOR_WHITE) == false, "Text_SetCharAndColorAtXY accepted illegal coordinates" );
+	mu_assert( Text_SetCharAndColorAtXY(&global_screen[ID_CHANNEL_A], -1, -1, 'c', FG_COLOR_WHITE, BG_COLOR_WHITE) == false, "Text_SetCharAndColorAtXY accepted illegal coordinates" );
+	mu_assert( Text_SetCharAndColorAtXY(&global_screen[ID_CHANNEL_A], 0, -1, 'd', FG_COLOR_WHITE, BG_COLOR_WHITE) == false, "Text_SetCharAndColorAtXY accepted illegal coordinates" );
+	mu_assert( Text_SetCharAndColorAtXY(&global_screen[ID_CHANNEL_A], 500, 4, 'e', FG_COLOR_WHITE, BG_COLOR_WHITE) == false, "Text_SetCharAndColorAtXY accepted illegal coordinates" );
+	mu_assert( Text_SetCharAndColorAtXY(&global_screen[ID_CHANNEL_A], 500, 500, 'f', FG_COLOR_WHITE, BG_COLOR_WHITE) == false, "Text_SetCharAndColorAtXY accepted illegal coordinates" );
+	mu_assert( Text_SetCharAndColorAtXY(&global_screen[ID_CHANNEL_A], 0, 500, 'g', FG_COLOR_WHITE, BG_COLOR_WHITE) == false, "Text_SetCharAndColorAtXY accepted illegal coordinates" );
+	mu_assert( Text_SetCharAndColorAtXY(&global_screen[ID_CHANNEL_A], 1, 1, 'h', -1, 1) == false, "Text_SetCharAndColorAtXY accepted illegal color value" );
+	mu_assert( Text_SetCharAndColorAtXY(&global_screen[ID_CHANNEL_A], 1, 1, 'i', 17, 1) == false, "Text_SetCharAndColorAtXY accepted illegal color value" );
+	mu_assert( Text_SetCharAndColorAtXY(&global_screen[ID_CHANNEL_A], 1, 1, 'j', 1, -54) == false, "Text_SetCharAndColorAtXY accepted illegal color value" );
+	mu_assert( Text_SetCharAndColorAtXY(&global_screen[ID_CHANNEL_A], 1, 1, 'k', 1, 23) == false, "Text_SetCharAndColorAtXY accepted illegal color value" );
 }
 
 
@@ -377,29 +369,29 @@ MU_TEST(text_test_char_and_attr_reading)
 	the_attribute_value = ((COLOR_ORANGE << 4) | BG_COLOR_WHITE);
 
 	// set known chars and colors to test again
-	Text_SetAttrAtXY(ID_CHANNEL_A, x, y, FG_COLOR_WHITE, BG_COLOR_BLACK);
-	Text_SetAttrAtXY(ID_CHANNEL_A, x+1, y, FG_COLOR_VIOLET, BG_COLOR_DK_GRAY);
-	Text_SetAttrAtXY(ID_CHANNEL_A, x+2, y, COLOR_ORANGE, BG_COLOR_WHITE);
-	Text_SetCharAtXY(ID_CHANNEL_A, x, y, CH_DIAMOND);
-	Text_SetCharAtXY(ID_CHANNEL_A, x+1, y, CH_CLUB);
-	Text_SetCharAtXY(ID_CHANNEL_A, x+2, y, CH_SPADE);
+	Text_SetAttrAtXY(&global_screen[ID_CHANNEL_A], x, y, FG_COLOR_WHITE, BG_COLOR_BLACK);
+	Text_SetAttrAtXY(&global_screen[ID_CHANNEL_A], x+1, y, FG_COLOR_VIOLET, BG_COLOR_DK_GRAY);
+	Text_SetAttrAtXY(&global_screen[ID_CHANNEL_A], x+2, y, COLOR_ORANGE, BG_COLOR_WHITE);
+	Text_SetCharAtXY(&global_screen[ID_CHANNEL_A], x, y, CH_DIAMOND);
+	Text_SetCharAtXY(&global_screen[ID_CHANNEL_A], x+1, y, CH_CLUB);
+	Text_SetCharAtXY(&global_screen[ID_CHANNEL_A], x+2, y, CH_SPADE);
 	
-	mu_assert( (the_color = Text_GetForeColorAtXY(ID_CHANNEL_A, x, y)) == FG_COLOR_WHITE, "Text_GetForeColorAtXY failed" );
-	mu_assert( (the_color = Text_GetBackColorAtXY(ID_CHANNEL_A, x, y)) == BG_COLOR_BLACK, "Text_GetBackColorAtXY failed" );
+	mu_assert( (the_color = Text_GetForeColorAtXY(&global_screen[ID_CHANNEL_A], x, y)) == FG_COLOR_WHITE, "Text_GetForeColorAtXY failed" );
+	mu_assert( (the_color = Text_GetBackColorAtXY(&global_screen[ID_CHANNEL_A], x, y)) == BG_COLOR_BLACK, "Text_GetBackColorAtXY failed" );
 	
 	x++;
-	mu_assert( (the_color = Text_GetForeColorAtXY(ID_CHANNEL_A, x, y)) == FG_COLOR_VIOLET, "Text_GetForeColorAtXY failed" );
-	mu_assert( (the_color = Text_GetBackColorAtXY(ID_CHANNEL_A, x, y)) == BG_COLOR_DK_GRAY, "Text_GetBackColorAtXY failed" );
+	mu_assert( (the_color = Text_GetForeColorAtXY(&global_screen[ID_CHANNEL_A], x, y)) == FG_COLOR_VIOLET, "Text_GetForeColorAtXY failed" );
+	mu_assert( (the_color = Text_GetBackColorAtXY(&global_screen[ID_CHANNEL_A], x, y)) == BG_COLOR_DK_GRAY, "Text_GetBackColorAtXY failed" );
 
 	x++;
-	mu_assert( (the_color = Text_GetAttrAtXY(ID_CHANNEL_A, x, y)) == the_attribute_value, "Text_GetAttrAtXY failed");
+	mu_assert( (the_color = Text_GetAttrAtXY(&global_screen[ID_CHANNEL_A], x, y)) == the_attribute_value, "Text_GetAttrAtXY failed");
 	
 	x = 0;
-	mu_assert( (the_char = Text_GetCharAtXY(ID_CHANNEL_A, x, y)) == CH_DIAMOND, "Text_GetCharAtXY failed");	
+	mu_assert( (the_char = Text_GetCharAtXY(&global_screen[ID_CHANNEL_A], x, y)) == CH_DIAMOND, "Text_GetCharAtXY failed");	
 	x++;
-	mu_assert( (the_char = Text_GetCharAtXY(ID_CHANNEL_A, x, y)) == CH_CLUB, "Text_GetCharAtXY failed");	
+	mu_assert( (the_char = Text_GetCharAtXY(&global_screen[ID_CHANNEL_A], x, y)) == CH_CLUB, "Text_GetCharAtXY failed");	
 	x++;
-	mu_assert( (the_char = Text_GetCharAtXY(ID_CHANNEL_A, x, y)) == CH_SPADE, "Text_GetCharAtXY failed");	
+	mu_assert( (the_char = Text_GetCharAtXY(&global_screen[ID_CHANNEL_A], x, y)) == CH_SPADE, "Text_GetCharAtXY failed");	
 }
 
 
@@ -415,23 +407,23 @@ MU_TEST(text_test_line_drawing)
 	y = 4;
 	line_len = 20;
 	the_char = CH_WALL_H;	
- 	mu_assert( Text_DrawHLine(ID_CHANNEL_A, x, y, line_len, the_char, FG_COLOR_GREEN, BG_COLOR_BLACK, char_only) == true, "Text_DrawHLine failed" );
+ 	mu_assert( Text_DrawHLine(&global_screen[ID_CHANNEL_A], x, y, line_len, the_char, FG_COLOR_GREEN, BG_COLOR_BLACK, char_only) == true, "Text_DrawHLine failed" );
 	
 	y = 8;
- 	mu_assert( Text_DrawHLine(ID_CHANNEL_A, x, y, line_len, the_char, FG_COLOR_GREEN, BG_COLOR_BLACK, char_and_attr) == true, "Text_DrawHLine failed" );
+ 	mu_assert( Text_DrawHLine(&global_screen[ID_CHANNEL_A], x, y, line_len, the_char, FG_COLOR_GREEN, BG_COLOR_BLACK, char_and_attr) == true, "Text_DrawHLine failed" );
 	
 	y = 4;
 	line_len = 4;
 	the_char = CH_WALL_V;	
- 	mu_assert( Text_DrawVLine(ID_CHANNEL_A, x, y, line_len, the_char, BG_COLOR_YELLOW, BG_COLOR_BLACK, attr_only) == true, "Text_DrawVLine failed" );
+ 	mu_assert( Text_DrawVLine(&global_screen[ID_CHANNEL_A], x, y, line_len, the_char, BG_COLOR_YELLOW, BG_COLOR_BLACK, attr_only) == true, "Text_DrawVLine failed" );
 
 	x = x + 20;	
- 	mu_assert( Text_DrawVLine(ID_CHANNEL_A, x, y, line_len, the_char, BG_COLOR_YELLOW, BG_COLOR_BLACK, char_and_attr) == true, "Text_DrawVLine failed" );
+ 	mu_assert( Text_DrawVLine(&global_screen[ID_CHANNEL_A], x, y, line_len, the_char, BG_COLOR_YELLOW, BG_COLOR_BLACK, char_and_attr) == true, "Text_DrawVLine failed" );
 
 	// bad values
- 	mu_assert( Text_DrawVLine(-1, x, y, line_len, the_char, COLOR_DK_RED, COLOR_RED, char_and_attr) == false, "Text_DrawVLine accepted illegal screen ID" );
-  	mu_assert( Text_DrawVLine(ID_CHANNEL_B, -1, y, line_len, the_char, COLOR_DK_RED, COLOR_RED, char_and_attr) == false, "Text_DrawVLine accepted illegal x coord" );
- 	mu_assert( Text_DrawVLine(ID_CHANNEL_B, x, 425, line_len, the_char, COLOR_DK_RED, COLOR_RED, char_and_attr) == false, "Text_DrawVLine accepted illegal y coord" );
+ 	mu_assert( Text_DrawVLine(NULL, x, y, line_len, the_char, COLOR_DK_RED, COLOR_RED, char_and_attr) == false, "Text_DrawVLine accepted illegal screen ID" );
+  	mu_assert( Text_DrawVLine(&global_screen[ID_CHANNEL_B], -1, y, line_len, the_char, COLOR_DK_RED, COLOR_RED, char_and_attr) == false, "Text_DrawVLine accepted illegal x coord" );
+ 	mu_assert( Text_DrawVLine(&global_screen[ID_CHANNEL_B], x, 425, line_len, the_char, COLOR_DK_RED, COLOR_RED, char_and_attr) == false, "Text_DrawVLine accepted illegal y coord" );
 	
 
 }
@@ -452,7 +444,7 @@ MU_TEST(text_test_basic_box_coords)
 	the_char = CH_CHECKERED1;
 
 	// good values	
- 	mu_assert( Text_DrawBoxCoords(ID_CHANNEL_A, x, y, x + h_line_len, y + v_line_len, the_char, FG_COLOR_LT_GRAY, BG_COLOR_DK_GRAY, char_and_attr) == true, "Text_DrawBoxCoords failed" );
+ 	mu_assert( Text_DrawBoxCoords(&global_screen[ID_CHANNEL_A], x, y, x + h_line_len, y + v_line_len, the_char, FG_COLOR_LT_GRAY, BG_COLOR_DK_GRAY, char_and_attr) == true, "Text_DrawBoxCoords failed" );
 
 	// bad values
 	
@@ -475,15 +467,15 @@ MU_TEST(text_test_basic_box_hw)
 	the_char = CH_CHECKERED3;
 
 	// good values	
- 	mu_assert(Text_DrawBox(ID_CHANNEL_A, x, y, h_line_len, v_line_len, the_char, FG_COLOR_CYAN, BG_COLOR_DK_CYAN, char_and_attr) == true, "Text_DrawBox failed" );
+ 	mu_assert(Text_DrawBox(&global_screen[ID_CHANNEL_A], x, y, h_line_len, v_line_len, the_char, FG_COLOR_CYAN, BG_COLOR_DK_CYAN, char_and_attr) == true, "Text_DrawBox failed" );
 
 	x += 7;
 	y += 2;
- 	mu_assert(Text_DrawBox(ID_CHANNEL_A, x, y, h_line_len-2, v_line_len+5, --the_char, FG_COLOR_CYAN, BG_COLOR_DK_CYAN, char_and_attr) == true, "Text_DrawBox failed" );
+ 	mu_assert(Text_DrawBox(&global_screen[ID_CHANNEL_A], x, y, h_line_len-2, v_line_len+5, --the_char, FG_COLOR_CYAN, BG_COLOR_DK_CYAN, char_and_attr) == true, "Text_DrawBox failed" );
 
 
 	// bad values
- 	mu_assert(Text_DrawBox(ID_CHANNEL_B, -10, y, h_line_len, v_line_len, the_char, FG_COLOR_CYAN, BG_COLOR_DK_CYAN, char_and_attr) == false, "Text_DrawBox accepted illegal x coord" );
+ 	mu_assert(Text_DrawBox(&global_screen[ID_CHANNEL_B], -10, y, h_line_len, v_line_len, the_char, FG_COLOR_CYAN, BG_COLOR_DK_CYAN, char_and_attr) == false, "Text_DrawBox accepted illegal x coord" );
 }
 
 
@@ -511,14 +503,14 @@ MU_TEST(text_test_fancy_box)
 	y1 = 2;
 	x2 = 98;
 	y2 = 73;
-	mu_assert( Text_FillBox(ID_CHANNEL_A, x1+1, y1+1, x2-1, y2-1, CH_CHECKERED1, BG_COLOR_CYAN, BG_COLOR_DK_BLUE) == true, "Text_FillBox failed" );
- 	mu_assert(Text_DrawBoxCoordsFancy(ID_CHANNEL_A, x1, y1, x2, y2, FG_COLOR_LT_GRAY, BG_COLOR_BLACK) == true, "Text_DrawBoxCoordsFancy failed" );
+	mu_assert( Text_FillBox(&global_screen[ID_CHANNEL_A], x1+1, y1+1, x2-1, y2-1, CH_CHECKERED1, BG_COLOR_CYAN, BG_COLOR_DK_BLUE) == true, "Text_FillBox failed" );
+ 	mu_assert(Text_DrawBoxCoordsFancy(&global_screen[ID_CHANNEL_A], x1, y1, x2, y2, FG_COLOR_LT_GRAY, BG_COLOR_BLACK) == true, "Text_DrawBoxCoordsFancy failed" );
 
 	x1 = 3;
 	y1 = 3;
 	x2 = 97;
 	y2 = 72;
-  	mu_assert(Text_DrawStringInBox(ID_CHANNEL_A, x1, y1, x2, y2, the_message, FG_COLOR_WHITE, BG_COLOR_BLACK) == true, "Text_DrawStringInBox failed" );
+  	mu_assert(Text_DrawStringInBox(&global_screen[ID_CHANNEL_A], x1, y1, x2, y2, the_message, FG_COLOR_WHITE, BG_COLOR_BLACK) == true, "Text_DrawStringInBox failed" );
 
 
 	// medium box on chan B
@@ -527,14 +519,14 @@ MU_TEST(text_test_fancy_box)
 	x2 = 68;
 	y2 = 51;
 
-	mu_assert( Text_FillBox(ID_CHANNEL_A, x1+1, y1+1, x2-1, y2-1, CH_CHECKERED3, FG_COLOR_LT_GRAY, BG_COLOR_WHITE) == true, "Text_FillBox failed" );
- 	mu_assert(Text_DrawBoxCoordsFancy(ID_CHANNEL_A, x1, y1, x2, y2, FG_COLOR_LT_GRAY, BG_COLOR_DK_GRAY) == true, "Text_DrawBoxCoordsFancy failed" );
+	mu_assert( Text_FillBox(&global_screen[ID_CHANNEL_A], x1+1, y1+1, x2-1, y2-1, CH_CHECKERED3, FG_COLOR_LT_GRAY, BG_COLOR_WHITE) == true, "Text_FillBox failed" );
+ 	mu_assert(Text_DrawBoxCoordsFancy(&global_screen[ID_CHANNEL_A], x1, y1, x2, y2, FG_COLOR_LT_GRAY, BG_COLOR_DK_GRAY) == true, "Text_DrawBoxCoordsFancy failed" );
 
 	x1 = 13;
 	y1 = 5;
 	x2 = 67;
 	y2 = 50;
-  	mu_assert(Text_DrawStringInBox(ID_CHANNEL_A, x1, y1, x2, y2, the_message, FG_COLOR_BLACK, BG_COLOR_WHITE) == true, "Text_DrawStringInBox failed" );
+  	mu_assert(Text_DrawStringInBox(&global_screen[ID_CHANNEL_A], x1, y1, x2, y2, the_message, FG_COLOR_BLACK, BG_COLOR_WHITE) == true, "Text_DrawStringInBox failed" );
 
 
 	// small box on chan B
@@ -543,14 +535,14 @@ MU_TEST(text_test_fancy_box)
 	x2 = 71;
 	y2 = 41;
 
-	mu_assert( Text_FillBox(ID_CHANNEL_A, x1+1, y1+1, x2-1, y2-1, CH_CHECKERED1, BG_COLOR_CYAN, BG_COLOR_DK_BLUE) == true, "Text_FillBox failed" );
- 	mu_assert(Text_DrawBoxCoordsFancy(ID_CHANNEL_A, x1, y1, x2, y2, FG_COLOR_LT_GRAY, BG_COLOR_BLACK) == true, "Text_DrawBoxCoordsFancy failed" );
+	mu_assert( Text_FillBox(&global_screen[ID_CHANNEL_A], x1+1, y1+1, x2-1, y2-1, CH_CHECKERED1, BG_COLOR_CYAN, BG_COLOR_DK_BLUE) == true, "Text_FillBox failed" );
+ 	mu_assert(Text_DrawBoxCoordsFancy(&global_screen[ID_CHANNEL_A], x1, y1, x2, y2, FG_COLOR_LT_GRAY, BG_COLOR_BLACK) == true, "Text_DrawBoxCoordsFancy failed" );
 	
 	x1 = 40;
 	y1 = 20;
 	x2 = 70;
 	y2 = 40;
-  	mu_assert(Text_DrawStringInBox(ID_CHANNEL_A, x1, y1, x2, y2, the_message, FG_COLOR_WHITE, BG_COLOR_BLACK) == true, "Text_DrawStringInBox failed" );
+  	mu_assert(Text_DrawStringInBox(&global_screen[ID_CHANNEL_A], x1, y1, x2, y2, the_message, FG_COLOR_WHITE, BG_COLOR_BLACK) == true, "Text_DrawStringInBox failed" );
 
 }
 
@@ -562,11 +554,11 @@ MU_TEST(text_test_draw_string)
 	// good values	
 	mu_assert((the_message = General_StrlcpyWithAlloc((char*)"this is a string", 250)) != NULL, "General_StrlcpyWithAlloc returned NULL" );
 	mu_assert_string_eq("this is a string", (char*)the_message);
- 	mu_assert(Text_DrawStringAtXY(ID_CHANNEL_B, 0, 5, the_message, FG_COLOR_YELLOW, BG_COLOR_DK_BLUE) == true, "Text_DrawStringAtXY failed" );
- 	mu_assert(Text_DrawStringAtXY(ID_CHANNEL_B, 67, 4, the_message, FG_COLOR_DK_BLUE, BG_COLOR_YELLOW) == true, "Text_DrawStringAtXY failed" );
+ 	mu_assert(Text_DrawStringAtXY(&global_screen[ID_CHANNEL_B], 0, 5, the_message, FG_COLOR_YELLOW, BG_COLOR_DK_BLUE) == true, "Text_DrawStringAtXY failed" );
+ 	mu_assert(Text_DrawStringAtXY(&global_screen[ID_CHANNEL_B], 67, 4, the_message, FG_COLOR_DK_BLUE, BG_COLOR_YELLOW) == true, "Text_DrawStringAtXY failed" );
 		
 	// bad values
- 	mu_assert(Text_DrawStringAtXY(ID_CHANNEL_B, -1, 0, the_message, FG_COLOR_DK_BLUE, BG_COLOR_YELLOW) == false, "Text_DrawBoxCoordsFancy accepted illegal x coord" );
+ 	mu_assert(Text_DrawStringAtXY(&global_screen[ID_CHANNEL_B], -1, 0, the_message, FG_COLOR_DK_BLUE, BG_COLOR_YELLOW) == false, "Text_DrawBoxCoordsFancy accepted illegal x coord" );
 }
 
 MU_TEST(text_test_draw_string_in_box)
@@ -585,8 +577,8 @@ MU_TEST(text_test_draw_string_in_box)
 //  	the_message = General_StrlcpyWithAlloc((char*)"THISISAREALLYBIGWORDBIGGERTHANANYYOUCANTHINK_OF_OR_AT_LEAST_I_THINK_SO", 80*60+1);
 
 
-  	mu_assert(Text_DrawStringInBox(ID_CHANNEL_A, 3, 6, 67, 50, the_message, FG_COLOR_BLACK, BG_COLOR_WHITE) == true, "Text_DrawStringInBox failed" );
-  	mu_assert(Text_DrawStringInBox(ID_CHANNEL_B, 21, 21, 40, 40, the_message, FG_COLOR_WHITE, BG_COLOR_BLACK) == true, "Text_DrawStringInBox failed" );
+  	mu_assert(Text_DrawStringInBox(&global_screen[ID_CHANNEL_A], 3, 6, 67, 50, the_message, FG_COLOR_BLACK, BG_COLOR_WHITE) == true, "Text_DrawStringInBox failed" );
+  	mu_assert(Text_DrawStringInBox(&global_screen[ID_CHANNEL_B], 21, 21, 40, 40, the_message, FG_COLOR_WHITE, BG_COLOR_BLACK) == true, "Text_DrawStringInBox failed" );
 }
 
 
@@ -730,8 +722,8 @@ MU_TEST(font_replace_test)
 	
 	unsigned char*	the_new_font_data = testfont;
 
-//   	mu_assert(Text_UpdateFontData(ID_CHANNEL_A, (char*)the_new_font_data) == true, "Failed to update font data for Channel A" );
-  	mu_assert(Text_UpdateFontData(ID_CHANNEL_B, (char*)the_new_font_data) == true, "Failed to update font data for Channel B" );
+//   	mu_assert(Text_UpdateFontData(&global_screen[ID_CHANNEL_A], (char*)the_new_font_data) == true, "Failed to update font data for Channel A" );
+  	mu_assert(Text_UpdateFontData(&global_screen[ID_CHANNEL_B], (char*)the_new_font_data) == true, "Failed to update font data for Channel B" );
 }
 
 
@@ -740,81 +732,81 @@ MU_TEST(text_interactive)
 	printf("Starting interactive tests. Press any key to execute next test.\n");
 	printf("Next: Text_FillCharMem -> fill screen with the letter Z\n");	
 	text_test_pause_and_clear();
-	mu_assert( Text_FillCharMem(ID_CHANNEL_B, 'Z'), "Could not fill character memory in channel A" );
+	mu_assert( Text_FillCharMem(&global_screen[ID_CHANNEL_B], 'Z'), "Could not fill character memory in channel A" );
 
 	printf("Next: Text_FillCharMem -> fill screen with a diamond character\n");	
 	text_test_pause_and_clear();
-	mu_assert( Text_FillCharMem(ID_CHANNEL_B, CH_DIAMOND), "Could not fill character memory in channel B" );
+	mu_assert( Text_FillCharMem(&global_screen[ID_CHANNEL_B], CH_DIAMOND), "Could not fill character memory in channel B" );
 
 	printf("Next: Text_FillAttrMem -> fill screen with gray-on-black colors without changing characters\n");	
 	text_test_pause_and_clear();
-	mu_assert( Text_FillCharMem(ID_CHANNEL_B, CH_DIAMOND), "Could not fill character memory in channel B" );
-	mu_assert( Text_FillAttrMem(ID_CHANNEL_B, 127), "Could not fill attribute memory in channel A" );
+	mu_assert( Text_FillCharMem(&global_screen[ID_CHANNEL_B], CH_DIAMOND), "Could not fill character memory in channel B" );
+	mu_assert( Text_FillAttrMem(&global_screen[ID_CHANNEL_B], 127), "Could not fill attribute memory in channel A" );
 
 	printf("Next: Text_FillAttrMem -> fill screen with red-on-olive colors without changing characters\n");	
 	text_test_pause_and_clear();
-	mu_assert( Text_FillCharMem(ID_CHANNEL_B, CH_DIAMOND), "Could not fill character memory in channel B" );
-	mu_assert( Text_FillAttrMem(ID_CHANNEL_B, 147), "Could not fill attribute memory in channel A" );
+	mu_assert( Text_FillCharMem(&global_screen[ID_CHANNEL_B], CH_DIAMOND), "Could not fill character memory in channel B" );
+	mu_assert( Text_FillAttrMem(&global_screen[ID_CHANNEL_B], 147), "Could not fill attribute memory in channel A" );
 
 	printf("Next: Text_FillBoxSlow -> fill a square on screen with a checkered pattern, black on white (slow routine)\n");	
 	text_test_pause_and_clear();
-	mu_assert( Text_FillBoxSlow(ID_CHANNEL_B, 0, 2, 75, 35, CH_CHECKERED1, COLOR_BLACK, BG_COLOR_WHITE, char_and_attr) == true, "Text_FillBoxSlow failed" );
+	mu_assert( Text_FillBoxSlow(&global_screen[ID_CHANNEL_B], 0, 2, 75, 35, CH_CHECKERED1, COLOR_BLACK, BG_COLOR_WHITE, char_and_attr) == true, "Text_FillBoxSlow failed" );
 
 	printf("Next: Text_FillBoxSlow -> fill a square on screen with a different checkered pattern, blue on dark blue (slow routine)\n");	
 	text_test_pause_and_clear();
-	mu_assert( Text_FillBoxSlow(ID_CHANNEL_B, 0, 2, 75, 35, CH_CHECKERED3, COLOR_BLUE, COLOR_DK_BLUE, char_and_attr) == true, "Text_FillBoxSlow failed" );
+	mu_assert( Text_FillBoxSlow(&global_screen[ID_CHANNEL_B], 0, 2, 75, 35, CH_CHECKERED3, COLOR_BLUE, COLOR_DK_BLUE, char_and_attr) == true, "Text_FillBoxSlow failed" );
 
 	printf("Next: Text_FillBox -> fill a square on screen with a checkered pattern, black on white (fast routine)\n");	
 	text_test_pause_and_clear();
-	mu_assert( Text_FillBox(ID_CHANNEL_B, 0, 2, 75, 35, CH_CHECKERED1, COLOR_BLACK, BG_COLOR_WHITE) == true, "Text_FillBox failed" );
+	mu_assert( Text_FillBox(&global_screen[ID_CHANNEL_B], 0, 2, 75, 35, CH_CHECKERED1, COLOR_BLACK, BG_COLOR_WHITE) == true, "Text_FillBox failed" );
 
 	printf("Next: Text_FillBox -> fill a square on screen with a different checkered pattern, blue on dark blue (fast routine)\n");	
 	text_test_pause_and_clear();
-	mu_assert( Text_FillBox(ID_CHANNEL_B, 0, 2, 75, 35, CH_CHECKERED3, COLOR_BLUE, COLOR_DK_BLUE) == true, "Text_FillBox failed" );
+	mu_assert( Text_FillBox(&global_screen[ID_CHANNEL_B], 0, 2, 75, 35, CH_CHECKERED3, COLOR_BLUE, COLOR_DK_BLUE) == true, "Text_FillBox failed" );
 
 	printf("Next: Text_InvertBox -> invert a rectangle of colors\n");	
 	text_test_pause_and_clear();
-	mu_assert( Text_FillBox(ID_CHANNEL_B, 0, 2, 75, 35, CH_DIAMOND, COLOR_RED, BG_COLOR_WHITE) == true, "Text_FillBox failed" );
-	mu_assert( Text_InvertBox(ID_CHANNEL_B, 2, 4, 71, 33) == true, "Could not invert color of a box" );
+	mu_assert( Text_FillBox(&global_screen[ID_CHANNEL_B], 0, 2, 75, 35, CH_DIAMOND, COLOR_RED, BG_COLOR_WHITE) == true, "Text_FillBox failed" );
+	mu_assert( Text_InvertBox(&global_screen[ID_CHANNEL_B], 2, 4, 71, 33) == true, "Could not invert color of a box" );
 
 	printf("Next: Text_ShowFontChars -> show font characters on screen\n");	
 	text_test_pause_and_clear();
-	mu_assert( Text_ShowFontChars(ID_CHANNEL_B) == true, "Could not show font characters" );
+	mu_assert( Text_ShowFontChars(&global_screen[ID_CHANNEL_B]) == true, "Could not show font characters" );
 
 	printf("Next: Text_SetCharAndColorAtXY -> Draw various characters and colors at various locations on screen\n");	
 	MU_RUN_TEST(text_test_pause_and_clear);
- 	mu_assert( Text_SetCharAndColorAtXY(ID_CHANNEL_B, 0, 4, 33, FG_COLOR_BLACK, BG_COLOR_DK_GRAY) == true, "Text_SetCharAndColorAtXY failed" );
- 	mu_assert( Text_SetCharAndColorAtXY(ID_CHANNEL_B, 1, 4, 34, FG_COLOR_DK_RED, BG_COLOR_DK_GRAY) == true, "Text_SetCharAndColorAtXY failed" );
- 	mu_assert( Text_SetCharAndColorAtXY(ID_CHANNEL_B, 2, 4, 35, FG_COLOR_GREEN, BG_COLOR_DK_GRAY) == true, "Text_SetCharAndColorAtXY failed" );
- 	mu_assert( Text_SetCharAndColorAtXY(ID_CHANNEL_B, 3, 4, 36, FG_COLOR_BLUE, BG_COLOR_DK_GRAY) == true, "Text_SetCharAndColorAtXY failed" );
- 	mu_assert( Text_SetCharAndColorAtXY(ID_CHANNEL_B, 4, 4, 37, COLOR_LT_GRAY, BG_COLOR_DK_GRAY) == true, "Text_SetCharAndColorAtXY failed" );
- 	mu_assert( Text_SetCharAndColorAtXY(ID_CHANNEL_B, 5, 4, 38, COLOR_LT_GRAY, BG_COLOR_DK_GRAY) == true, "Text_SetCharAndColorAtXY failed" );
- 	mu_assert( Text_SetCharAndColorAtXY(ID_CHANNEL_B, 6, 4, 39, FG_COLOR_VIOLET, BG_COLOR_DK_GRAY) == true, "Text_SetCharAndColorAtXY failed" );
- 	mu_assert( Text_SetCharAndColorAtXY(ID_CHANNEL_B, 7, 4, 40, COLOR_LT_GRAY, BG_COLOR_DK_GRAY) == true, "Text_SetCharAndColorAtXY failed" );
- 	mu_assert( Text_SetCharAndColorAtXY(ID_CHANNEL_B, 8, 4, 41, COLOR_BLACK, BG_COLOR_DK_GRAY) == true, "Text_SetCharAndColorAtXY failed" );
- 	mu_assert( Text_SetCharAndColorAtXY(ID_CHANNEL_B, 9, 4, 42, COLOR_LT_GRAY, BG_COLOR_DK_GRAY) == true, "Text_SetCharAndColorAtXY failed" );
- 	mu_assert( Text_SetCharAndColorAtXY(ID_CHANNEL_B, 10, 4, 43, COLOR_LT_GRAY, BG_COLOR_DK_GRAY) == true, "Text_SetCharAndColorAtXY failed" );
- 	mu_assert( Text_SetCharAndColorAtXY(ID_CHANNEL_B, 11, 4, 44, COLOR_LT_GRAY, BG_COLOR_DK_GRAY) == true, "Text_SetCharAndColorAtXY failed" );
- 	mu_assert( Text_SetCharAndColorAtXY(ID_CHANNEL_B, 12, 4, 45, FG_COLOR_DK_GRAY, BG_COLOR_DK_GRAY) == true, "Text_SetCharAndColorAtXY failed" );
- 	mu_assert( Text_SetCharAndColorAtXY(ID_CHANNEL_B, 13, 4, 46, COLOR_LT_GRAY, BG_COLOR_DK_GRAY) == true, "Text_SetCharAndColorAtXY failed" );
- 	mu_assert( Text_SetCharAndColorAtXY(ID_CHANNEL_B, 14, 4, 47, FG_COLOR_WHITE, BG_COLOR_DK_GRAY) == true, "Text_SetCharAndColorAtXY failed" );
- 	mu_assert( Text_SetCharAndColorAtXY(ID_CHANNEL_B, 15, 4, 48, COLOR_LT_GRAY, BG_COLOR_DK_GRAY) == true, "Text_SetCharAndColorAtXY failed" );
- 	mu_assert( Text_SetCharAndColorAtXY(ID_CHANNEL_B, 0, 5, 33, FG_COLOR_WHITE, BG_COLOR_BLACK) == true, "Text_SetCharAndColorAtXY failed" );
- 	mu_assert( Text_SetCharAndColorAtXY(ID_CHANNEL_B, 1, 5, 34, FG_COLOR_WHITE, BG_COLOR_DK_RED) == true, "Text_SetCharAndColorAtXY failed" );
- 	mu_assert( Text_SetCharAndColorAtXY(ID_CHANNEL_B, 2, 5, 35, FG_COLOR_WHITE, BG_COLOR_GREEN) == true, "Text_SetCharAndColorAtXY failed" );
- 	mu_assert( Text_SetCharAndColorAtXY(ID_CHANNEL_B, 3, 5, 36, FG_COLOR_WHITE, BG_COLOR_BLUE) == true, "Text_SetCharAndColorAtXY failed" );
- 	mu_assert( Text_SetCharAndColorAtXY(ID_CHANNEL_B, 4, 4, 37, FG_COLOR_WHITE, COLOR_RED) == true, "Text_SetCharAndColorAtXY failed" );
- 	mu_assert( Text_SetCharAndColorAtXY(ID_CHANNEL_B, 5, 5, 38, FG_COLOR_WHITE, COLOR_RED) == true, "Text_SetCharAndColorAtXY failed" );
- 	mu_assert( Text_SetCharAndColorAtXY(ID_CHANNEL_B, 6, 5, 39, FG_COLOR_WHITE, COLOR_RED) == true, "Text_SetCharAndColorAtXY failed" );
- 	mu_assert( Text_SetCharAndColorAtXY(ID_CHANNEL_B, 7, 5, 40, FG_COLOR_WHITE, BG_COLOR_DK_GRAY) == true, "Text_SetCharAndColorAtXY failed" );
- 	mu_assert( Text_SetCharAndColorAtXY(ID_CHANNEL_B, 8, 5, 41, FG_COLOR_WHITE, COLOR_RED) == true, "Text_SetCharAndColorAtXY failed" );
- 	mu_assert( Text_SetCharAndColorAtXY(ID_CHANNEL_B, 9, 5, 42, FG_COLOR_WHITE, COLOR_RED) == true, "Text_SetCharAndColorAtXY failed" );
- 	mu_assert( Text_SetCharAndColorAtXY(ID_CHANNEL_B, 10, 5, 43, FG_COLOR_WHITE, COLOR_RED) == true, "Text_SetCharAndColorAtXY failed" );
- 	mu_assert( Text_SetCharAndColorAtXY(ID_CHANNEL_B, 11, 5, 44, FG_COLOR_WHITE, COLOR_RED) == true, "Text_SetCharAndColorAtXY failed" );
- 	mu_assert( Text_SetCharAndColorAtXY(ID_CHANNEL_B, 12, 5, 45, FG_COLOR_WHITE, COLOR_RED) == true, "Text_SetCharAndColorAtXY failed" );
- 	mu_assert( Text_SetCharAndColorAtXY(ID_CHANNEL_B, 13, 5, 46, FG_COLOR_WHITE, COLOR_RED) == true, "Text_SetCharAndColorAtXY failed" );
- 	mu_assert( Text_SetCharAndColorAtXY(ID_CHANNEL_B, 14, 5, 47, FG_COLOR_WHITE, BG_COLOR_LT_GRAY) == true, "Text_SetCharAndColorAtXY failed" );
- 	mu_assert( Text_SetCharAndColorAtXY(ID_CHANNEL_B, 15, 5, 48, FG_COLOR_WHITE, BG_COLOR_WHITE) == true, "Text_SetCharAndColorAtXY failed" );
+ 	mu_assert( Text_SetCharAndColorAtXY(&global_screen[ID_CHANNEL_B], 0, 4, 33, FG_COLOR_BLACK, BG_COLOR_DK_GRAY) == true, "Text_SetCharAndColorAtXY failed" );
+ 	mu_assert( Text_SetCharAndColorAtXY(&global_screen[ID_CHANNEL_B], 1, 4, 34, FG_COLOR_DK_RED, BG_COLOR_DK_GRAY) == true, "Text_SetCharAndColorAtXY failed" );
+ 	mu_assert( Text_SetCharAndColorAtXY(&global_screen[ID_CHANNEL_B], 2, 4, 35, FG_COLOR_GREEN, BG_COLOR_DK_GRAY) == true, "Text_SetCharAndColorAtXY failed" );
+ 	mu_assert( Text_SetCharAndColorAtXY(&global_screen[ID_CHANNEL_B], 3, 4, 36, FG_COLOR_BLUE, BG_COLOR_DK_GRAY) == true, "Text_SetCharAndColorAtXY failed" );
+ 	mu_assert( Text_SetCharAndColorAtXY(&global_screen[ID_CHANNEL_B], 4, 4, 37, COLOR_LT_GRAY, BG_COLOR_DK_GRAY) == true, "Text_SetCharAndColorAtXY failed" );
+ 	mu_assert( Text_SetCharAndColorAtXY(&global_screen[ID_CHANNEL_B], 5, 4, 38, COLOR_LT_GRAY, BG_COLOR_DK_GRAY) == true, "Text_SetCharAndColorAtXY failed" );
+ 	mu_assert( Text_SetCharAndColorAtXY(&global_screen[ID_CHANNEL_B], 6, 4, 39, FG_COLOR_VIOLET, BG_COLOR_DK_GRAY) == true, "Text_SetCharAndColorAtXY failed" );
+ 	mu_assert( Text_SetCharAndColorAtXY(&global_screen[ID_CHANNEL_B], 7, 4, 40, COLOR_LT_GRAY, BG_COLOR_DK_GRAY) == true, "Text_SetCharAndColorAtXY failed" );
+ 	mu_assert( Text_SetCharAndColorAtXY(&global_screen[ID_CHANNEL_B], 8, 4, 41, COLOR_BLACK, BG_COLOR_DK_GRAY) == true, "Text_SetCharAndColorAtXY failed" );
+ 	mu_assert( Text_SetCharAndColorAtXY(&global_screen[ID_CHANNEL_B], 9, 4, 42, COLOR_LT_GRAY, BG_COLOR_DK_GRAY) == true, "Text_SetCharAndColorAtXY failed" );
+ 	mu_assert( Text_SetCharAndColorAtXY(&global_screen[ID_CHANNEL_B], 10, 4, 43, COLOR_LT_GRAY, BG_COLOR_DK_GRAY) == true, "Text_SetCharAndColorAtXY failed" );
+ 	mu_assert( Text_SetCharAndColorAtXY(&global_screen[ID_CHANNEL_B], 11, 4, 44, COLOR_LT_GRAY, BG_COLOR_DK_GRAY) == true, "Text_SetCharAndColorAtXY failed" );
+ 	mu_assert( Text_SetCharAndColorAtXY(&global_screen[ID_CHANNEL_B], 12, 4, 45, FG_COLOR_DK_GRAY, BG_COLOR_DK_GRAY) == true, "Text_SetCharAndColorAtXY failed" );
+ 	mu_assert( Text_SetCharAndColorAtXY(&global_screen[ID_CHANNEL_B], 13, 4, 46, COLOR_LT_GRAY, BG_COLOR_DK_GRAY) == true, "Text_SetCharAndColorAtXY failed" );
+ 	mu_assert( Text_SetCharAndColorAtXY(&global_screen[ID_CHANNEL_B], 14, 4, 47, FG_COLOR_WHITE, BG_COLOR_DK_GRAY) == true, "Text_SetCharAndColorAtXY failed" );
+ 	mu_assert( Text_SetCharAndColorAtXY(&global_screen[ID_CHANNEL_B], 15, 4, 48, COLOR_LT_GRAY, BG_COLOR_DK_GRAY) == true, "Text_SetCharAndColorAtXY failed" );
+ 	mu_assert( Text_SetCharAndColorAtXY(&global_screen[ID_CHANNEL_B], 0, 5, 33, FG_COLOR_WHITE, BG_COLOR_BLACK) == true, "Text_SetCharAndColorAtXY failed" );
+ 	mu_assert( Text_SetCharAndColorAtXY(&global_screen[ID_CHANNEL_B], 1, 5, 34, FG_COLOR_WHITE, BG_COLOR_DK_RED) == true, "Text_SetCharAndColorAtXY failed" );
+ 	mu_assert( Text_SetCharAndColorAtXY(&global_screen[ID_CHANNEL_B], 2, 5, 35, FG_COLOR_WHITE, BG_COLOR_GREEN) == true, "Text_SetCharAndColorAtXY failed" );
+ 	mu_assert( Text_SetCharAndColorAtXY(&global_screen[ID_CHANNEL_B], 3, 5, 36, FG_COLOR_WHITE, BG_COLOR_BLUE) == true, "Text_SetCharAndColorAtXY failed" );
+ 	mu_assert( Text_SetCharAndColorAtXY(&global_screen[ID_CHANNEL_B], 4, 4, 37, FG_COLOR_WHITE, COLOR_RED) == true, "Text_SetCharAndColorAtXY failed" );
+ 	mu_assert( Text_SetCharAndColorAtXY(&global_screen[ID_CHANNEL_B], 5, 5, 38, FG_COLOR_WHITE, COLOR_RED) == true, "Text_SetCharAndColorAtXY failed" );
+ 	mu_assert( Text_SetCharAndColorAtXY(&global_screen[ID_CHANNEL_B], 6, 5, 39, FG_COLOR_WHITE, COLOR_RED) == true, "Text_SetCharAndColorAtXY failed" );
+ 	mu_assert( Text_SetCharAndColorAtXY(&global_screen[ID_CHANNEL_B], 7, 5, 40, FG_COLOR_WHITE, BG_COLOR_DK_GRAY) == true, "Text_SetCharAndColorAtXY failed" );
+ 	mu_assert( Text_SetCharAndColorAtXY(&global_screen[ID_CHANNEL_B], 8, 5, 41, FG_COLOR_WHITE, COLOR_RED) == true, "Text_SetCharAndColorAtXY failed" );
+ 	mu_assert( Text_SetCharAndColorAtXY(&global_screen[ID_CHANNEL_B], 9, 5, 42, FG_COLOR_WHITE, COLOR_RED) == true, "Text_SetCharAndColorAtXY failed" );
+ 	mu_assert( Text_SetCharAndColorAtXY(&global_screen[ID_CHANNEL_B], 10, 5, 43, FG_COLOR_WHITE, COLOR_RED) == true, "Text_SetCharAndColorAtXY failed" );
+ 	mu_assert( Text_SetCharAndColorAtXY(&global_screen[ID_CHANNEL_B], 11, 5, 44, FG_COLOR_WHITE, COLOR_RED) == true, "Text_SetCharAndColorAtXY failed" );
+ 	mu_assert( Text_SetCharAndColorAtXY(&global_screen[ID_CHANNEL_B], 12, 5, 45, FG_COLOR_WHITE, COLOR_RED) == true, "Text_SetCharAndColorAtXY failed" );
+ 	mu_assert( Text_SetCharAndColorAtXY(&global_screen[ID_CHANNEL_B], 13, 5, 46, FG_COLOR_WHITE, COLOR_RED) == true, "Text_SetCharAndColorAtXY failed" );
+ 	mu_assert( Text_SetCharAndColorAtXY(&global_screen[ID_CHANNEL_B], 14, 5, 47, FG_COLOR_WHITE, BG_COLOR_LT_GRAY) == true, "Text_SetCharAndColorAtXY failed" );
+ 	mu_assert( Text_SetCharAndColorAtXY(&global_screen[ID_CHANNEL_B], 15, 5, 48, FG_COLOR_WHITE, BG_COLOR_WHITE) == true, "Text_SetCharAndColorAtXY failed" );
 
 	printf("Next: Text_DrawHLine / Text_DrawVLine -> Draw straight lines using a specified character and color combo\n");	
 	MU_RUN_TEST(text_test_pause_and_clear);
@@ -827,17 +819,17 @@ MU_TEST(text_interactive)
 		x = 20;
 		y = 4;
 		line_len = 20;
-		mu_assert( Text_DrawHLine(ID_CHANNEL_B, x, y, line_len, CH_HEART, FG_COLOR_GREEN, BG_COLOR_BLACK, char_only) == true, "Text_DrawHLine failed" );
+		mu_assert( Text_DrawHLine(&global_screen[ID_CHANNEL_B], x, y, line_len, CH_HEART, FG_COLOR_GREEN, BG_COLOR_BLACK, char_only) == true, "Text_DrawHLine failed" );
 	
 		y = 8;
-		mu_assert( Text_DrawHLine(ID_CHANNEL_B, x, y, line_len, CH_DIAMOND, FG_COLOR_GREEN, BG_COLOR_BLACK, char_and_attr) == true, "Text_DrawHLine failed" );
+		mu_assert( Text_DrawHLine(&global_screen[ID_CHANNEL_B], x, y, line_len, CH_DIAMOND, FG_COLOR_GREEN, BG_COLOR_BLACK, char_and_attr) == true, "Text_DrawHLine failed" );
 	
 		y = 4;
 		line_len = 5;
-		mu_assert( Text_DrawVLine(ID_CHANNEL_B, x-1, y, line_len, CH_CLUB, FG_COLOR_YELLOW, BG_COLOR_BLACK, attr_only) == true, "Text_DrawVLine failed" );
+		mu_assert( Text_DrawVLine(&global_screen[ID_CHANNEL_B], x-1, y, line_len, CH_CLUB, FG_COLOR_YELLOW, BG_COLOR_BLACK, attr_only) == true, "Text_DrawVLine failed" );
 
 		x = x + 20;	
-		mu_assert( Text_DrawVLine(ID_CHANNEL_B, x, y, line_len, CH_SPADE, FG_COLOR_YELLOW, BG_COLOR_BLACK, char_and_attr) == true, "Text_DrawVLine failed" );
+		mu_assert( Text_DrawVLine(&global_screen[ID_CHANNEL_B], x, y, line_len, CH_SPADE, FG_COLOR_YELLOW, BG_COLOR_BLACK, char_and_attr) == true, "Text_DrawVLine failed" );
 	}
 	
 	printf("Next: (using named colors) -> Set foreground and background colors\n");	
@@ -859,27 +851,27 @@ MU_TEST(text_interactive)
 
 		for (i = 0; i < num_colors; i++)
 		{
-			mu_assert( Text_DrawHLine(ID_CHANNEL_B, x, y + i, line_len, the_char, i, BG_COLOR_BLUE, char_and_attr) == true, "Text_DrawHLine failed" );
-			mu_assert( Text_DrawHLine(ID_CHANNEL_B, x + 30, y + i, line_len, CH_MIDDOT, FG_COLOR_BLACK, i, char_and_attr) == true, "Text_DrawHLine failed" );
+			mu_assert( Text_DrawHLine(&global_screen[ID_CHANNEL_B], x, y + i, line_len, the_char, i, BG_COLOR_BLUE, char_and_attr) == true, "Text_DrawHLine failed" );
+			mu_assert( Text_DrawHLine(&global_screen[ID_CHANNEL_B], x + 30, y + i, line_len, CH_MIDDOT, FG_COLOR_BLACK, i, char_and_attr) == true, "Text_DrawHLine failed" );
 		}
 
 		// manually line up named colors
-		mu_assert( Text_DrawHLine(ID_CHANNEL_B, x + line_len + 2, y + 0, 6, the_char, FG_COLOR_BLACK, BG_COLOR_BLUE, char_and_attr) == true, "Text_DrawHLine failed" );
-		mu_assert( Text_DrawHLine(ID_CHANNEL_B, x + line_len + 2, y + 1, 6, the_char, FG_COLOR_DK_RED, BG_COLOR_BLUE, char_and_attr) == true, "Text_DrawHLine failed" );
-		mu_assert( Text_DrawHLine(ID_CHANNEL_B, x + line_len + 2, y + 2, 6, the_char, FG_COLOR_DK_GREEN, BG_COLOR_BLUE, char_and_attr) == true, "Text_DrawHLine failed" );
-		mu_assert( Text_DrawHLine(ID_CHANNEL_B, x + line_len + 2, y + 3, 6, the_char, FG_COLOR_DK_YELLOW, BG_COLOR_BLUE, char_and_attr) == true, "Text_DrawHLine failed" );
-		mu_assert( Text_DrawHLine(ID_CHANNEL_B, x + line_len + 2, y + 4, 6, the_char, FG_COLOR_DK_BLUE, BG_COLOR_BLUE, char_and_attr) == true, "Text_DrawHLine failed" );
-		mu_assert( Text_DrawHLine(ID_CHANNEL_B, x + line_len + 2, y + 5, 6, the_char, FG_COLOR_ORANGE, BG_COLOR_BLUE, char_and_attr) == true, "Text_DrawHLine failed" );
-		mu_assert( Text_DrawHLine(ID_CHANNEL_A, x + line_len + 2, y + 6, 6, the_char, FG_COLOR_DK_CYAN, BG_COLOR_BLUE, char_and_attr) == true, "Text_DrawHLine failed" );
-		mu_assert( Text_DrawHLine(ID_CHANNEL_B, x + line_len + 2, y + 7, 6, the_char, FG_COLOR_LT_GRAY, BG_COLOR_BLUE, char_and_attr) == true, "Text_DrawHLine failed" );
-		mu_assert( Text_DrawHLine(ID_CHANNEL_B, x + line_len + 2, y + 8, 6, the_char, FG_COLOR_DK_GRAY, BG_COLOR_BLUE, char_and_attr) == true, "Text_DrawHLine failed" );
-		mu_assert( Text_DrawHLine(ID_CHANNEL_B, x + line_len + 2, y + 9, 6, the_char, FG_COLOR_ORANGE, BG_COLOR_BLUE, char_and_attr) == true, "Text_DrawHLine failed" );
-		mu_assert( Text_DrawHLine(ID_CHANNEL_B, x + line_len + 2, y + 10, 6, the_char, FG_COLOR_GREEN, BG_COLOR_BLUE, char_and_attr) == true, "Text_DrawHLine failed" );
-		mu_assert( Text_DrawHLine(ID_CHANNEL_B, x + line_len + 2, y + 11, 6, the_char, FG_COLOR_YELLOW, BG_COLOR_BLUE, char_and_attr) == true, "Text_DrawHLine failed" );
-		mu_assert( Text_DrawHLine(ID_CHANNEL_B, x + line_len + 2, y + 12, 6, the_char, FG_COLOR_BLUE, BG_COLOR_BLUE, char_and_attr) == true, "Text_DrawHLine failed" );
-		mu_assert( Text_DrawHLine(ID_CHANNEL_B, x + line_len + 2, y + 13, 6, the_char, FG_COLOR_VIOLET, BG_COLOR_BLUE, char_and_attr) == true, "Text_DrawHLine failed" );
-		mu_assert( Text_DrawHLine(ID_CHANNEL_B, x + line_len + 2, y + 14, 6, the_char, FG_COLOR_CYAN, BG_COLOR_BLUE, char_and_attr) == true, "Text_DrawHLine failed" );
-		mu_assert( Text_DrawHLine(ID_CHANNEL_B, x + line_len + 2, y + 15, 6, the_char, FG_COLOR_WHITE, BG_COLOR_BLUE, char_and_attr) == true, "Text_DrawHLine failed" );
+		mu_assert( Text_DrawHLine(&global_screen[ID_CHANNEL_B], x + line_len + 2, y + 0, 6, the_char, FG_COLOR_BLACK, BG_COLOR_BLUE, char_and_attr) == true, "Text_DrawHLine failed" );
+		mu_assert( Text_DrawHLine(&global_screen[ID_CHANNEL_B], x + line_len + 2, y + 1, 6, the_char, FG_COLOR_DK_RED, BG_COLOR_BLUE, char_and_attr) == true, "Text_DrawHLine failed" );
+		mu_assert( Text_DrawHLine(&global_screen[ID_CHANNEL_B], x + line_len + 2, y + 2, 6, the_char, FG_COLOR_DK_GREEN, BG_COLOR_BLUE, char_and_attr) == true, "Text_DrawHLine failed" );
+		mu_assert( Text_DrawHLine(&global_screen[ID_CHANNEL_B], x + line_len + 2, y + 3, 6, the_char, FG_COLOR_DK_YELLOW, BG_COLOR_BLUE, char_and_attr) == true, "Text_DrawHLine failed" );
+		mu_assert( Text_DrawHLine(&global_screen[ID_CHANNEL_B], x + line_len + 2, y + 4, 6, the_char, FG_COLOR_DK_BLUE, BG_COLOR_BLUE, char_and_attr) == true, "Text_DrawHLine failed" );
+		mu_assert( Text_DrawHLine(&global_screen[ID_CHANNEL_B], x + line_len + 2, y + 5, 6, the_char, FG_COLOR_ORANGE, BG_COLOR_BLUE, char_and_attr) == true, "Text_DrawHLine failed" );
+		mu_assert( Text_DrawHLine(&global_screen[ID_CHANNEL_A], x + line_len + 2, y + 6, 6, the_char, FG_COLOR_DK_CYAN, BG_COLOR_BLUE, char_and_attr) == true, "Text_DrawHLine failed" );
+		mu_assert( Text_DrawHLine(&global_screen[ID_CHANNEL_B], x + line_len + 2, y + 7, 6, the_char, FG_COLOR_LT_GRAY, BG_COLOR_BLUE, char_and_attr) == true, "Text_DrawHLine failed" );
+		mu_assert( Text_DrawHLine(&global_screen[ID_CHANNEL_B], x + line_len + 2, y + 8, 6, the_char, FG_COLOR_DK_GRAY, BG_COLOR_BLUE, char_and_attr) == true, "Text_DrawHLine failed" );
+		mu_assert( Text_DrawHLine(&global_screen[ID_CHANNEL_B], x + line_len + 2, y + 9, 6, the_char, FG_COLOR_ORANGE, BG_COLOR_BLUE, char_and_attr) == true, "Text_DrawHLine failed" );
+		mu_assert( Text_DrawHLine(&global_screen[ID_CHANNEL_B], x + line_len + 2, y + 10, 6, the_char, FG_COLOR_GREEN, BG_COLOR_BLUE, char_and_attr) == true, "Text_DrawHLine failed" );
+		mu_assert( Text_DrawHLine(&global_screen[ID_CHANNEL_B], x + line_len + 2, y + 11, 6, the_char, FG_COLOR_YELLOW, BG_COLOR_BLUE, char_and_attr) == true, "Text_DrawHLine failed" );
+		mu_assert( Text_DrawHLine(&global_screen[ID_CHANNEL_B], x + line_len + 2, y + 12, 6, the_char, FG_COLOR_BLUE, BG_COLOR_BLUE, char_and_attr) == true, "Text_DrawHLine failed" );
+		mu_assert( Text_DrawHLine(&global_screen[ID_CHANNEL_B], x + line_len + 2, y + 13, 6, the_char, FG_COLOR_VIOLET, BG_COLOR_BLUE, char_and_attr) == true, "Text_DrawHLine failed" );
+		mu_assert( Text_DrawHLine(&global_screen[ID_CHANNEL_B], x + line_len + 2, y + 14, 6, the_char, FG_COLOR_CYAN, BG_COLOR_BLUE, char_and_attr) == true, "Text_DrawHLine failed" );
+		mu_assert( Text_DrawHLine(&global_screen[ID_CHANNEL_B], x + line_len + 2, y + 15, 6, the_char, FG_COLOR_WHITE, BG_COLOR_BLUE, char_and_attr) == true, "Text_DrawHLine failed" );
 	}
 	
 	printf("Next: Text_DrawBoxCoords -> Draw a basic box using 4 coordinates. All characters of box  use the same character.\n");	
@@ -899,7 +891,7 @@ MU_TEST(text_interactive)
 		y2 = 35;
 		the_char = CH_CHECKERED1;
 
-		mu_assert( Text_DrawBoxCoords(ID_CHANNEL_B, x1, y1, x2, y2, the_char, FG_COLOR_LT_GRAY, BG_COLOR_DK_GRAY, char_and_attr) == true, "Text_DrawBoxCoords failed" );
+		mu_assert( Text_DrawBoxCoords(&global_screen[ID_CHANNEL_B], x1, y1, x2, y2, the_char, FG_COLOR_LT_GRAY, BG_COLOR_DK_GRAY, char_and_attr) == true, "Text_DrawBoxCoords failed" );
 	}
 
 	printf("Next: Text_DrawBox -> Draw a basic box using start coordinates + width and height. All characters of box  use the same character.\n");	
@@ -917,7 +909,7 @@ MU_TEST(text_interactive)
 		v_line_len = 6;
 		the_char = CH_CHECKERED3;
 
-		mu_assert(Text_DrawBox(ID_CHANNEL_B, x, y, h_line_len, v_line_len, the_char, FG_COLOR_CYAN, BG_COLOR_DK_CYAN, char_and_attr) == true, "Text_DrawBox failed" );
+		mu_assert(Text_DrawBox(&global_screen[ID_CHANNEL_B], x, y, h_line_len, v_line_len, the_char, FG_COLOR_CYAN, BG_COLOR_DK_CYAN, char_and_attr) == true, "Text_DrawBox failed" );
 	}
 
 	printf("Next: Text_DrawBoxCoordsFancy -> Draw a box using 4 coordinates. The pre-defined 'wall' characters are used to build the box's outline. Text_FillBox() is used to add a fill.\n");	
@@ -934,8 +926,8 @@ MU_TEST(text_interactive)
 		x2 = 68;
 		y2 = 51;
 
-		mu_assert( Text_FillBox(ID_CHANNEL_B, x1+1, y1+1, x2-1, y2-1, CH_CHECKERED3, FG_COLOR_LT_GRAY, BG_COLOR_WHITE) == true, "Text_FillBox failed" );
-		mu_assert( Text_DrawBoxCoordsFancy(ID_CHANNEL_B, x1, y1, x2, y2, FG_COLOR_LT_GRAY, BG_COLOR_DK_GRAY) == true, "Text_DrawBoxCoordsFancy failed" );
+		mu_assert( Text_FillBox(&global_screen[ID_CHANNEL_B], x1+1, y1+1, x2-1, y2-1, CH_CHECKERED3, FG_COLOR_LT_GRAY, BG_COLOR_WHITE) == true, "Text_FillBox failed" );
+		mu_assert( Text_DrawBoxCoordsFancy(&global_screen[ID_CHANNEL_B], x1, y1, x2, y2, FG_COLOR_LT_GRAY, BG_COLOR_DK_GRAY) == true, "Text_DrawBoxCoordsFancy failed" );
 	}
 	
 	printf("Next: Text_DrawStringAtXY -> Draw a string at the specified coordinates. No wrapping is performed. Will truncate at right edge of screen.\n");	
@@ -949,7 +941,7 @@ MU_TEST(text_interactive)
 		mu_assert_string_eq("this is a string", (char*)the_message);
 		for (i = 5; i < 40; i = i + 10)
 		{	
-			mu_assert(Text_DrawStringAtXY(ID_CHANNEL_B, i*2, i, the_message, FG_COLOR_YELLOW, BG_COLOR_DK_BLUE) == true, "Text_DrawStringAtXY failed" );
+			mu_assert(Text_DrawStringAtXY(&global_screen[ID_CHANNEL_B], i*2, i, the_message, FG_COLOR_YELLOW, BG_COLOR_DK_BLUE) == true, "Text_DrawStringAtXY failed" );
 		}
 	}
 	
@@ -970,14 +962,14 @@ MU_TEST(text_interactive)
 		x2 = 68;
 		y2 = 51;
 
-		mu_assert( Text_FillBox(ID_CHANNEL_B, x1+1, y1+1, x2-1, y2-1, ' ', FG_COLOR_LT_GRAY, BG_COLOR_WHITE) == true, "Text_FillBox failed" );
-		mu_assert( Text_DrawBoxCoordsFancy(ID_CHANNEL_B, x1, y1, x2, y2, FG_COLOR_BLACK, BG_COLOR_WHITE) == true, "Text_DrawBoxCoordsFancy failed" );
+		mu_assert( Text_FillBox(&global_screen[ID_CHANNEL_B], x1+1, y1+1, x2-1, y2-1, ' ', FG_COLOR_LT_GRAY, BG_COLOR_WHITE) == true, "Text_FillBox failed" );
+		mu_assert( Text_DrawBoxCoordsFancy(&global_screen[ID_CHANNEL_B], x1, y1, x2, y2, FG_COLOR_BLACK, BG_COLOR_WHITE) == true, "Text_DrawBoxCoordsFancy failed" );
 
 		x1 = 13;
 		y1 = 5;
 		x2 = 67;
 		y2 = 50;
-		mu_assert( Text_DrawStringInBox(ID_CHANNEL_B, x1, y1, x2, y2, the_message, FG_COLOR_BLACK, BG_COLOR_WHITE) == true, "Text_DrawStringInBox failed" );
+		mu_assert( Text_DrawStringInBox(&global_screen[ID_CHANNEL_B], x1, y1, x2, y2, the_message, FG_COLOR_BLACK, BG_COLOR_WHITE) == true, "Text_DrawStringInBox failed" );
 
 
 		// small box on chan B
@@ -986,21 +978,21 @@ MU_TEST(text_interactive)
 		x2 = 71;
 		y2 = 41;
 
-		mu_assert( Text_FillBox(ID_CHANNEL_B, x1+1, y1+1, x2-1, y2-1, ' ', BG_COLOR_CYAN, BG_COLOR_BLACK) == true, "Text_FillBox failed" );
-		mu_assert(Text_DrawBoxCoordsFancy(ID_CHANNEL_B, x1, y1, x2, y2, FG_COLOR_LT_GRAY, BG_COLOR_BLACK) == true, "Text_DrawBoxCoordsFancy failed" );
+		mu_assert( Text_FillBox(&global_screen[ID_CHANNEL_B], x1+1, y1+1, x2-1, y2-1, ' ', BG_COLOR_CYAN, BG_COLOR_BLACK) == true, "Text_FillBox failed" );
+		mu_assert(Text_DrawBoxCoordsFancy(&global_screen[ID_CHANNEL_B], x1, y1, x2, y2, FG_COLOR_LT_GRAY, BG_COLOR_BLACK) == true, "Text_DrawBoxCoordsFancy failed" );
 	
 		x1 = 40;
 		y1 = 20;
 		x2 = 70;
 		y2 = 40;
-		mu_assert(Text_DrawStringInBox(ID_CHANNEL_B, x1, y1, x2, y2, the_message, BG_COLOR_CYAN, BG_COLOR_BLACK) == true, "Text_DrawStringInBox failed" );
+		mu_assert(Text_DrawStringInBox(&global_screen[ID_CHANNEL_B], x1, y1, x2, y2, the_message, BG_COLOR_CYAN, BG_COLOR_BLACK) == true, "Text_DrawStringInBox failed" );
 
 	}
 	
 	printf("Next: Text_UpdateFontData -> Change the font characters with 2K of data from the specified buffer. See screen A as comparison.\n");	
 	MU_RUN_TEST(text_test_pause_and_clear);
-	mu_assert( Text_ShowFontChars(ID_CHANNEL_A) == true, "Could not show font characters" );
-	mu_assert( Text_ShowFontChars(ID_CHANNEL_B) == true, "Could not show font characters" );
+	mu_assert( Text_ShowFontChars(&global_screen[ID_CHANNEL_A]) == true, "Could not show font characters" );
+	mu_assert( Text_ShowFontChars(&global_screen[ID_CHANNEL_B]) == true, "Could not show font characters" );
 	MU_RUN_TEST(font_replace_test);
 
 }
@@ -1035,7 +1027,7 @@ MU_TEST(text_test_hline_speed)
 	{
 		for (i=0; i < num_passes; i++)
 		{
-			mu_assert( Text_DrawHLineSlow(ID_CHANNEL_A, x, y + i, line_len, the_char, FG_COLOR_GREEN, BG_COLOR_BLACK, char_only) == true, "Text_DrawHLine failed" );
+			mu_assert( Text_DrawHLineSlow(&global_screen[ID_CHANNEL_A], x, y + i, line_len, the_char, FG_COLOR_GREEN, BG_COLOR_BLACK, char_only) == true, "Text_DrawHLine failed" );
 		}
 	}
 		
@@ -1049,7 +1041,7 @@ MU_TEST(text_test_hline_speed)
 	{
 		for (i=0; i < num_passes; i++)
 		{
-			mu_assert( Text_DrawHLine(ID_CHANNEL_A, x, y + i, line_len, the_char, FG_COLOR_RED, BG_COLOR_BLACK, char_only) == true, "Text_DrawHLine failed" );
+			mu_assert( Text_DrawHLine(&global_screen[ID_CHANNEL_A], x, y + i, line_len, the_char, FG_COLOR_RED, BG_COLOR_BLACK, char_only) == true, "Text_DrawHLine failed" );
 		}
 	}
 	
@@ -1071,7 +1063,7 @@ MU_TEST(text_test_hline_speed)
 	{
 		for (i=0; i < num_passes; i++)
 		{
-			mu_assert( Text_DrawHLineSlow(ID_CHANNEL_A, x, y + i, line_len, the_char, FG_COLOR_GREEN, BG_COLOR_BLACK, char_and_attr) == true, "Text_DrawHLine failed" );
+			mu_assert( Text_DrawHLineSlow(&global_screen[ID_CHANNEL_A], x, y + i, line_len, the_char, FG_COLOR_GREEN, BG_COLOR_BLACK, char_and_attr) == true, "Text_DrawHLine failed" );
 		}
 	}
 	
@@ -1085,7 +1077,7 @@ MU_TEST(text_test_hline_speed)
 	{
 		for (i=0; i < num_passes; i++)
 		{
-			mu_assert( Text_DrawHLine(ID_CHANNEL_A, x, y + i, line_len, the_char, FG_COLOR_RED, BG_COLOR_BLACK, char_and_attr) == true, "Text_DrawHLine failed" );
+			mu_assert( Text_DrawHLine(&global_screen[ID_CHANNEL_A], x, y + i, line_len, the_char, FG_COLOR_RED, BG_COLOR_BLACK, char_and_attr) == true, "Text_DrawHLine failed" );
 		}
 	}
 	

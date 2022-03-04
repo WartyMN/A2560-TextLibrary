@@ -6,20 +6,30 @@ export DEVA2560=~/dev/bbedit-workspace-a2560
 
 cd $DEVA2560/lib_text
 
+
+# make a static library
+vc +/opt/vbcc/config/a2560-4lib-micah -o foenix_text.lib lib_general.c lib_text.c
+#vc +/opt/vbcc/config/a2560-4lib-micah -o foenix_text.lib lib_general.c lib_general_a2560.c lib_text.c
+# vbccm68k -quiet lib_general.c -o=foenix_text.lib1 -O=%ld -I$VBCC/targets/a2560-micah/include
+# vbccm68k -quiet lib_general_a2560.c -o=foenix_text.lib2 -O=%ld -I$VBCC/targets/a2560-micah/include
+# vbccm68k -quiet lib_text.c -o=foenix_text.lib3 -O=%ld -I$VBCC/targets/a2560-micah/include
+# ar rcs foenix_text.a foenix_text.lib1 foenix_text.lib2 foenix_text.lib3
+
+# move to vbcc folder
+mv foenix_text.lib $VBCC/targets/a2560-micah/lib/
+
+
+# build test/demo code using the library
+
 #vc +/opt/vbcc/config/a2560-s28 -o text.s28 main.c general.c general_a2560.c lib_text.c lib_text_test.c
 #vc +/opt/vbcc/config/a2560-s28 -o text.s28 test3.c general.c general_a2560.c
 
 #vc +/opt/vbcc/config/a2560-s28-micah -o text.s28 main.c general.c general_a2560.c lib_text.c lib_text_test.c
 #vc +/opt/vbcc/config/a2560-s28-micah -o text.s28 main.c general.c general_a2560.c lib_text.c
 
-vc +/opt/vbcc/config/a2560-s28-micah -o text.s28 main.c lib_general.c lib_general_a2560.c lib_text.c lib_text_test.c -lm
-#vc +/opt/vbcc/config/a2560-s19-micah -o text.s19 main.c lib_general.c lib_general_a2560.c lib_text.c lib_text_test.c
-#vc +/opt/vbcc/config/a2560-s37-micah -o text.s37 main.c lib_general.c lib_general_a2560.c lib_text.c lib_text_test.c
-#vc +/opt/vbcc/config/a2560-ihex-micah -o text.ihex main.c lib_general.c lib_general_a2560.c lib_text.c lib_text_test.c
+#vc +/opt/vbcc/config/a2560-s28-micah -o text.s28 main.c lib_general.c lib_general_a2560.c lib_text.c lib_text_test.c -lm
+vc +/opt/vbcc/config/a2560-s28-micahwlib -o text.s28 main.c lib_text_test.c -lm
 
-# -lm
-# -lmieee
- 
 # no tests
 #vc +/opt/vbcc/config/aos68k -o build_vbcc/wb2k about_window.c app.c dict.c dict_entry.c file.c file_mover.c folder.c file_type.c file_type_db.c general.c general_amiga.c icon.c info_file.c info_panel.c label.c list.c list_panel.c menu.c mouse.c localize.c prefs.c status_window.c window.c -g -lauto -lamiga -prof -lmieee -stack-check
 

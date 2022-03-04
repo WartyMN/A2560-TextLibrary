@@ -63,11 +63,171 @@ static FILE*			global_log_file;
 // Convert a (positive-only) string integer to an unsigned long integer. returns false in event of error
 boolean General_StringToUnsignedLong(const char* the_string_value, unsigned long* the_conversion);
 
+// PRIVATE - no checking of parameters
+// copy the specified length of text from this_line_start into the write buffer, and overwrite the null terminator with a line break character
+// advance the read and write buffers to the next position
+void General_WrapParaWriteLine(char** source, char** target, signed int write_len);
+
+// PRIVATE - no checking of parameters
+// passed a string with no line breaks in it, and a buffer to write into, copies the string contents into the target buffer, performing line breaks as it goes
+// stops when all characters have been processed, or when all available vertical space has been used up.
+signed int General_WrapPara(Screen* the_screen, char* this_line_start, char* formatted_text, signed int remaining_len, signed int max_width, signed int remaining_v_pixels, signed int font_height, signed int (* measure_function)(Screen*, char*, signed int, signed int));
+
+
 
 
 /*****************************************************************************/
 /*                       Private Function Definitions                        */
 /*****************************************************************************/
+
+
+// PRIVATE - no checking of parameters
+// copy the specified length of text from this_line_start into the write buffer, and overwrite the null terminator with a line break character
+// advance the read and write buffers to the next position
+void General_WrapParaWriteLine(char** source, char** target, signed int write_len)
+{
+	General_Strlcpy(*target, *source, write_len);
+	*(*target + write_len - 1) = '\n'; // overwrite the \0 from strlcpy				
+	*target += write_len; // move formatted_text up to the next spot for writing
+	*source += write_len; // move unformatted_text up to the next spot for reading
+}
+
+
+// PRIVATE - no checking of parameters
+// passed a string with no line breaks in it, and a buffer to write into, copies the string contents into the target buffer, performing line breaks as it goes
+// stops when all characters have been processed, or when all available vertical space has been used up.
+signed int General_WrapPara(Screen* the_screen, char* this_line_start, char* formatted_text, signed int remaining_len, signed int max_width, signed int remaining_v_pixels, signed int font_height, signed int (* measure_function)(Screen*, char*, signed int, signed int))
+{
+	signed int		v_pixels = 0;
+	boolean			line_complete;
+	signed int		next_line_len;
+
+	// Initial condition is next line and this line are the same thing. 
+	// Next line start will move word by word to the right until what's left no longer fits on a line
+	// then this_line is written out, and next_line and this line are equal again
+	next_line_len = remaining_len;
+	
+	// outer loop: continue until the entire string has been copied to formatted text, or until we have exceeded the v pixel budget
+	do
+	{
+		signed int		this_line_len = 0;
+		char*			next_line_start = this_line_start;
+
+		line_complete = false;
+
+		// inner loop: Each pass is one word. Process until the end of a line is reached
+		while (line_complete == false)
+		{
+			signed int			next_soft_break_pos;
+		
+			next_soft_break_pos = General_StrFindNextWordEnd(next_line_start, next_line_len);
+				
+			if (next_soft_break_pos < 0)
+			{
+				signed int		chars_that_fit;
+
+				// there are no more word breaks in this string. 2 possible conditions:
+				//   A. We previously started a new line, and have at least 1 word. there's ONE more word then end of string
+				//   B. We are at the start of processing a line, and came to the end of the string. There is one word, it may be larger than will fit. 
+				// The word may fit on the current line, or it may not. We haven't measured it. 
+				//   if it's longer than the allowed line width, it must be broken mid-word.
+				
+				// check if the word will fit on the line, and if so, add it and exit the function.
+				//   if it will not fit:
+				//   A) if already have 1+ words on the line, wrap at this point, add the word, exit the function
+				//   B) if no words on line, force break the word at max width and continue.
+				
+				signed int	proposed_new_line_len = this_line_len + next_line_len;
+				
+				chars_that_fit = (*measure_function)(the_screen, this_line_start, proposed_new_line_len, max_width);
+				
+				if (chars_that_fit >= proposed_new_line_len)
+				{
+					// the upcoming word will fit on current line
+					// extend length of current line; push start of next line to position past the word
+					General_WrapParaWriteLine(&this_line_start, &formatted_text, proposed_new_line_len);
+
+					this_line_len = 0;
+
+					this_line_start = NULL;
+					next_line_start = NULL;
+					next_line_len = 0;
+				}
+				else
+				{
+					// either we got an error, or all the characters will not fit on this line
+					// if we have a current line, end it and add line break + remaining string. if no current line, force break the rest of the string at max width and continue.
+
+					// any words on the current line?
+					if (this_line_len > 0)
+					{
+						// we already have some words, so end the current line and continue
+						General_WrapParaWriteLine(&this_line_start, &formatted_text, this_line_len);
+						this_line_len = 0;
+					}
+					else
+					{
+						// the whole string is word-break-less: we must force a break
+						General_WrapParaWriteLine(&this_line_start, &formatted_text, chars_that_fit);
+					}
+				}
+				
+				line_complete = true;	
+			}
+			else
+			{
+				// we found the next word break. test if we can fit everything to that point. if so, continue on. if not, back up to last pos and break there
+
+				signed int	proposed_new_line_len = this_line_len + next_soft_break_pos;
+				signed int	chars_that_fit;
+			
+				chars_that_fit = (*measure_function)(the_screen, this_line_start, proposed_new_line_len, max_width);
+			
+				if (chars_that_fit >= proposed_new_line_len)
+				{
+					// the upcoming word will fit on current line
+					// extend length of current line; push start of next line to position past the word
+					this_line_len = proposed_new_line_len;
+					next_line_start += next_soft_break_pos;
+					next_line_len -= next_soft_break_pos;
+				}
+				else
+				{
+					// either we got an error, or all the characters will not fit on this line
+					// in either case, end the current line, write it to formatted
+
+					General_WrapParaWriteLine(&this_line_start, &formatted_text, this_line_len);
+
+					this_line_len = 0;
+
+					line_complete = true;
+
+					//DEBUG_OUT(("%s %d: print out of formatted_text after copy...", __func__ , __LINE__));
+					//General_PrintBufferCharacters(formatted_text-8, (unsigned short)remaining_len);
+					//DEBUG_OUT(("%s %d: line complete. next_line_len=%i, this_line_start='%s'", __func__ , __LINE__, next_line_len, this_line_start));		
+
+					if (chars_that_fit == -1)
+					{
+						// handle error condition: having completed the current line, force function to exit with an error.
+						printf("\nError! ln %d next_line_len=%i, this_line_start='%s'", __LINE__, next_line_len, this_line_start);
+						*(formatted_text) = '\0';
+						return -1;
+					}
+				}
+			}
+		}
+		
+		v_pixels += font_height;
+		remaining_v_pixels -= font_height;
+		
+	} while (this_line_start != NULL && remaining_v_pixels > 0);
+	
+	//DEBUG_OUT(("%s %d: print out of final version of para", __func__ , __LINE__));
+	//General_PrintBufferCharacters(start_of_formatted, (unsigned short)orig_len+4);
+	
+	return v_pixels;
+}
+
 
 // Convert a (positive-only) string integer to an unsigned long integer. returns false in event of error
 boolean General_StringToUnsignedLong(const char* the_string_value, unsigned long* the_conversion)
@@ -108,6 +268,104 @@ boolean General_StringToUnsignedLong(const char* the_string_value, unsigned long
 /*****************************************************************************/
 /*                        Public Function Definitions                        */
 /*****************************************************************************/
+
+
+// Format a string by wrapping and trimming to fit the passed width and height. returns number of vertical pixels required. 
+// Passing a 0 for height disables the governor on allowed vertical space. 
+// If the string cannot be displayed in the specified height and width, processing will stop, but it is not an error condition
+// If max_chars_to_format is less than len of string, processing will stop after that many characters.
+// returns -1 in any error condition
+signed int General_WrapAndTrimTextToFit(Screen* the_screen, char** orig_string, char** formatted_string, signed int max_chars_to_format, signed int max_width, signed int max_height, signed int (* measure_function)(Screen*, char*, signed int, signed int))
+{
+	signed int		font_height;
+	char*			formatted_text;
+	signed int		v_pixels = 0;
+	signed int		new_v_pixels_used;
+	char*			remaining_text;
+	signed int		remaining_len = max_chars_to_format;
+	boolean			format_complete = false;
+	signed int		remaining_v_pixels;
+	static char		para_buff[1024];
+	char*			the_para = para_buff;
+	
+	if (the_screen == NULL)
+	{
+		LOG_ERR(("%s %d: passed screen was NULL", __func__, __LINE__));
+		return -1;
+	}
+
+	font_height = the_screen->text_font_height_;
+	remaining_v_pixels = max_height;
+	
+	remaining_text = *orig_string;
+	formatted_text = *formatted_string;
+		
+	// Outer Loop: each pass is one line
+	do
+	{
+		boolean			line_complete = false;
+		signed int		dist_to_next_hard_break;
+		signed int		len_to_process;
+		
+		
+		dist_to_next_hard_break = General_StrFindNextLineBreak(remaining_text, remaining_len);
+		
+		if (dist_to_next_hard_break == 1)
+		{
+			*(formatted_text) = '\n';
+			// the first char in the string is a line break - skip over and continue
+			new_v_pixels_used = font_height;
+			// account for the line break char we are skipping past
+			len_to_process = 1;
+		}
+		else
+		{
+			char*			para_to_process;
+			
+			if (dist_to_next_hard_break < 1)
+			{
+				// there are no more line breaks in the string. process the entire string
+				para_to_process = remaining_text;
+				len_to_process = remaining_len + 1;	// +1 because there is no line break we want snipped off. 
+			}
+			else
+			{
+				// there is a line break. Send off that paragraph for processing
+				para_to_process = para_buff;
+				len_to_process = dist_to_next_hard_break; // not +1 because we don't want to add the line break; WrapPara will always add one at the end
+				General_Strlcpy(the_para, remaining_text, dist_to_next_hard_break);
+			}		
+				
+			// process one paragraph
+			new_v_pixels_used = General_WrapPara(the_screen, para_to_process, formatted_text, len_to_process, max_width, remaining_v_pixels, font_height, measure_function);		
+		}
+	
+		if (new_v_pixels_used == -1)
+		{
+		}
+		else
+		{
+			v_pixels += new_v_pixels_used;
+			remaining_v_pixels -= new_v_pixels_used;
+			remaining_len -= len_to_process;
+			formatted_text += len_to_process;
+			remaining_text += len_to_process;
+			
+			if (remaining_v_pixels < 0 || remaining_len < 1)
+			{
+				format_complete = true;
+			}
+			
+		}
+		
+	} while ( format_complete == false);
+
+	//DEBUG_OUT(("%s %d: print out of formatted_text after processing...", __func__ , __LINE__));
+	//General_PrintBufferCharacters(*formatted_string, (unsigned short)max_chars_to_format+10);
+	//DEBUG_OUT(("%s %d: v pixels used=%i", __func__ , __LINE__, v_pixels));
+	
+	return v_pixels;
+}
 
 
 // extract file extension into the passed char pointer, as new lowercased string pointer, if any found. returns false if no file extension found.
