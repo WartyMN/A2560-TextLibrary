@@ -6,17 +6,18 @@ export DEVA2560=~/dev/bbedit-workspace-a2560
 
 cd $DEVA2560/lib_text
 
+# copy latest version of headers to VBCC
+cp lib_general.h $VBCC/targets/a2560-micah/include/mb/
+cp lib_text.h $VBCC/targets/a2560-micah/include/mb/
+cp a2560_platform.h $VBCC/targets/a2560-micah/include/mb/
 
-# make a static library
-vc +/opt/vbcc/config/a2560-4lib-micah -o foenix_text.lib lib_general.c lib_text.c
-#vc +/opt/vbcc/config/a2560-4lib-micah -o foenix_text.lib lib_general.c lib_general_a2560.c lib_text.c
-# vbccm68k -quiet lib_general.c -o=foenix_text.lib1 -O=%ld -I$VBCC/targets/a2560-micah/include
-# vbccm68k -quiet lib_general_a2560.c -o=foenix_text.lib2 -O=%ld -I$VBCC/targets/a2560-micah/include
-# vbccm68k -quiet lib_text.c -o=foenix_text.lib3 -O=%ld -I$VBCC/targets/a2560-micah/include
-# ar rcs foenix_text.a foenix_text.lib1 foenix_text.lib2 foenix_text.lib3
+# make general as static lib
+vc +/opt/vbcc/config/a2560-4lib-micah -o a2560_general.lib lib_general.c
+mv a2560_general.lib $VBCC/targets/a2560-micah/lib/
 
-# move to vbcc folder
-mv foenix_text.lib $VBCC/targets/a2560-micah/lib/
+# make text as static lib
+vc +/opt/vbcc/config/a2560-4lib-micah -o a2560_text.lib lib_text.c
+mv a2560_text.lib $VBCC/targets/a2560-micah/lib/
 
 
 # build test/demo code using the library

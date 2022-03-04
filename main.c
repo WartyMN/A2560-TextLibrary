@@ -12,10 +12,6 @@
 
 
 // project includes
-#include "lib_general.h"
-#include "lib_general_a2560.h"
-
-#include "lib_text.h"
 
 
 // C includes
@@ -26,6 +22,9 @@
 
 // A2560 includes
 #include <mcp/syscalls.h>
+#include "a2560_platform.h"
+#include "lib_general.h"
+#include "lib_text.h"
 
 
 /*****************************************************************************/

@@ -16,9 +16,6 @@
 #include "lib_text.h"
 
 // project includes
-#include "lib_general.h"
-#include "lib_general_a2560.h"
-//#include "localize.h"
 
 // C includes
 #include <stdarg.h>
@@ -30,6 +27,8 @@
 #include <errno.h>
 
 // A2560 includes
+#include "a2560_platform.h"
+#include "lib_general.h"
 
 
 

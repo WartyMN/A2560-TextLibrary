@@ -3,8 +3,7 @@
 
 // project includes
 #include "test_base.h"
-#include "lib_general.h"
-#include "lib_general_a2560.h"
+//#include "lib_general.h"
 
 // class being tested
 #include "lib_text.h"
@@ -13,6 +12,7 @@
 
 
 // A2650 includes
+#include "a2560_platform.h"
 
 
 

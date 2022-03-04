@@ -15,8 +15,6 @@
 
 // project includes
 #include "lib_text.h"
-#include "lib_general.h"
-#include "lib_general_a2560.h"
 
 // C includes
 #include <stdarg.h>
@@ -25,6 +23,8 @@
 #include <string.h>
 
 // A2650 includes
+#include "a2560_platform.h"
+#include "lib_general.h"
 
 
 /*****************************************************************************/
