@@ -1,3 +1,5 @@
+//! @file lib_text.c
+
 /*
  * lib_text.c
  *
@@ -49,6 +51,8 @@
 /*                       Private Function Prototypes                         */
 /*****************************************************************************/
 
+//! \cond PRIVATE
+
 // validate screen id, x, y, and colors
 boolean Text_ValidateAll(Screen* the_screen, signed int x, signed int y, unsigned char fore_color, unsigned char back_color);
 
@@ -60,18 +64,20 @@ char* Text_GetMemLocForXY(Screen* the_screen, signed int x, signed int y, boolea
 
 // Fill attribute or text char memory. Writes to char memory if for_attr is false.
 // calling function must validate the screen ID before passing!
-// returns false on any error/invalid input.
+//! @return	returns false on any error/invalid input.
 boolean Text_FillMemory(Screen* the_screen, boolean for_attr, unsigned char the_fill);
 
 // Fill character and attribute memory for a specific box area
 // calling function must validate screen id, coords, attribute value before passing!
-// returns false on any error/invalid input.
+//! @return	returns false on any error/invalid input.
 boolean Text_FillMemoryBoxBoth(Screen* the_screen, signed int x, signed int y, signed int width, signed int height, unsigned char the_char, unsigned char the_attribute_value);
 
 // Fill character OR attribute memory for a specific box area
 // calling function must validate screen id, coords, attribute value before passing!
-// returns false on any error/invalid input.
+//! @return	returns false on any error/invalid input.
 boolean Text_FillMemoryBox(Screen* the_screen, signed int x, signed int y, signed int width, signed int height, boolean for_attr, unsigned char the_fill);
+
+//! \endcond
 
 
 /*****************************************************************************/
@@ -82,7 +88,12 @@ boolean Text_FillMemoryBox(Screen* the_screen, signed int x, signed int y, signe
 // **** NEVER call these from your own functions. Always use the public interface. You have been warned!
 
 
-// validate screen id, x, y, and colors
+//! \cond PRIVATE
+
+//! Validate screen id, x, y, and colors
+//! @param	fore_color: Index to the desired foreground color (0-15). The predefined macro constants may be used (COLOR_DK_RED, etc.), but be aware that the colors are not fixed, and may not correspond to the names if the LUT in RAM has been modified.
+//! @param	back_color: Index to the desired background color (0-15). The predefined macro constants may be used (COLOR_DK_RED, etc.), but be aware that the colors are not fixed, and may not correspond to the names if the LUT in RAM has been modified.
+//! @return	returns false on any error/invalid input.
 boolean Text_ValidateAll(Screen* the_screen, signed int x, signed int y, unsigned char fore_color, unsigned char back_color)
 {
 	if (the_screen == NULL)
@@ -106,8 +117,7 @@ boolean Text_ValidateAll(Screen* the_screen, signed int x, signed int y, unsigne
 	return true;
 }
 
-
-// validate the coordinates are within the bounds of the specified screen
+//! Validate the coordinates are within the bounds of the specified screen. 
 boolean Text_ValidateXY(Screen* the_screen, signed int x, signed int y)
 {
 	signed int		max_row;
@@ -125,7 +135,8 @@ boolean Text_ValidateXY(Screen* the_screen, signed int x, signed int y)
 }
 
 
-// calculate the VRAM location of the specified coordinate
+//! Calculate the VRAM location of the specified coordinate
+//! @param	for_attr: true to work with attribute data, false to work character data. Recommend using SCREEN_FOR_TEXT_ATTR/SCREEN_FOR_TEXT_CHAR.
 char* Text_GetMemLocForXY(Screen* the_screen, signed int x, signed int y, boolean for_attr)
 {
 	char*			the_write_loc;
@@ -156,9 +167,11 @@ char* Text_GetMemLocForXY(Screen* the_screen, signed int x, signed int y, boolea
 }
 
 
-// Fill attribute or text char memory. Writes to char memory if for_attr is false.
-// calling function must validate the screen ID before passing!
-// returns false on any error/invalid input.
+//! Fill attribute or text char memory. 
+//! calling function must validate the screen ID before passing!
+//! @param	for_attr: true to work with attribute data, false to work character data. Recommend using SCREEN_FOR_TEXT_ATTR/SCREEN_FOR_TEXT_CHAR.
+//! @param	the_fill: either a 1-byte character code, or a 1-byte attribute code (foreground in high nibble, background in low nibble)
+//! returns false on any error/invalid input.
 boolean Text_FillMemory(Screen* the_screen, boolean for_attr, unsigned char the_fill)
 {
 	char*			the_write_loc;
@@ -181,9 +194,12 @@ boolean Text_FillMemory(Screen* the_screen, boolean for_attr, unsigned char the_
 }
 
 
-// Fill character and attribute memory for a specific box area
-// calling function must validate screen id, coords, attribute value before passing!
-// returns false on any error/invalid input.
+//! Fill character and attribute memory for a specific box area
+//! calling function must validate screen id, coords, attribute value before passing!
+//! @param	width: width, in character cells, of the rectangle to be filled
+//! @param	height: height, in character cells, of the rectangle to be filled
+//! @param	the_attribute_value: a 1-byte attribute code (foreground in high nibble, background in low nibble)
+//! @return	returns false on any error/invalid input.
 boolean Text_FillMemoryBoxBoth(Screen* the_screen, signed int x, signed int y, signed int width, signed int height, unsigned char the_char, unsigned char the_attribute_value)
 {
 	char*			the_char_loc;
@@ -208,9 +224,13 @@ boolean Text_FillMemoryBoxBoth(Screen* the_screen, signed int x, signed int y, s
 }
 
 
-// Fill character OR attribute memory for a specific box area
-// calling function must validate screen id, coords, attribute value before passing!
-// returns false on any error/invalid input.
+//! Fill character OR attribute memory for a specific box area
+//! calling function must validate screen id, coords, attribute value before passing!
+//! @param	width: width, in character cells, of the rectangle to be filled
+//! @param	height: height, in character cells, of the rectangle to be filled
+//! @param	for_attr: true to work with attribute data, false to work character data. Recommend using SCREEN_FOR_TEXT_ATTR/SCREEN_FOR_TEXT_CHAR.
+//! @param	the_fill: either a 1-byte character code, or a 1-byte attribute code (foreground in high nibble, background in low nibble)
+//! @return	returns false on any error/invalid input.
 boolean Text_FillMemoryBox(Screen* the_screen, signed int x, signed int y, signed int width, signed int height, boolean for_attr, unsigned char the_fill)
 {
 	char*			the_write_loc;
@@ -230,6 +250,8 @@ boolean Text_FillMemoryBox(Screen* the_screen, signed int x, signed int y, signe
 	return true;
 }
 
+//! \endcond
+
 
 
 /*****************************************************************************/
@@ -241,8 +263,10 @@ boolean Text_FillMemoryBox(Screen* the_screen, signed int x, signed int y, signe
 
 // **** Block copy functions ****
 
-// Copy a full screen of attr from an off-screen buffer
-// returns false on any error/invalid input.
+//! Copy a full screen of attr from an off-screen buffer (in c)
+//! @param	the_screen: valid pointer to a configured Screen object (a2650_platform.h)
+//! @param	the_source_buffer: valid pointer to attribute value data that will be copied to the screen. It must be at least as large as the visible rows X visible columns of the screen.
+//! @return	returns false on any error/invalid input.
 boolean Text_CopyAttrMemToScreen(Screen* the_screen, char* the_source_buffer)
 {
 	char*			the_vram_loc;
@@ -262,8 +286,10 @@ boolean Text_CopyAttrMemToScreen(Screen* the_screen, char* the_source_buffer)
 	return true;
 }
 
-// Copy a full screen of attr to an off-screen buffer
-// returns false on any error/invalid input.
+//! Copy a full screen of text attributes to an off-screen buffer.
+//! @param	the_screen: valid pointer to a configured Screen object (a2650_platform.h)
+//! @param	the_target_buffer: valid pointer to a block of memory big enough to hold the attribute data copied from the screen. It must be at least as large as the visible rows X visible columns of the screen.
+//! @return returns false on any error/invalid input.
 boolean Text_CopyAttrMemFromScreen(Screen* the_screen, char* the_target_buffer)
 {
 	char*			the_vram_loc;
@@ -283,8 +309,9 @@ boolean Text_CopyAttrMemFromScreen(Screen* the_screen, char* the_target_buffer)
 	return true;
 }
 
-// Copy a full screen of text from an off-screen buffer
-// returns false on any error/invalid input.
+//! Copy a full screen of text from an off-screen buffer.
+//! @param	the_source_buffer: valid pointer to character data that will be copied to the screen. It must be at least as large as the visible rows X visible columns of the screen.
+//! @return returns false on any error/invalid input.
 boolean Text_CopyCharMemToScreen(Screen* the_screen, char* the_source_buffer)
 {
 	char*			the_vram_loc;
@@ -304,8 +331,9 @@ boolean Text_CopyCharMemToScreen(Screen* the_screen, char* the_source_buffer)
 	return true;
 }
 
-// Copy a full screen of text to an off-screen buffer
-// returns false on any error/invalid input.
+//! Copy a full screen of text to an off-screen buffer
+//! @param	the_target_buffer: valid pointer to a block of memory big enough to hold the character data copied from the screen. It must be at least as large as the visible rows X visible columns of the screen.
+//! @return	returns false on any error/invalid input.
 boolean Text_CopyCharMemFromScreen(Screen* the_screen, char* the_target_buffer)
 {
 	char*			the_vram_loc;
@@ -326,8 +354,11 @@ boolean Text_CopyCharMemFromScreen(Screen* the_screen, char* the_target_buffer)
 }
 
 
-// Copy a full screen of text or attr to or from an off-screen buffer
-// returns false on any error/invalid input.
+//! Copy a full screen worth of EITHER text or attribute data to OR from an off-screen buffer
+//! @param	the_buffer: valid pointer to a block of memory big enough to store (or alternatively act as the source of) the character or attribute data for the specified screen. It must be at least as large as the visible rows X visible columns of the screen.
+//! @param	to_screen: true to copy to the screen from the buffer, false to copy from the screen to the buffer. Recommend using SCREEN_COPY_TO_SCREEN/SCREEN_COPY_FROM_SCREEN.
+//! @param	for_attr: true to work with attribute data, false to work character data. Recommend using SCREEN_FOR_TEXT_ATTR/SCREEN_FOR_TEXT_CHAR.
+//! @return	returns false on any error/invalid input.
 boolean Text_CopyScreen(Screen* the_screen, char* the_buffer, boolean to_screen, boolean for_attr)
 {
 	char*			the_vram_loc;
@@ -370,8 +401,11 @@ boolean Text_CopyScreen(Screen* the_screen, char* the_buffer, boolean to_screen,
 }
 
 
-// Copy a rectangular area of text or attr to or from an off-screen buffer
-// returns false on any error/invalid input.
+//! Copy a rectangular area of text or attr to or from an off-screen buffer
+//! @param	the_buffer: valid pointer to a block of memory big enough to store (or alternatively act as the source of) the character or attribute data for the specified rectangle of screen memory.
+//! @param	to_screen: true to copy to the screen from the buffer, false to copy from the screen to the buffer. Recommend using SCREEN_COPY_TO_SCREEN/SCREEN_COPY_FROM_SCREEN.
+//! @param	for_attr: true to work with attribute data, false to work character data. Recommend using SCREEN_FOR_TEXT_ATTR/SCREEN_FOR_TEXT_CHAR.
+//! @return	returns false on any error/invalid input.
 boolean Text_CopyMemBox(Screen* the_screen, char* the_buffer, signed int x1, signed int y1, signed int x2, signed int y2, boolean to_screen, boolean for_attr)
 {
 	char*			the_vram_loc;
@@ -445,8 +479,9 @@ boolean Text_CopyMemBox(Screen* the_screen, char* the_buffer, signed int x1, sig
 // **** Block fill functions ****
 
 
-// Fill attribute memory for the passed screen
-// returns false on any error/invalid input.
+//! Fill attribute memory for the passed screen
+//! @param	the_fill: either a 1-byte character code, or a 1-byte attribute code (foreground in high nibble, background in low nibble)
+//! @return	returns false on any error/invalid input.
 boolean Text_FillAttrMem(Screen* the_screen, unsigned char the_fill)
 {
 	if (the_screen == NULL)
@@ -458,8 +493,10 @@ boolean Text_FillAttrMem(Screen* the_screen, unsigned char the_fill)
  	return Text_FillMemory(the_screen, SCREEN_FOR_TEXT_ATTR, the_fill);
 }
 
-// Fill character memory for the passed screen
-// returns false on any error/invalid input.
+
+//! Fill character memory for the passed screen
+//! @param	the_fill: either a 1-byte character code, or a 1-byte attribute code (foreground in high nibble, background in low nibble)
+//! @return	returns false on any error/invalid input.
 boolean Text_FillCharMem(Screen* the_screen, unsigned char the_fill)
 {
 	if (the_screen == NULL)
@@ -472,9 +509,12 @@ boolean Text_FillCharMem(Screen* the_screen, unsigned char the_fill)
 }
 
 
-// Fill character and/or attribute memory for a specific box area
-// returns false on any error/invalid input.
-// this version uses char-by-char functions, so it is very slow.
+//! Fill character and/or attribute memory for a specific box area
+//! This version uses char-by-char functions, so it is very slow. It will be removed before release. 
+//! @param	fore_color: Index to the desired foreground color (0-15). The predefined macro constants may be used (COLOR_DK_RED, etc.), but be aware that the colors are not fixed, and may not correspond to the names if the LUT in RAM has been modified.
+//! @param	back_color: Index to the desired background color (0-15). The predefined macro constants may be used (COLOR_DK_RED, etc.), but be aware that the colors are not fixed, and may not correspond to the names if the LUT in RAM has been modified.
+//! @param	the_draw_choice: controls the scope of the action, and is one of CHAR_ONLY, ATTR_ONLY, or CHAR_AND_ATTR. See the text_draw_choice enum.
+//! @return	returns false on any error/invalid input.
 boolean Text_FillBoxSlow(Screen* the_screen, signed int x1, signed int y1, signed int x2, signed int y2, unsigned char the_char, unsigned char fore_color, unsigned char back_color, text_draw_choice the_draw_choice)
 {
 	signed int	dx;
@@ -519,8 +559,10 @@ boolean Text_FillBoxSlow(Screen* the_screen, signed int x1, signed int y1, signe
 }
 
 
-// Fill character and attribute memory for a specific box area
-// returns false on any error/invalid input.
+//! Fill character and attribute memory for a specific box area
+//! @param	fore_color: Index to the desired foreground color (0-15). The predefined macro constants may be used (COLOR_DK_RED, etc.), but be aware that the colors are not fixed, and may not correspond to the names if the LUT in RAM has been modified.
+//! @param	back_color: Index to the desired background color (0-15). The predefined macro constants may be used (COLOR_DK_RED, etc.), but be aware that the colors are not fixed, and may not correspond to the names if the LUT in RAM has been modified.
+//! @return	returns false on any error/invalid input.
 boolean Text_FillBox(Screen* the_screen, signed int x1, signed int y1, signed int x2, signed int y2, unsigned char the_char, unsigned char fore_color, unsigned char back_color)
 {
 	signed int		dy;
@@ -563,8 +605,8 @@ boolean Text_FillBox(Screen* the_screen, signed int x1, signed int y1, signed in
 }
 
 
-// Fill character memory for a specific box area
-// returns false on any error/invalid input.
+//! Fill character memory for a specific box area
+//! @return	returns false on any error/invalid input.
 boolean Text_FillBoxCharOnly(Screen* the_screen, signed int x1, signed int y1, signed int x2, signed int y2, unsigned char the_char)
 {
 	signed int	dy;
@@ -602,8 +644,10 @@ boolean Text_FillBoxCharOnly(Screen* the_screen, signed int x1, signed int y1, s
 }
 
 
-// Fill attribute memory for a specific box area
-// returns false on any error/invalid input.
+//! Fill attribute memory for a specific box area
+//! @param	fore_color: Index to the desired foreground color (0-15). The predefined macro constants may be used (COLOR_DK_RED, etc.), but be aware that the colors are not fixed, and may not correspond to the names if the LUT in RAM has been modified.
+//! @param	back_color: Index to the desired background color (0-15). The predefined macro constants may be used (COLOR_DK_RED, etc.), but be aware that the colors are not fixed, and may not correspond to the names if the LUT in RAM has been modified.
+//! @return	returns false on any error/invalid input.
 boolean Text_FillBoxAttrOnly(Screen* the_screen, signed int x1, signed int y1, signed int x2, signed int y2, unsigned char fore_color, unsigned char back_color)
 {
 	signed int		dy;
@@ -646,8 +690,9 @@ boolean Text_FillBoxAttrOnly(Screen* the_screen, signed int x1, signed int y1, s
 }
 
 
-// Invert the colors of a rectangular block
-// As this requires sampling each character cell, it is no faster to for entire screen as opposed to a subset box
+//! Invert the colors of a rectangular block.
+//! As this requires sampling each character cell, it is no faster (per cell) to do for entire screen as opposed to a subset box
+//! @return	returns false on any error/invalid input.
 boolean Text_InvertBox(Screen* the_screen, signed int x1, signed int y1, signed int x2, signed int y2)
 {
 	unsigned char	the_attribute_value;
@@ -709,7 +754,9 @@ boolean Text_InvertBox(Screen* the_screen, signed int x1, signed int y1, signed 
 
 // **** FONT RELATED *****
 
-// replace the current font data with the data at the passed memory buffer
+//! replace the current font data with the data at the passed memory buffer
+//! @param	new_font_data: Pointer to 2K (256 characters x 8 lines/bytes each) of font data. Each byte represents one line of an 8x8 font glyph.
+//! @return	returns false on any error/invalid input.
 boolean Text_UpdateFontData(Screen* the_screen, char* new_font_data)
 {
 	memcpy(the_screen->text_font_ram_, new_font_data, 8*256*1);
@@ -718,8 +765,11 @@ boolean Text_UpdateFontData(Screen* the_screen, char* new_font_data)
 }
 
 
-// test function to display all 256 font characters
-boolean Text_ShowFontChars(Screen* the_screen)
+//! Test function to display all 256 font characters.
+//! Characters are rendered in 8 rows of 32 characters.
+//! @param	y: the starting row to draw the font characters.
+//! @return	returns false on any error/invalid input.
+boolean Text_ShowFontChars(Screen* the_screen, unsigned int y)
 {
 	unsigned char	the_char = 0;
 	char*			the_write_loc;
@@ -732,8 +782,8 @@ boolean Text_ShowFontChars(Screen* the_screen)
 		return false;
 	}
 
-	the_write_loc = the_screen->text_ram_;
-
+	the_write_loc = the_screen->text_ram_ + (the_screen->text_mem_cols_ * y);
+	
 	// print rows of 32 characters at a time
 	for (j = 0; j < 8; j++)
 	{
@@ -753,7 +803,8 @@ boolean Text_ShowFontChars(Screen* the_screen)
 // **** Set char/attr functions *****
 
 
-// Set a char at a specified x, y coord
+//! Set a char at a specified x, y coord
+//! @return	returns false on any error/invalid input.
 boolean Text_SetCharAtXY(Screen* the_screen, signed int x, signed int y, unsigned char the_char)
 {
 	char*	the_write_loc;
@@ -777,7 +828,10 @@ boolean Text_SetCharAtXY(Screen* the_screen, signed int x, signed int y, unsigne
 }
 
 
-// Set the attribute value at a specified x, y coord
+//! Set the attribute value at a specified x, y coord
+//! @param	fore_color: Index to the desired foreground color (0-15). The predefined macro constants may be used (COLOR_DK_RED, etc.), but be aware that the colors are not fixed, and may not correspond to the names if the LUT in RAM has been modified.
+//! @param	back_color: Index to the desired background color (0-15). The predefined macro constants may be used (COLOR_DK_RED, etc.), but be aware that the colors are not fixed, and may not correspond to the names if the LUT in RAM has been modified.
+//! @return	returns false on any error/invalid input.
 boolean Text_SetAttrAtXY(Screen* the_screen, signed int x, signed int y, unsigned char fore_color, unsigned char back_color)
 {
 	char*			the_write_loc;
@@ -806,7 +860,10 @@ boolean Text_SetAttrAtXY(Screen* the_screen, signed int x, signed int y, unsigne
 }
 
 
-// Draw a char at a specified x, y coord, also setting the color attributes
+//! Draw a char at a specified x, y coord, also setting the color attributes
+//! @param	fore_color: Index to the desired foreground color (0-15). The predefined macro constants may be used (COLOR_DK_RED, etc.), but be aware that the colors are not fixed, and may not correspond to the names if the LUT in RAM has been modified.
+//! @param	back_color: Index to the desired background color (0-15). The predefined macro constants may be used (COLOR_DK_RED, etc.), but be aware that the colors are not fixed, and may not correspond to the names if the LUT in RAM has been modified.
+//! @return	returns false on any error/invalid input.
 boolean Text_SetCharAndColorAtXY(Screen* the_screen, signed int x, signed int y, unsigned char the_char, unsigned char fore_color, unsigned char back_color)
 {
 	char*			the_write_loc;
@@ -843,7 +900,8 @@ boolean Text_SetCharAndColorAtXY(Screen* the_screen, signed int x, signed int y,
 // **** Get char/attr functions *****
 
 
-// Get the char at a specified x, y coord
+//! Get the char at a specified x, y coord
+//! @return	returns a character code
 unsigned char Text_GetCharAtXY(Screen* the_screen, signed int x, signed int y)
 {
 	char*			the_read_loc;
@@ -868,7 +926,8 @@ unsigned char Text_GetCharAtXY(Screen* the_screen, signed int x, signed int y)
 }
 
 
-// Get the attribute value at a specified x, y coord
+//! Get the attribute value at a specified x, y coord
+//! @return	returns a 1-byte attribute code (foreground in high nibble, background in low nibble)
 unsigned char Text_GetAttrAtXY(Screen* the_screen, signed int x, signed int y)
 {
 	char*			the_read_loc;
@@ -893,7 +952,8 @@ unsigned char Text_GetAttrAtXY(Screen* the_screen, signed int x, signed int y)
 }
 
 
-// Get the foreground color at a specified x, y coord
+//! Get the foreground color at a specified x, y coord
+//! @return	returns an index (0-15) to the foreground color LUT
 unsigned char Text_GetForeColorAtXY(Screen* the_screen, signed int x, signed int y)
 {
 	char*			the_read_loc;
@@ -920,7 +980,8 @@ unsigned char Text_GetForeColorAtXY(Screen* the_screen, signed int x, signed int
 }
 
 
-// Get the background color at a specified x, y coord
+//! Get the background color at a specified x, y coord
+//! @return	returns an index (0-15) to the background color LUT
 unsigned char Text_GetBackColorAtXY(Screen* the_screen, signed int x, signed int y)
 {
 	char*			the_read_loc;
@@ -951,7 +1012,11 @@ unsigned char Text_GetBackColorAtXY(Screen* the_screen, signed int x, signed int
 // **** Drawing functions *****
 
 
-// draws a horizontal line from specified coords, for n characters, using the specified char and/or attribute
+//! Draws a horizontal line from specified coords, for n characters, using the specified char and/or attribute
+//! @param	fore_color: Index to the desired foreground color (0-15). The predefined macro constants may be used (COLOR_DK_RED, etc.), but be aware that the colors are not fixed, and may not correspond to the names if the LUT in RAM has been modified.
+//! @param	back_color: Index to the desired background color (0-15). The predefined macro constants may be used (COLOR_DK_RED, etc.), but be aware that the colors are not fixed, and may not correspond to the names if the LUT in RAM has been modified.
+//! @param	the_draw_choice: controls the scope of the action, and is one of CHAR_ONLY, ATTR_ONLY, or CHAR_AND_ATTR. See the text_draw_choice enum.
+//! @return	returns false on any error/invalid input.
 boolean Text_DrawHLine(Screen* the_screen, signed int x, signed int y, signed int the_line_len, unsigned char the_char, unsigned char fore_color, unsigned char back_color, text_draw_choice the_draw_choice)
 {
 	signed int		dx;
@@ -973,7 +1038,7 @@ boolean Text_DrawHLine(Screen* the_screen, signed int x, signed int y, signed in
 		return false;
 	}
 
-	if (the_draw_choice == char_only)
+	if (the_draw_choice == CHAR_ONLY)
 	{
 		result = Text_FillMemoryBox(the_screen, x, y, the_line_len, 0, SCREEN_FOR_TEXT_CHAR, the_char);
 	}
@@ -983,7 +1048,7 @@ boolean Text_DrawHLine(Screen* the_screen, signed int x, signed int y, signed in
 		// LOGIC: text mode only supports 16 colors. lower 4 bits are back, upper 4 bits are foreground
 		the_attribute_value = ((fore_color << 4) | back_color);
 	
-		if (the_draw_choice == attr_only)
+		if (the_draw_choice == ATTR_ONLY)
 		{
 			result = Text_FillMemoryBox(the_screen, x, y, the_line_len, 0, SCREEN_FOR_TEXT_ATTR, the_attribute_value);
 		}
@@ -997,7 +1062,12 @@ boolean Text_DrawHLine(Screen* the_screen, signed int x, signed int y, signed in
 }
 
 
-// draws a horizontal line from specified coords, for n characters, using the specified char and/or attribute
+//! Draws a horizontal line from specified coords, for n characters, using the specified char and/or attribute
+//! This version uses char-by-char functions, so it is very slow. It will be removed before release. 
+//! @param	fore_color: Index to the desired foreground color (0-15). The predefined macro constants may be used (COLOR_DK_RED, etc.), but be aware that the colors are not fixed, and may not correspond to the names if the LUT in RAM has been modified.
+//! @param	back_color: Index to the desired background color (0-15). The predefined macro constants may be used (COLOR_DK_RED, etc.), but be aware that the colors are not fixed, and may not correspond to the names if the LUT in RAM has been modified.
+//! @param	the_draw_choice: controls the scope of the action, and is one of CHAR_ONLY, ATTR_ONLY, or CHAR_AND_ATTR. See the text_draw_choice enum.
+//! @return	returns false on any error/invalid input.
 boolean Text_DrawHLineSlow(Screen* the_screen, signed int x, signed int y, signed int the_line_len, unsigned char the_char, unsigned char fore_color, unsigned char back_color, text_draw_choice the_draw_choice)
 {
 	signed int	dx;
@@ -1016,21 +1086,21 @@ boolean Text_DrawHLineSlow(Screen* the_screen, signed int x, signed int y, signe
 
 	switch (the_draw_choice)
 	{
-		case char_only:
+		case CHAR_ONLY:
 			for (dx = 0; dx < the_line_len; dx++)
 			{
 				Text_SetCharAtXY(the_screen, x + dx, y, the_char);
 			}
 			break;
 			
-		case attr_only:
+		case ATTR_ONLY:
 			for (dx = 0; dx < the_line_len; dx++)
 			{
 				Text_SetAttrAtXY(the_screen, x + dx, y, fore_color, back_color);
 			}
 			break;
 			
-		case char_and_attr:
+		case CHAR_AND_ATTR:
 		default:
 			for (dx = 0; dx < the_line_len; dx++)
 			{
@@ -1043,7 +1113,11 @@ boolean Text_DrawHLineSlow(Screen* the_screen, signed int x, signed int y, signe
 }
 
 
-// draws a vertical line from specified coords, for n characters, using the specified char and/or attribute
+//! Draws a vertical line from specified coords, for n characters, using the specified char and/or attribute
+//! @param	fore_color: Index to the desired foreground color (0-15). The predefined macro constants may be used (COLOR_DK_RED, etc.), but be aware that the colors are not fixed, and may not correspond to the names if the LUT in RAM has been modified.
+//! @param	back_color: Index to the desired background color (0-15). The predefined macro constants may be used (COLOR_DK_RED, etc.), but be aware that the colors are not fixed, and may not correspond to the names if the LUT in RAM has been modified.
+//! @param	the_draw_choice: controls the scope of the action, and is one of CHAR_ONLY, ATTR_ONLY, or CHAR_AND_ATTR. See the text_draw_choice enum.
+//! @return	returns false on any error/invalid input.
 boolean Text_DrawVLine(Screen* the_screen, signed int x, signed int y, signed int the_line_len, unsigned char the_char, unsigned char fore_color, unsigned char back_color, text_draw_choice the_draw_choice)
 {
 	unsigned char dy;
@@ -1062,21 +1136,21 @@ boolean Text_DrawVLine(Screen* the_screen, signed int x, signed int y, signed in
 
 	switch (the_draw_choice)
 	{
-		case char_only:
+		case CHAR_ONLY:
 			for (dy = 0; dy < the_line_len; dy++)
 			{
 				Text_SetCharAtXY(the_screen, x, y + dy, the_char);
 			}
 			break;
 			
-		case attr_only:
+		case ATTR_ONLY:
 			for (dy = 0; dy < the_line_len; dy++)
 			{
 				Text_SetAttrAtXY(the_screen, x, y + dy, fore_color, back_color);
 			}
 			break;
 			
-		case char_and_attr:
+		case CHAR_AND_ATTR:
 		default:
 			for (dy = 0; dy < the_line_len; dy++)
 			{
@@ -1089,7 +1163,11 @@ boolean Text_DrawVLine(Screen* the_screen, signed int x, signed int y, signed in
 }
 
 
-// draws a basic box based on 2 sets of coords, using the specified char and/or attribute for all cells
+//! Draws a basic box based on 2 sets of coords, using the specified char and/or attribute for all cells
+//! @param	fore_color: Index to the desired foreground color (0-15). The predefined macro constants may be used (COLOR_DK_RED, etc.), but be aware that the colors are not fixed, and may not correspond to the names if the LUT in RAM has been modified.
+//! @param	back_color: Index to the desired background color (0-15). The predefined macro constants may be used (COLOR_DK_RED, etc.), but be aware that the colors are not fixed, and may not correspond to the names if the LUT in RAM has been modified.
+//! @param	the_draw_choice: controls the scope of the action, and is one of CHAR_ONLY, ATTR_ONLY, or CHAR_AND_ATTR. See the text_draw_choice enum.
+//! @return	returns false on any error/invalid input.
 boolean Text_DrawBoxCoords(Screen* the_screen, signed int x1, signed int y1, signed int x2, signed int y2, unsigned char the_char, unsigned char fore_color, unsigned char back_color, text_draw_choice the_draw_choice)
 {
 	signed int	dy;
@@ -1151,7 +1229,10 @@ boolean Text_DrawBoxCoords(Screen* the_screen, signed int x1, signed int y1, sig
 }
 
 
-// draws a box based on 2 sets of coords, using the predetermined line and corner "graphics", and the passed colors
+//! Draws a box based on 2 sets of coords, using the predetermined line and corner "graphics", and the passed colors
+//! @param	fore_color: Index to the desired foreground color (0-15). The predefined macro constants may be used (COLOR_DK_RED, etc.), but be aware that the colors are not fixed, and may not correspond to the names if the LUT in RAM has been modified.
+//! @param	back_color: Index to the desired background color (0-15). The predefined macro constants may be used (COLOR_DK_RED, etc.), but be aware that the colors are not fixed, and may not correspond to the names if the LUT in RAM has been modified.
+//! @return	returns false on any error/invalid input.
 boolean Text_DrawBoxCoordsFancy(Screen* the_screen, signed int x1, signed int y1, signed int x2, signed int y2, unsigned char fore_color, unsigned char back_color)
 {
 	signed int	dy;
@@ -1187,25 +1268,25 @@ boolean Text_DrawBoxCoordsFancy(Screen* the_screen, signed int x1, signed int y1
 	
 	// draw all lines one char shorter on each end so that we don't overdraw when we do corners
 	
-	if (!Text_DrawHLine(the_screen, x1+1, y1, dx, CH_WALL_H, fore_color, back_color, char_and_attr))
+	if (!Text_DrawHLine(the_screen, x1+1, y1, dx, CH_WALL_H, fore_color, back_color, CHAR_AND_ATTR))
 	{
 		LOG_ERR(("%s %d: draw box failed", __func__, __LINE__));
 		return false;
 	}
 	
-	if (!Text_DrawHLine(the_screen, x1+1, y2, dx, CH_WALL_H, fore_color, back_color, char_and_attr))
+	if (!Text_DrawHLine(the_screen, x1+1, y2, dx, CH_WALL_H, fore_color, back_color, CHAR_AND_ATTR))
 	{
 		LOG_ERR(("%s %d: draw box failed", __func__, __LINE__));
 		return false;
 	}
 	
-	if (!Text_DrawVLine(the_screen, x2, y1+1, dy, CH_WALL_V, fore_color, back_color, char_and_attr))
+	if (!Text_DrawVLine(the_screen, x2, y1+1, dy, CH_WALL_V, fore_color, back_color, CHAR_AND_ATTR))
 	{
 		LOG_ERR(("%s %d: draw box failed", __func__, __LINE__));
 		return false;
 	}
 	
-	if (!Text_DrawVLine(the_screen, x1, y1+1, dy, CH_WALL_V, fore_color, back_color, char_and_attr))
+	if (!Text_DrawVLine(the_screen, x1, y1+1, dy, CH_WALL_V, fore_color, back_color, CHAR_AND_ATTR))
 	{
 		LOG_ERR(("%s %d: draw box failed", __func__, __LINE__));
 		return false;
@@ -1221,8 +1302,14 @@ boolean Text_DrawBoxCoordsFancy(Screen* the_screen, signed int x1, signed int y1
 }
 
 
-// draws a basic box based on start coords and width/height, using the specified char and/or attribute for all cells
-boolean Text_DrawBox(Screen* the_screen, signed int x, signed int y, signed int the_width, signed int the_height, unsigned char the_char, unsigned char fore_color, unsigned char back_color, text_draw_choice the_draw_choice)
+//! Draws a basic box based on start coords and width/height, using the specified char and/or attribute for all cells
+//! @param	width: width, in character cells, of the rectangle to be drawn
+//! @param	height: height, in character cells, of the rectangle to be drawn
+//! @param	fore_color: Index to the desired foreground color (0-15). The predefined macro constants may be used (COLOR_DK_RED, etc.), but be aware that the colors are not fixed, and may not correspond to the names if the LUT in RAM has been modified.
+//! @param	back_color: Index to the desired background color (0-15). The predefined macro constants may be used (COLOR_DK_RED, etc.), but be aware that the colors are not fixed, and may not correspond to the names if the LUT in RAM has been modified.
+//! @param	the_draw_choice: controls the scope of the action, and is one of CHAR_ONLY, ATTR_ONLY, or CHAR_AND_ATTR. See the text_draw_choice enum.
+//! @return	returns false on any error/invalid input.
+boolean Text_DrawBox(Screen* the_screen, signed int x, signed int y, signed int width, signed int height, unsigned char the_char, unsigned char fore_color, unsigned char back_color, text_draw_choice the_draw_choice)
 {	
 	if (the_screen == NULL)
 	{
@@ -1236,31 +1323,31 @@ boolean Text_DrawBox(Screen* the_screen, signed int x, signed int y, signed int 
 		return false;
 	}
 	
-	if (!Text_ValidateXY(the_screen, x + the_width - 1, y + the_height - 1))
+	if (!Text_ValidateXY(the_screen, x + width - 1, y + height - 1))
 	{
 		LOG_ERR(("%s %d: illegal coordinate", __func__, __LINE__));
 		return false;
 	}
 
-	if (!Text_DrawHLine(the_screen, x, y, the_width, the_char, fore_color, back_color, the_draw_choice))
+	if (!Text_DrawHLine(the_screen, x, y, width, the_char, fore_color, back_color, the_draw_choice))
 	{
 		LOG_ERR(("%s %d: draw box failed", __func__, __LINE__));
 		return false;
 	}
 	
-	if (!Text_DrawVLine(the_screen, x + the_width - 1, y, the_height, the_char, fore_color, back_color, the_draw_choice))
+	if (!Text_DrawVLine(the_screen, x + width - 1, y, height, the_char, fore_color, back_color, the_draw_choice))
 	{
 		LOG_ERR(("%s %d: draw box failed", __func__, __LINE__));
 		return false;
 	}
 	
-	if (!Text_DrawHLine(the_screen, x, y + the_height - 1, the_width, the_char, fore_color, back_color, the_draw_choice))
+	if (!Text_DrawHLine(the_screen, x, y + height - 1, width, the_char, fore_color, back_color, the_draw_choice))
 	{
 		LOG_ERR(("%s %d: draw box failed", __func__, __LINE__));
 		return false;
 	}
 	
-	if (!Text_DrawVLine(the_screen, x, y, the_height, the_char, fore_color, back_color, the_draw_choice))
+	if (!Text_DrawVLine(the_screen, x, y, height, the_char, fore_color, back_color, the_draw_choice))
 	{
 		LOG_ERR(("%s %d: draw box failed", __func__, __LINE__));
 		return false;
@@ -1274,9 +1361,13 @@ boolean Text_DrawBox(Screen* the_screen, signed int x, signed int y, signed int 
 // **** Draw string functions *****
 
 
-// Draw a string at a specified x, y coord, also setting the color attributes
-// Truncate, but still draw the string if it is too long to display on the line it started.
-// No word wrap is performed. 
+//! Draw a string at a specified x, y coord, also setting the color attributes.
+//! If it is too long to display on the line it started, it will be truncated at the right edge of the screen.
+//! No word wrap is performed. 
+//! @param	the_string: the null-terminated string to be measured.
+//! @param	fore_color: Index to the desired foreground color (0-15). The predefined macro constants may be used (COLOR_DK_RED, etc.), but be aware that the colors are not fixed, and may not correspond to the names if the LUT in RAM has been modified.
+//! @param	back_color: Index to the desired background color (0-15). The predefined macro constants may be used (COLOR_DK_RED, etc.), but be aware that the colors are not fixed, and may not correspond to the names if the LUT in RAM has been modified.
+//! @return	returns false on any error/invalid input.
 boolean Text_DrawStringAtXY(Screen* the_screen, signed int x, signed int y, char* the_string, unsigned char fore_color, unsigned char back_color)
 {
 	char*			the_char_loc;
@@ -1327,9 +1418,12 @@ boolean Text_DrawStringAtXY(Screen* the_screen, signed int x, signed int y, char
 }
 
 
-// Draw a string in a rectangular block on the screen, with wrap
-// If a word can't be wrapped, it will break the word and move on to the next line. So if you pass a rect with 1 char of width, it will draw a vertical line of chars down the screen.
-// returns false on any error/invalid input.
+//! Draw a string in a rectangular block on the screen, with wrap.
+//! If a word can't be wrapped, it will break the word and move on to the next line. So if you pass a rect with 1 char of width, it will draw a vertical line of chars down the screen.
+//! @param	the_string: the null-terminated string to be displayed.
+//! @param	fore_color: Index to the desired foreground color (0-15). The predefined macro constants may be used (COLOR_DK_RED, etc.), but be aware that the colors are not fixed, and may not correspond to the names if the LUT in RAM has been modified.
+//! @param	back_color: Index to the desired background color (0-15). The predefined macro constants may be used (COLOR_DK_RED, etc.), but be aware that the colors are not fixed, and may not correspond to the names if the LUT in RAM has been modified.
+//! @return	returns false on any error/invalid input.
 boolean Text_DrawStringInBox(Screen* the_screen, signed int x1, signed int y1, signed int x2, signed int y2, char* the_string, unsigned char fore_color, unsigned char back_color)
 {
 	char*			the_char_loc;
@@ -1444,8 +1538,12 @@ char*		the_temp = temp_buff;
 }
 
 
-// calculates how many characters of the passed string will fit into the passed pixel width
-// returns -1 in any error condition
+//! Calculates how many characters of the passed string will fit into the passed pixel width.
+//! In Text Mode, all characters have the same fixed width, so this is measuring against the font width described in the screen object.
+//! @param	the_string: the null-terminated string to be measured.
+//! @param	the_len: the length of the passed string. If the entire string fits, this len will be returned.
+//! @param	available_width: the width, in pixels, of the space the string is to be measured against.
+//! @return	returns -1 in any error condition, or the number of characters that fit. If the entire string fits, the passed len will be returned.
 signed int Text_MeasureStringWidth(Screen* the_screen, char* the_string, signed int the_len, signed int available_width)
 {
 	signed int		fit_count;
