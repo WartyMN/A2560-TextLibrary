@@ -54,3 +54,5 @@ dkms.conf
 # OS X junk
 .DS_Store
 stub_user.srec
+.DS_Store
+.DS_Store

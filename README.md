@@ -1,3 +1,4 @@
+@mainpage Foenix A2650 Text Library
 # A2650-TextLibrary
 This is a simple C library providing basic functions for the A2650's text mode
 
