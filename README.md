@@ -10,8 +10,8 @@ Web site: https://c256foenix.com/?v=3e8d115eb4b3
 This is a learning project for me, to build experience on the A2650. Aside from learning, the goal is to be able to build a library of functions that can be used to place characters, colors, strings, etc., on the screen, and to be able to query the screen about what is at a particular location. Think of it as a basic curses for the A2650 (but not at all related to curses, and using a completely different interface). 
 
 ## Status
-Building out functionality, 50% complete. No optimization done, no testing against hardware.
-I do not have any hardware yet. I'm doing all development against the "morfe" emulator, but that itself is also a tool in development. 
+75% complete. Next phase: Bug-fixing, smarter configuration, etc., No optimization done, no testing against hardware.
+I do not have any hardware yet. I'm doing all development against the f68 emulator, but that itself is also a tool in development. 
 
 ## Why you might want this:
 If you have, or are considering acquiring an A2650 or GenX (680x0 + 65816), and want a simple library to put text on the screen in your C programs. 
@@ -67,6 +67,7 @@ The A2650 kernel/OS doesn't support dynamically linked libraries yet, so for now
  * format a string for a given height and width, wrapping words as necessary
  * display a formatted string in a rectangular block on the screen, with wrap
  * replace current text font with another, loading from specified ram loc.
+ * documentation (for text lib, have not started on general lib)
 
 ## ToDo
  * copy a full screen of text and attr between channel A and B
@@ -74,7 +75,7 @@ The A2650 kernel/OS doesn't support dynamically linked libraries yet, so for now
  * clean up the A2650U/K vs morfe addresses, ~~default colors, etc.~~
  * optimization
  * prep and clean up to be a standalone static library
- * documentation
  * add function(s) to switch resolutions, and automatically adjust number of cols/rows
  * add function(s) to adjust border sizes, and automatically adjust number of visible rows/columns
  * configure at compile time for use in various Foenix machines
+ * fix bug with word wrap declining to present the final line in the string if string is shorter than box.
