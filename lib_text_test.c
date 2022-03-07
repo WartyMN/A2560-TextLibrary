@@ -490,7 +490,7 @@ MU_TEST(text_test_fancy_box)
 	y1 = 3;
 	x2 = 97;
 	y2 = 72;
-  	mu_assert(Text_DrawStringInBox(&global_screen[ID_CHANNEL_A], x1, y1, x2, y2, the_message, FG_COLOR_WHITE, BG_COLOR_BLACK) == true, "Text_DrawStringInBox failed" );
+  	mu_assert(Text_DrawStringInBox(&global_screen[ID_CHANNEL_A], x1, y1, x2, y2, the_message, FG_COLOR_WHITE, BG_COLOR_BLACK, NULL) != NULL, "Text_DrawStringInBox failed" );
 
 
 	// medium box on chan B
@@ -506,7 +506,7 @@ MU_TEST(text_test_fancy_box)
 	y1 = 5;
 	x2 = 67;
 	y2 = 50;
-  	mu_assert(Text_DrawStringInBox(&global_screen[ID_CHANNEL_A], x1, y1, x2, y2, the_message, FG_COLOR_BLACK, BG_COLOR_WHITE) == true, "Text_DrawStringInBox failed" );
+  	mu_assert(Text_DrawStringInBox(&global_screen[ID_CHANNEL_A], x1, y1, x2, y2, the_message, FG_COLOR_BLACK, BG_COLOR_WHITE, NULL) != NULL, "Text_DrawStringInBox failed" );
 
 
 	// small box on chan B
@@ -522,7 +522,7 @@ MU_TEST(text_test_fancy_box)
 	y1 = 20;
 	x2 = 70;
 	y2 = 40;
-  	mu_assert(Text_DrawStringInBox(&global_screen[ID_CHANNEL_A], x1, y1, x2, y2, the_message, FG_COLOR_WHITE, BG_COLOR_BLACK) == true, "Text_DrawStringInBox failed" );
+  	mu_assert(Text_DrawStringInBox(&global_screen[ID_CHANNEL_A], x1, y1, x2, y2, the_message, FG_COLOR_WHITE, BG_COLOR_BLACK, NULL) != NULL, "Text_DrawStringInBox failed" );
 
 }
 
@@ -557,8 +557,8 @@ MU_TEST(text_test_draw_string_in_box)
 //  	the_message = General_StrlcpyWithAlloc((char*)"THISISAREALLYBIGWORDBIGGERTHANANYYOUCANTHINK_OF_OR_AT_LEAST_I_THINK_SO", 80*60+1);
 
 
-  	mu_assert(Text_DrawStringInBox(&global_screen[ID_CHANNEL_A], 3, 6, 67, 50, the_message, FG_COLOR_BLACK, BG_COLOR_WHITE) == true, "Text_DrawStringInBox failed" );
-  	mu_assert(Text_DrawStringInBox(&global_screen[ID_CHANNEL_B], 21, 21, 40, 40, the_message, FG_COLOR_WHITE, BG_COLOR_BLACK) == true, "Text_DrawStringInBox failed" );
+  	mu_assert(Text_DrawStringInBox(&global_screen[ID_CHANNEL_A], 3, 6, 67, 50, the_message, FG_COLOR_BLACK, BG_COLOR_WHITE, NULL) != NULL, "Text_DrawStringInBox failed" );
+  	mu_assert(Text_DrawStringInBox(&global_screen[ID_CHANNEL_B], 21, 21, 40, 40, the_message, FG_COLOR_WHITE, BG_COLOR_BLACK, NULL) != NULL, "Text_DrawStringInBox failed" );
 }
 
 

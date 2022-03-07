@@ -32,30 +32,77 @@
 /*                            Macro Definitions                              */
 /*****************************************************************************/
 
-// A2560 OTHER
-#define EA_USER				(char*)0x020000	// start of user space. ie, put your program here.
-#define EA_STACK			(char*)0x080000	// stack location
+#define ID_CHANNEL_A				0	// for use in lib_text() calls, etc. 
+#define ID_CHANNEL_B				1	// for use in lib_text() calls, etc.
 
-// A2560 VICKY III
-#define VICKY						(char*)0xc40000	// vicky registers?
-#define VICKYA_A2560K				(char*)0xfec40000	// vicky III channel A offset
-#define VICKYA_CURSOR_CTRL_A2560K	(char*)0xfec40010	// vicky III channel A cursor control register
-#define VICKYA_CURSOR_POS_A2560K	(char*)0xfec40014	// vicky III channel A cursor position register (x pos is lower word, y pos is upper word)
-#define VICKYB_A2560K				(char*)0xfec80000	// vicky III channel B offset
-#define VICKYB_CURSOR_CTRL_A2560K	(char*)0xfec80010	// vicky III channel B cursor control register
-#define VICKYB_CURSOR_POS_A2560K	(char*)0xfec80014	// vicky III channel B cursor position register
-#define TEXTA_RAM_A2560_MORFE		(char*)0xc60000	// channel A text
-#define TEXTA_ATTR_A2560_MORFE		(char*)0xc68000	// channel A attr
-#define TEXTB_RAM_A2560_MORFE		(char*)0xca0000	// channel B text
-#define TEXTB_ATTR_A2560_MORFE		(char*)0xca8000	// channel B attr
-#define TEXTA_RAM_A2560U			(char*)0xb60000	// text (A2560U only has one video channel)
-#define TEXTA_ATTR_A2560U			(char*)0xb68000	// attr (A2560U only has one video channel)
-#define TEXTB_RAM_A2560U			(char*)0xb60000	// text (A2560U only has one video channel)
-#define TEXTB_ATTR_A2560U			(char*)0xb68000	// attr (A2560U only has one video channel)
-#define TEXTA_RAM_A2560K			(char*)0xfec60000	// channel A text
-#define TEXTA_ATTR_A2560K			(char*)0xfec68000	// channel A attr
-#define TEXTB_RAM_A2560K			(char*)0xfeca0000	// channel B text
-#define TEXTB_ATTR_A2560K			(char*)0xfeca8000	// channel B attr
+// A2560 OTHER
+#define EA_USER						(char*)0x020000	// start of user space. ie, put your program here.
+
+
+// ** believe to be common to all A2560 platforms... 
+#define TEXTA_NUM_COLS_BORDER		4	// need to measure.... 
+#define TEXTB_NUM_COLS_BORDER		4	// going on what f68 shows
+
+#define TEXT_COL_COUNT_FOR_PLOTTING_A2560K		100	// regardless of visible cols (between borders), VRAM seems to be fixed at 80 cols across.
+#define TEXT_ROW_COUNT_FOR_PLOTTING_A2560K		75	// regardless of visible rows (between borders), VRAM seems to be fixed at 60 rows up/down.
+#define TEXT_COL_COUNT_FOR_PLOTTING		TEXT_COL_COUNT_FOR_PLOTTING_A2560K	// regardless of visible cols (between borders), VRAM seems to be fixed at 80 cols across.
+#define TEXT_ROW_COUNT_FOR_PLOTTING		TEXT_ROW_COUNT_FOR_PLOTTING_A2560K	// regardless of visible rows (between borders), VRAM seems to be fixed at 60 rows up/down.
+
+#define TEXT_FONT_WIDTH_A2650	8	// for text mode, the width of the fixed-sized font chars
+#define TEXT_FONT_HEIGHT_A2650	8	// for text mode, the height of the fixed-sized font chars. I believe this is supposed to be 16, but its 8 in morfe at the moment.
+
+#define VIDEO_MODE_MASK			0xFFFF00FF	//!> for all VICKYs, the mask for the system control register that holds the video mode bits
+#define VIDEO_MODE_BYTE			0x01	//!> for all VICKYs, the byte offset from system control register that holds the video mode bits
+#define VIDEO_MODE_BIT1			0x00	//!> for all VICKYs, the bits in the 2nd byte of the system control register that define video mode (resolution)
+#define VIDEO_MODE_BIT2			0x01	//!> for all VICKYs, the bits in the 2nd byte of the system control register that define video mode (resolution)
+
+// VICKY RESOLUTION FLAGS Per A2560K_UM_Rev0.0.1.pdf and A2560U_UM_Rev0.0.2.pdf
+// VICKY II / VICKY III Chan B
+// 640x480  @ 60FPS > 0 0
+// 800x600  @ 60FPS > 0 1
+// reserved         > 1 0
+// 640x400  @ 70FPS > 1 1
+
+// VICKY III Chan A
+// 800x600  @ 60FPS > 0 0
+// 1024x768 @ 60FPS > 0 1
+// reserved         > 1 0
+// reserved         > 1 1
+
+#define VICKY_II_RES_640X480_FLAGS		0x00	// 0b00000000
+#define VICKY_II_RES_800X600_FLAGS		0x01	// 0b00000001
+#define VICKY_II_RES_640X400_FLAGS		0x03	// 0b00000011
+
+#define VICKY_IIIB_RES_640X480_FLAGS	0x00	// 0b00000000
+#define VICKY_IIIB_RES_800X600_FLAGS	0x01	// 0b00000001
+#define VICKY_IIIB_RES_640X400_FLAGS	0x03	// 0b00000011
+
+#define VICKY_IIIA_RES_800X600_FLAGS	0x00	// 0b00000000
+#define VICKY_IIIA_RES_1024X768_FLAGS	0x04	// 0b00000100
+
+
+// ** A2560K and A2560X
+#define VICKYA_A2560K				(unsigned long*)0xfec40000	// vicky III channel A offset
+#define VICKYA_CURSOR_CTRL_A2560K	VICKYA_A2560K + 0x10		// vicky III channel A cursor control register
+#define VICKYA_CURSOR_POS_A2560K	VICKYA_A2560K + 0x14		// vicky III channel A cursor position register (x pos is lower word, y pos is upper word)
+#define VICKYB_A2560K				(unsigned long*)0xfec80000	// vicky III channel B offset
+#define VICKYB_CURSOR_CTRL_A2560K	VICKYB_A2560K + 0x10		// vicky III channel B cursor control register
+#define VICKYB_CURSOR_POS_A2560K	VICKYB_A2560K + 0x14		// vicky III channel B cursor position register
+#define TEXTA_RAM_A2560K			(char*)0xfec60000		// channel A text
+#define TEXTA_ATTR_A2560K			(char*)0xfec68000		// channel A attr
+#define TEXTB_RAM_A2560K			(char*)0xfeca0000		// channel B text
+#define TEXTB_ATTR_A2560K			(char*)0xfeca8000		// channel B attr
+#define FONT_MEMORY_BANKA_A2560K	(char*)0xfec48000		// chan A
+#define FONT_MEMORY_BANKB_A2560K	(char*)0xfec88000		// chan B
+
+// ** A2560U and A2560U+
+#define VICKY_A2560U				(unsigned long*)0xb40000	// Vicky II offset/first register
+#define VICKY_CURSOR_CTRL_A2560U	VICKY_A2560U + 0x10		// vicky II channel A cursor control register
+#define VICKY_CURSOR_POS_A2560U		VICKY_A2560U + 0x14		// vicky II channel A cursor position register (x pos is lower word, y pos is upper word)
+#define TEXT_RAM_A2560U				(char*)0xb60000			// text (A2560U only has one video channel)
+#define TEXT_ATTR_A2560U			(char*)0xb68000			// attr (A2560U only has one video channel)
+#define FONT_MEMORY_BANK_A2560U		(char*)0xb48000			// only 1 channel
+
 
 // subtract 0xfe000000 from the UM map for Vicky (to get the old/morfe addresses)
 // size of some areas changed too:
@@ -83,48 +130,7 @@
 // c256 foenix on 2/27:
 // To answer, in the traditional Text Mode (Channel B). When you are double pixel mode, everything is reajusted automatically. The Channel A doesn't have a text doubling mode (anymore). And the text matrix and FONT dimension are all manual (needs to be programmed). This is to allow the usage of different sizes of FONT.
 
-
-#define TEXTA_NUM_COLS_MORFE		72	// channel A width
-#define TEXTA_NUM_ROWS_MORFE		56	// channel A height
-#define TEXTB_NUM_COLS_MORFE		80	// channel B width
-#define TEXTB_NUM_ROWS_MORFE		60	// channel B height
-#define TEXTA_NUM_COLS_A2560K		100	// channel A width
-#define TEXTA_NUM_ROWS_A2560K		75	// channel A height
-#define TEXTB_NUM_COLS_A2560K		100	// channel B width
-#define TEXTB_NUM_ROWS_A2560K		75	// channel B height
-#define TEXTA_NUM_COLS_BORDER		4	// need to measure.... 
-#define TEXTB_NUM_COLS_BORDER		4	// going on what f68 shows
-
-#define TEXT_COL_COUNT_FOR_PLOTTING_MORFE		80	// regardless of visible cols (between borders), VRAM seems to be fixed at 80 cols across.
-#define TEXT_ROW_COUNT_FOR_PLOTTING_MORFE		60	// regardless of visible rows (between borders), VRAM seems to be fixed at 60 rows up/down.
-#define TEXT_COL_COUNT_FOR_PLOTTING_A2560K		100	// regardless of visible cols (between borders), VRAM seems to be fixed at 80 cols across.
-#define TEXT_ROW_COUNT_FOR_PLOTTING_A2560K		75	// regardless of visible rows (between borders), VRAM seems to be fixed at 60 rows up/down.
-#define TEXT_COL_COUNT_FOR_PLOTTING		TEXT_COL_COUNT_FOR_PLOTTING_A2560K	// regardless of visible cols (between borders), VRAM seems to be fixed at 80 cols across.
-#define TEXT_ROW_COUNT_FOR_PLOTTING		TEXT_ROW_COUNT_FOR_PLOTTING_A2560K	// regardless of visible rows (between borders), VRAM seems to be fixed at 60 rows up/down.
-
-#define CHANNEL_A_WIDTH		576	// pixels in between the borders
-#define CHANNEL_A_HEIGHT	448	// pixels in between the borders
-#define CHANNEL_B_WIDTH		640	// pixels in between the borders
-#define CHANNEL_B_HEIGHT	480	// pixels in between the borders
-
-#define ID_CHANNEL_A			0	// for use in lib_text() calls, etc. 
-#define ID_CHANNEL_B			1	// for use in lib_text() calls, etc.
-
-#define TEXT_FONT_WIDTH_A2650	8	// for text mode, the width of the fixed-sized font chars
-#define TEXT_FONT_HEIGHT_A2650	8	// for text mode, the height of the fixed-sized font chars. I believe this is supposed to be 16, but its 8 in morfe at the moment.
-
-//#define FONT_MEMORY_BANK0	(char*)0xAF8000	// $AF8000 - $AF87FF
-//#define FONT_MEMORY_BANK1	(char*)0xAF8800	// $AF8800 - $AF8FFF
-
-// from vicky3.go in morfe tho:
-//const FONT_MEMORY_BANK0           = 0x8000
-#define FONT_MEMORY_BANKA_A2560_MORFE	(char*)0xc48000		// $AF8000 - $AF87FF
-#define FONT_MEMORY_BANKB_A2560_MORFE	(char*)0xc48800		// $AF8800 - $AF8FFF
-#define FONT_MEMORY_BANKA_A2560U		(char*)0xb48000		// needs update
-#define FONT_MEMORY_BANKB_A2560U		(char*)0xb48000		// needs update
-#define FONT_MEMORY_BANKA_A2560K		(char*)0xfec48000	// chan A
-#define FONT_MEMORY_BANKB_A2560K		(char*)0xfec88000	// chan B
-
+// fonts
 // gadget:
 // If it's the same as on the C256 line, each character consists of 8 bytes.  Upper left hand corner is the high-bit of byte zero, upper right is the low bit of byte zero, lower left is the high bit of byte 7, lower right is the low bit of byte 7.  The bytes are placed in memory from character zero to character 255, 0..7, 0..7, 0..7, etc.
 
@@ -134,8 +140,20 @@
 // beethead:
 // The 2nd font was removed when the U line came in since it was not being used.  Atleast on the C256's.
 
+// PJW — 2022/03/06 at 9:10 AM
+// The A2560K has two DVI ports: one is channel A (which is a text only channel), and channel B is a text and graphics channel equivalent to the main screen on the A2560U. The boot up image on the K shows up on channel B. Currently, the MCP uses channel A as the main interaction channel, but I think I'm going to change that soon, since some people may have just the one screen. The "CTX Switch" key on the A2560K was originally intended as a way to switch which screen you were using for text input, and I may finally implement that.
+
 #define SYS_TICKS_PER_SEC		60	// per syscalls.h in MCP, "a jiffie is 1/60 of a second."
 
+// machine model numbers - for decoding s_sys_info.model
+#define MACHINE_C256_FMX		0	///< for s_sys_info.model
+#define MACHINE_C256_U			1	///< for s_sys_info.model
+#define MACHINE_C256_GENX		4	///< for s_sys_info.model
+#define MACHINE_C256_UPLUS		5	///< for s_sys_info.model
+#define MACHINE_A2560U_PLUS		6	///< for s_sys_info.model
+#define MACHINE_A2560X			7	///< for s_sys_info.model
+#define MACHINE_A2560U			9	///< for s_sys_info.model
+#define MACHINE_A2560K			13	///< for s_sys_info.model
 
 
 
@@ -172,6 +190,20 @@
 /*                               Enumerations                                */
 /*****************************************************************************/
 
+typedef enum
+{
+	false = 0,
+	true = 1
+} boolean;
+
+// device-independent resolution flags
+typedef enum
+{
+	RES_640X400 = 0,
+	RES_640X480,
+	RES_800X600,
+	RES_1024X768,
+} screen_resolution;
 
 /*****************************************************************************/
 /*                                 Structs                                   */
@@ -192,6 +224,7 @@ typedef struct Rectangle
 typedef struct Screen
 {
 	signed int		id_;				// 0 for channel A, 1 for channel B. not all foenix's have 2 channels.
+	unsigned long*	vicky_;				// VICKY primary register RAM loc. See VICKYA_A2560K, VICKYB_A2560K, VICKY_A2560U, etc.
 	Rectangle		rect_;				// the x1, y1, > x2, y2 coordinates of the screen, taking into account any borders. 
 	signed int		width_;				// for the current resolution, the max horizontal pixel count 
 	signed int		height_;			// for the current resolution, the max vertical pixel count 
@@ -209,11 +242,6 @@ typedef struct Screen
 } Screen;
 
 
-typedef enum
-{
-	false = 0,
-	true = 1
-} boolean;
 
 /*****************************************************************************/
 /*                             Global Variables                              */

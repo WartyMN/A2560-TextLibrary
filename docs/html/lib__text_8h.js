@@ -13,7 +13,7 @@ var lib__text_8h =
     [ "Text_DrawHLine", "lib__text_8h.html#ade4749c28ea4d92ad8e10746c1b5403b", null ],
     [ "Text_DrawHLineSlow", "lib__text_8h.html#ab9b36eb75ed6bf546cc4bc2d4b788801", null ],
     [ "Text_DrawStringAtXY", "lib__text_8h.html#affd4b487aeaebf462eaefcb23b215575", null ],
-    [ "Text_DrawStringInBox", "lib__text_8h.html#a3197405bb17d2b22e8888fff7d8fc196", null ],
+    [ "Text_DrawStringInBox", "lib__text_8h.html#a90a8f5463fa9827c2b74037c386eae06", null ],
     [ "Text_DrawVLine", "lib__text_8h.html#a889c2b98bd4af2cd3120294d9b9fe9d1", null ],
     [ "Text_FillAttrMem", "lib__text_8h.html#afb479ab86cf3cf6653e32934826ae76b", null ],
     [ "Text_FillBox", "lib__text_8h.html#a2568f9d40fa7250ee1620d5c924a7123", null ],

@@ -66,16 +66,21 @@ The A2650 kernel/OS doesn't support dynamically linked libraries yet, so for now
  * Draw a string to a specified x, y coord (no wrap)
  * format a string for a given height and width, wrapping words as necessary
  * display a formatted string in a rectangular block on the screen, with wrap
+ * display a string in a rectangular block on the screen, with wrap, taking a hook for a "display more" event, and scrolling text vertically up after hook func returns 'continue' (or exit, returning control to calling func, if hook returns 'stop')
  * replace current text font with another, loading from specified ram loc.
  * documentation (for text lib, have not started on general lib)
+ * prep and clean up to be a standalone static library
 
 ## ToDo
  * copy a full screen of text and attr between channel A and B
- * display a string in a rectangular block on the screen, with wrap, taking a hook for a "display more" event, and scrolling text vertically up after hook func returns 'continue' (or exit, returning control to calling func, if hook returns 'stop')
- * clean up the A2650U/K vs morfe addresses, ~~default colors, etc.~~
+ * ~~clean up the A2650U/K vs morfe addresses, default colors, etc.~~
  * optimization
- * prep and clean up to be a standalone static library
  * add function(s) to switch resolutions, and automatically adjust number of cols/rows
  * add function(s) to adjust border sizes, and automatically adjust number of visible rows/columns
  * configure at compile time for use in various Foenix machines
- * fix bug with word wrap declining to present the final line in the string if string is shorter than box.
+ * ~~fix bug with word wrap declining to present the final line in the string if string is shorter than box.~~
+ * clean up text wrap buffers etc
+ * strategy for handling DEBUG macros (build 2 versions of library? one debug mode, one not? TBD)
+ * document a2560_platform.h
+ * document lib_general.c
+ 

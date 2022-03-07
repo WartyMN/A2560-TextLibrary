@@ -28,7 +28,7 @@ mv a2560_text.lib $VBCC/targets/a2560-micah/lib/
 
 
 # renew doxygen docs
-#doxygen
+doxygen
 
 
 # *************

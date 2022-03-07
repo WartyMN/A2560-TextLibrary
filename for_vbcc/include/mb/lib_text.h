@@ -309,7 +309,7 @@ boolean Text_DrawStringAtXY(Screen* the_screen, signed int x, signed int y, char
 // Draw a string in a rectangular block on the screen, with wrap
 // If a word can't be wrapped, it will break the word and move on to the next line. So if you pass a rect with 1 char of width, it will draw a vertical line of chars down the screen.
 // returns false on any error/invalid input.
-boolean Text_DrawStringInBox(Screen* the_screen, signed int x1, signed int y1, signed int x2, signed int y2, char* the_string, unsigned char fore_color, unsigned char back_color);
+char* Text_DrawStringInBox(Screen* the_screen, signed int x1, signed int y1, signed int x2, signed int y2, char* the_string, unsigned char fore_color, unsigned char back_color, boolean (* continue_function)(void));
 
 // calculates how many characters of the passed string will fit into the passed pixel width
 // returns -1 in any error condition

@@ -1,3 +1,5 @@
+//! @file lib_general.c
+
 /*
  * lib_general.c
  *
@@ -60,6 +62,7 @@ static FILE*			global_log_file;
 /*                       Private Function Prototypes                         */
 /*****************************************************************************/
 
+//! \cond PRIVATE
 
 // Convert a (positive-only) string integer to an unsigned long integer. returns false in event of error
 boolean General_StringToUnsignedLong(const char* the_string_value, unsigned long* the_conversion);
@@ -74,12 +77,15 @@ void General_WrapParaWriteLine(char** source, char** target, signed int write_le
 // stops when all characters have been processed, or when all available vertical space has been used up.
 signed int General_WrapPara(Screen* the_screen, char* this_line_start, char* formatted_text, signed int remaining_len, signed int max_width, signed int remaining_v_pixels, signed int font_height, signed int (* measure_function)(Screen*, char*, signed int, signed int));
 
+//! \endcond
 
 
 
 /*****************************************************************************/
 /*                       Private Function Definitions                        */
 /*****************************************************************************/
+
+//! \cond PRIVATE
 
 
 // PRIVATE - no checking of parameters
@@ -102,11 +108,15 @@ signed int General_WrapPara(Screen* the_screen, char* this_line_start, char* for
 	signed int		v_pixels = 0;
 	boolean			line_complete;
 	signed int		next_line_len;
+// 	char*			start_of_para = this_line_start;
+// 	char*			start_of_formatted = formatted_text;
 
 	// Initial condition is next line and this line are the same thing. 
 	// Next line start will move word by word to the right until what's left no longer fits on a line
 	// then this_line is written out, and next_line and this line are equal again
 	next_line_len = remaining_len;
+	
+	//DEBUG_OUT(("%s %d: remaining_v_pixels=%i", __func__ , __LINE__, remaining_v_pixels));
 	
 	// outer loop: continue until the entire string has been copied to formatted text, or until we have exceeded the v pixel budget
 	do
@@ -223,8 +233,10 @@ signed int General_WrapPara(Screen* the_screen, char* this_line_start, char* for
 		
 	} while (this_line_start != NULL && remaining_v_pixels > 0);
 	
-	//DEBUG_OUT(("%s %d: print out of final version of para", __func__ , __LINE__));
-	//General_PrintBufferCharacters(start_of_formatted, (unsigned short)orig_len+4);
+// 	DEBUG_OUT(("%s %d: print out of final version of para", __func__ , __LINE__));
+// 	General_PrintBufferCharacters(start_of_formatted, (unsigned short)80);
+// 	
+// 	DEBUG_OUT(("%s %d: remaining_v_pixels=%i, v_pixels=%i", __func__ , __LINE__, remaining_v_pixels, v_pixels));
 	
 	return v_pixels;
 }
@@ -264,6 +276,7 @@ boolean General_StringToUnsignedLong(const char* the_string_value, unsigned long
 }
 
 
+//! \endcond
 
 
 /*****************************************************************************/
@@ -271,11 +284,15 @@ boolean General_StringToUnsignedLong(const char* the_string_value, unsigned long
 /*****************************************************************************/
 
 
-// Format a string by wrapping and trimming to fit the passed width and height. returns number of vertical pixels required. 
-// Passing a 0 for height disables the governor on allowed vertical space. 
-// If the string cannot be displayed in the specified height and width, processing will stop, but it is not an error condition
-// If max_chars_to_format is less than len of string, processing will stop after that many characters.
-// returns -1 in any error condition
+//! Format a string by wrapping and trimming to fit the passed width and height. 
+//! If the string cannot be displayed in the specified height and width, processing will stop, but it is not an error condition
+//! @param	orig_string: pointer to a string pointer that holds the text to be formatted. Upon return, this pointer will point to the next character after the last processed character (if the string was too long to fit). If the entire string fits, this pointer will not be adjusted.
+//! @param	formatted_string: pointer to a string pointer to an empty string buffer that will be filled with the formatted version of the text.
+//! @param	max_chars_to_format: the length of the string to format (in characters). If max_chars_to_format is less than the length of string, processing will stop after that many characters.
+//! @param	max_width: the width into which the text must fit, in pixels. 
+//! @param	max_height: the height into which the text must fit, in pixels. Pass a 0 to disable the governor on vertical space. 
+//! @param	measure_function: pointer to the function responsible for measuring the graphical width of a string 
+//! @return Returns number of vertical pixels required. Returns -1 in any error condition.
 signed int General_WrapAndTrimTextToFit(Screen* the_screen, char** orig_string, char** formatted_string, signed int max_chars_to_format, signed int max_width, signed int max_height, signed int (* measure_function)(Screen*, char*, signed int, signed int))
 {
 	signed int		font_height;
@@ -365,11 +382,18 @@ signed int General_WrapAndTrimTextToFit(Screen* the_screen, char** orig_string, 
 	//General_PrintBufferCharacters(*formatted_string, (unsigned short)max_chars_to_format+10);
 	//DEBUG_OUT(("%s %d: v pixels used=%i", __func__ , __LINE__, v_pixels));
 	
+	// update the original string pointer passed so that it now points to any remaining text (if any)
+	if (remaining_len > 0)
+	{
+		*orig_string = remaining_text;
+	}
+	
 	return v_pixels;
 }
 
 
-// extract file extension into the passed char pointer, as new lowercased string pointer, if any found. returns false if no file extension found.
+//! Extract file extension into the passed char pointer, as new lowercased string pointer, if any found.
+//! @return	Returns false if no file extension found.
 boolean General_ExtractFileExtensionFromFilename(const char* the_file_name, char* the_extension)
 {
 	// LOGIC: 

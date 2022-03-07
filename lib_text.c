@@ -143,7 +143,7 @@ char* Text_GetMemLocForXY(Screen* the_screen, signed int x, signed int y, boolea
 	//signed int	num_cols;
 	
 	// LOGIC:
-	//   For plotting the VRAM, A2560 (or morfe?) uses a fixed with of 80 cols. 
+	//   For plotting the VRAM, A2560 uses the full width, regardless of borders. 
 	//   So even if only 72 are showing, the screen is arranged from 0-71 for row 1, then 80-151 for row 2, etc. 
 	
 	//num_cols = the_screen->text_cols_vis_;
@@ -595,7 +595,7 @@ boolean Text_FillBox(Screen* the_screen, signed int x1, signed int y1, signed in
 
 	// add 1 to line len, because desired behavior is a box that connects fully to the passed coords
 	dx = x2 - x1 + 1;
-	dy = y2 - y1 + 1;
+	dy = y2 - y1 + 0;
 
 	// calculate attribute value from passed fore and back colors
 	// LOGIC: text mode only supports 16 colors. lower 4 bits are back, upper 4 bits are foreground
@@ -1423,12 +1423,14 @@ boolean Text_DrawStringAtXY(Screen* the_screen, signed int x, signed int y, char
 //! @param	the_string: the null-terminated string to be displayed.
 //! @param	fore_color: Index to the desired foreground color (0-15). The predefined macro constants may be used (COLOR_DK_RED, etc.), but be aware that the colors are not fixed, and may not correspond to the names if the LUT in RAM has been modified.
 //! @param	back_color: Index to the desired background color (0-15). The predefined macro constants may be used (COLOR_DK_RED, etc.), but be aware that the colors are not fixed, and may not correspond to the names if the LUT in RAM has been modified.
-//! @return	returns false on any error/invalid input.
-boolean Text_DrawStringInBox(Screen* the_screen, signed int x1, signed int y1, signed int x2, signed int y2, char* the_string, unsigned char fore_color, unsigned char back_color)
+//! @param	continue_function: optional hook to a function that will be called if the provided text cannot fit into the specified box. If provided, the function will be called each time text exceeds available space. If the function returns true, another chunk of text will be displayed, replacing the first. If the function returns false, processing will stop. If no function is provided, processing will stop at the point text exceeds the available space.
+//! @return	returns a pointer to the first character in the string after which it stopped processing (if string is too long to be displayed in its entirety). Returns the original string if the entire string was processed successfully. Returns NULL in the event of any error.
+char* Text_DrawStringInBox(Screen* the_screen, signed int x1, signed int y1, signed int x2, signed int y2, char* the_string, unsigned char fore_color, unsigned char back_color, boolean (* continue_function)(void))
 {
 	char*			the_char_loc;
 	char*			the_attr_loc;
-	char*			orig_string;
+	char*			needs_formatting;
+	char*			needed_formatting_last_round;
 	char*			formatted_string;
 	char*			remaining_string;
 	unsigned char	the_attribute_value;
@@ -1441,100 +1443,150 @@ boolean Text_DrawStringInBox(Screen* the_screen, signed int x1, signed int y1, s
 	signed int		num_rows;
 	signed int		the_row;
 	signed int		this_line_len;
-char		temp_buff[256];
-char*		the_temp = temp_buff;
+	boolean			do_another_round = false;
 	
 	if (the_screen == NULL)
 	{
 		LOG_ERR(("%s %d: passed screen was NULL", __func__, __LINE__));
-		return false;
+		return NULL;
 	}
 
 	if (!Text_ValidateAll(the_screen, x1, y1, fore_color, back_color))
 	{
 		LOG_ERR(("%s %d: illegal screen id, coordinate, or color", __func__, __LINE__));
-		return false;
+		return NULL;
 	}
 	
 	if (!Text_ValidateXY(the_screen, x2, y2))
 	{
 		LOG_ERR(("%s %d: illegal coordinate", __func__, __LINE__));
-		return false;
+		return NULL;
 	}
 
 	if (x1 > x2 || y1 > y2)
 	{
 		LOG_ERR(("%s %d: illegal coordinates", __func__, __LINE__));
-		return false;
+		return NULL;
 	}
 	
 	max_col = x2 - x1 + 1;
 	max_pix_width = (x2 - x1 + 1) * the_screen->text_font_width_;
 	max_pix_height = (y2 - y1 + 1) * the_screen->text_font_height_;
 	
-	remaining_len = General_Strnlen(the_string, the_screen->text_mem_cols_ * the_screen->text_mem_rows_ + 1); // can't be bigger than the screen (80x60=4800). +1 for terminator. 
-	orig_len = remaining_len;
-
 	//DEBUG_OUT(("%s %d: draw_len=%i, max_col=%i, x=%i", __func__, __LINE__, draw_len, max_col, x));
 	
 	// calculate attribute value from passed fore and back colors
 	// LOGIC: text mode only supports 16 colors. lower 4 bits are back, upper 4 bits are foreground
 	the_attribute_value = ((fore_color << 4) | back_color);
 
-	// set up char and attribute memory initial loc
-	the_char_loc = Text_GetMemLocForXY(the_screen, x1, y1, SCREEN_FOR_TEXT_CHAR);
-	the_attr_loc = the_char_loc + (the_screen->text_attr_ram_ - the_screen->text_ram_);
-	
-	// format the string into chunks that will fit in the width specified, with line breaks on each line
-	orig_string = the_string;
 	formatted_string = the_screen->text_temp_buffer_2_;
-	v_pixels = General_WrapAndTrimTextToFit(the_screen, &orig_string, &formatted_string, orig_len, max_pix_width, max_pix_height, &Text_MeasureStringWidth);
-	num_rows = v_pixels / the_screen->text_font_height_;
-	//DEBUG_OUT(("%s %d: v_pixels=%i, num_rows=%i", __func__, __LINE__, v_pixels, num_rows));
-	remaining_string = formatted_string;
-	
-	// draw the string, one line at a time, until string is done or no more lines available
-	
-	the_row = 1;
-	
-	do
-	{
-		signed int	this_write_len;
-		
-		this_line_len = General_StrFindNextLineBreak(remaining_string, max_col);
+	needs_formatting = the_string;
+	needed_formatting_last_round = needs_formatting;
 
-		if (this_line_len == 1)
+	// outer loop: iterate on one-box worth of text until all text is displayed, or calling function no longer wants to proceed
+	do
+	{	
+		remaining_len = General_Strnlen(needs_formatting, the_screen->text_mem_cols_ * the_screen->text_mem_rows_ + 1); // can't be bigger than the screen (80x60=4800). +1 for terminator. 
+		orig_len = remaining_len;
+
+		// clear out the word wrap buffer in case anything had been there before. Shouldn't be necessary, but something weird happening in some cases with 2nd+ wrap, and this does prevent it.
+		memset(formatted_string, 0, TEXT_COL_COUNT_FOR_PLOTTING_A2560K * TEXT_ROW_COUNT_FOR_PLOTTING_A2560K + 1);
+		
+		// format the string into chunks that will fit in the width specified, with line breaks on each line
+		v_pixels = General_WrapAndTrimTextToFit(the_screen, &needs_formatting, &formatted_string, orig_len, max_pix_width, max_pix_height, &Text_MeasureStringWidth);
+		num_rows = v_pixels / the_screen->text_font_height_;
+	
+		// LOGIC:
+		//   needs_formatting is now either pointing at next char after cutoff (it not all text fit), or at itself still (if all text fit). 
+		//   we can detect if all chars fit by comparing needs_formatting to needed_formatting_last_round
+	
+		//DEBUG_OUT(("%s %d: v_pixels=%i, num_rows=%i, remaining_len=%i, needs_formatting=%p, the_string=%p", __func__, __LINE__, v_pixels, num_rows, remaining_len, needs_formatting, the_string));
+		remaining_string = formatted_string;
+	
+		// clear the target box area on the screen -- if fail to do this, when we draw page 2, etc, it will be messy.
+		Text_FillBox(the_screen, x1, y1, x2, y2, ' ', fore_color, back_color);
+
+		// set up char and attribute memory initial loc
+		the_char_loc = Text_GetMemLocForXY(the_screen, x1, y1, SCREEN_FOR_TEXT_CHAR);
+		the_attr_loc = the_char_loc + (the_screen->text_attr_ram_ - the_screen->text_ram_);
+
+		// draw the string, one line at a time, until string is done or no more lines available
+	
+		the_row = 0;
+	
+		do
 		{
-			// next/first character is a line break char
-			this_write_len = 0;
-			*(the_attr_loc) = the_attribute_value;
-		}
-		else
-		{
-			if (this_line_len == 0)
+			signed int	this_write_len;
+		
+			this_line_len = General_StrFindNextLineBreak(remaining_string, max_col);
+
+			if (this_line_len == 1)
 			{
-				// there is no other line break char left in the string.
-				this_write_len = General_Strnlen(remaining_string, remaining_len) - 1;
+				// next/first character is a line break char
+				this_write_len = 0;
+				*(the_attr_loc) = the_attribute_value;
 			}
 			else
 			{
-				// there is a line break character, but some other chars come first. write up to be not including the line break
-				this_write_len = this_line_len - 1; // stop short of the the actual \n char.
+				if (this_line_len == 0)
+				{
+					// there is no other line break char left in the string.
+					this_write_len = General_Strnlen(remaining_string, remaining_len) - 0;
+					//DEBUG_OUT(("%s %d: this_write_len=%i, remaining_len=%i, remaining='%s'", __func__ , __LINE__, this_write_len, remaining_len, remaining_string));
+				}
+				else
+				{
+					// there is a line break character, but some other chars come first. write up to be not including the line break
+					this_write_len = this_line_len - 1; // stop short of the the actual \n char.
+					//DEBUG_OUT(("%s %d: this_line_len=%i, remaining_len=%i, remaining='%s'", __func__ , __LINE__, this_write_len, this_line_len, remaining_string));
+				}
+		
+				memcpy(the_char_loc, remaining_string, this_write_len);
+				memset(the_attr_loc, the_attribute_value, this_write_len);
 			}
-		
-			memcpy(the_char_loc, remaining_string, this_write_len);
-			memset(the_attr_loc, the_attribute_value, this_write_len);
-		}
 
-		remaining_string += this_write_len + 1; // skip past the actual \n char.
-		remaining_len -= (this_write_len + 1);
-		
-		the_char_loc += the_screen->text_mem_cols_;
-		the_attr_loc += the_screen->text_mem_cols_;		
-		the_row++;
-	} while (the_row < num_rows && this_line_len > 0);
+			remaining_string += this_write_len + 1; // skip past the actual \n char.
+			remaining_len -= (this_write_len + 1);
+			//DEBUG_OUT(("%s %d: remaining_len=%i, remaining='%s'", __func__ , __LINE__, remaining_len, remaining_string));
+			
+			the_char_loc += the_screen->text_mem_cols_;
+			the_attr_loc += the_screen->text_mem_cols_;		
+			the_row++;
+			//DEBUG_OUT(("%s %d: the_row=%i, num_rows=%i, this_line_len=%i", __func__ , __LINE__, the_row, num_rows, this_line_len));
+		} while (the_row < num_rows && this_line_len > 0);
 	
-	return true;
+		// any more text still to format?
+		if (needs_formatting == needed_formatting_last_round)
+		{
+			// all chars fit
+			return the_string;
+		}
+		else
+		{
+			// some chars didn't fit - let calling function determine if it wants to display more
+			if (continue_function == NULL)
+			{
+				// no hook provided, just return
+				return needs_formatting;
+			}
+			else
+			{
+				if ((*continue_function)() == true)
+				{
+					// show next portion
+					do_another_round = true;
+					needed_formatting_last_round = needs_formatting; // reset to end results of this round so can check what happens next round
+				}
+				else
+				{
+					// calling function indicated it didn't want to display next portion
+					return needs_formatting;
+				}
+			}		
+		}
+	} while (do_another_round == true);
+	
+	return needs_formatting;
 }
 
 

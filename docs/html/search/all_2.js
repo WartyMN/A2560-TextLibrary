@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['lib_5ftext_2ec_0',['lib_text.c',['../lib__text_8c.html',1,'']]],
-  ['lib_5ftext_2eh_1',['lib_text.h',['../lib__text_8h.html',1,'']]]
+  ['general_5fextractfileextensionfromfilename_0',['General_ExtractFileExtensionFromFilename',['../lib__general_8c.html#a07938c6f1d87889b1195665eefd24389',1,'lib_general.c']]],
+  ['general_5fwrapandtrimtexttofit_1',['General_WrapAndTrimTextToFit',['../lib__general_8c.html#aa2202d1a54143d31095057e69a2ecb8c',1,'lib_general.c']]]
 ];
