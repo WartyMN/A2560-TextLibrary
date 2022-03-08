@@ -1,3 +1,5 @@
+//! @file lib_general.h
+
 /*
  * lib_general.h
  *
@@ -135,7 +137,10 @@ char* General_NamePart(const char* the_file_path);
 // return everything to the left of the filename in a path. 
 char* General_PathPart(const char* the_file_path);
 
-// extract file extension into the passed char pointer, as new lowercased string pointer, if any found. returns false if no file extension found.
+//! Extract file extension into the passed char pointer, as new lowercased string pointer, if any found.
+//! @param	the_file_name: the file name to extract an extension from
+//! @param	the_extension: a pre-allocated buffer that will contain the extension, if any is detected. Must be large enough to hold the extension! No bounds checking is done. 
+//! @return	Returns false if no file extension found.
 boolean General_ExtractFileExtensionFromFilename(const char* the_file_name, char* the_extension);
 
 // allocates memory and copies the passed string into it. one stop shop for getting a copy of a string
@@ -198,7 +203,6 @@ void General_CreateFilePathFromFolderAndFile(char* the_combined_path, char* the_
 
 
 // *********  logging functionality. requires global_log_file to have been opened.
-void General_LogIt(LoggingLevel the_level, const char* format, ...);
 void General_LogError(const char* format, ...);
 void General_LogWarning(const char* format, ...);
 void General_LogInfo(const char* format, ...);

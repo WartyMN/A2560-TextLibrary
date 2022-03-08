@@ -1,5 +1,3 @@
-//! @file lib_general.c
-
 /*
  * lib_general.c
  *
@@ -393,6 +391,8 @@ signed int General_WrapAndTrimTextToFit(Screen* the_screen, char** orig_string, 
 
 
 //! Extract file extension into the passed char pointer, as new lowercased string pointer, if any found.
+//! @param	the_file_name: the file name to extract an extension from
+//! @param	the_extension: a pre-allocated buffer that will contain the extension, if any is detected. Must be large enough to hold the extension! No bounds checking is done. 
 //! @return	Returns false if no file extension found.
 boolean General_ExtractFileExtensionFromFilename(const char* the_file_name, char* the_extension)
 {
@@ -432,7 +432,6 @@ char General_ToLower(char the_char)
     return lowered_value;
 }
 
-/* NOTE: getting errors about IEEEDIVD float/etc symbols when this compiles for A2650
 // convert a file size in bytes to a human readable format using "10 bytes", "1.4 kb", "1 MB", etc. 
 //   NOTE: formatted_file_size string must have been allocated before passing here
 void General_MakeFileSizeReadable(unsigned long size_in_bytes, char* formatted_file_size)
@@ -476,9 +475,8 @@ void General_MakeFileSizeReadable(unsigned long size_in_bytes, char* formatted_f
 	
 	return;
 }
-*/
 
-/* NOTE: getting errors about IEEEDIVD float/etc symbols when this compiles for A2650
+
 // cheapo way to do round. THINK C's and SAS/C's math.h don't include round()
 // from: https://stackoverflow.com/questions/4572556/concise-way-to-implement-round-in-c
 int General_Round(double the_float)
@@ -488,7 +486,7 @@ int General_Round(double the_float)
     else
         return (int)(the_float + 0.5);
 }
-*/
+
 
 // allocates memory and copies the passed string into it. one stop shop for getting a copy of a string
 char* General_StrlcpyWithAlloc(const char* the_source, unsigned long max_len)
@@ -931,20 +929,6 @@ void General_CreateFilePathFromFolderAndFile(char* the_combined_path, char* the_
 //   additional debug out function that leaves no footprint in compiled release version of code (calls to it also disappear)
 //   able to pass format string and multiple variables when needed
 
-// logging functionality. requires global_log_file to have been opened.
-void General_LogIt(LoggingLevel the_level, const char* format, ...)
-{
-	va_list		args;
-	
-	va_start(args, format);
-	vsprintf(debug_buffer, format, args);
-	fprintf(global_log_file, "%s %s\n", kDebugFlag[the_level], debug_buffer);
-	va_end(args);
-}
-
-// TODO: would like to figure out how to make one general function and call that from the various debug macros
-//       failing that, should look at calling General_LogIt from little stub functions for debug/info/warn/error, passing va_list.
-//       for now, this is a little wasteful, and very duplicative, but works
 void General_LogError(const char* format, ...)
 {
 	va_list		args;

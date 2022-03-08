@@ -410,53 +410,65 @@ void TestResolution(void)
 	
 	// test the function call version
 	getchar();
+	Text_SetVideoMode(&global_screen[ID_CHANNEL_B], RES_640X400);
 	Text_FillCharMem(&global_screen[ID_CHANNEL_B], ' ');
 	Text_FillAttrMem(&global_screen[ID_CHANNEL_B], 159);
-	Text_SetVideoMode(&global_screen[ID_CHANNEL_B], RES_640X400);
 	Text_DrawStringAtXY(&global_screen[ID_CHANNEL_B], 0, 0, (char*)"640x400 should now be showing. assuming 2 cols/rows borders, 76x46 visible", FG_COLOR_BLACK, BG_COLOR_GREEN);
 	Text_DrawStringAtXY(&global_screen[ID_CHANNEL_B], 0, 1, (char*)"01234567890123456789012345678901234567890123456789012345678901234567890123456789", FG_COLOR_DK_BLUE, BG_COLOR_YELLOW);
 	Text_DrawStringAtXY(&global_screen[ID_CHANNEL_B], 0, 2, (char*)"<-START OF LINE", FG_COLOR_BLACK, BG_COLOR_GREEN);
 	Text_DrawStringAtXY(&global_screen[ID_CHANNEL_B], 0, 45, (char*)"ROW45", FG_COLOR_BLACK, BG_COLOR_GREEN);
 	Text_DrawStringAtXY(&global_screen[ID_CHANNEL_B], 0, 46, (char*)"ROW46", FG_COLOR_BLACK, BG_COLOR_GREEN);
 	Text_DrawStringAtXY(&global_screen[ID_CHANNEL_B], 0, 48, (char*)"ROW48", FG_COLOR_BLACK, BG_COLOR_GREEN);
-	Text_DrawStringAtXY(&global_screen[ID_CHANNEL_B], 0, 49, (char*)"ROW49", FG_COLOR_BLACK, BG_COLOR_GREEN);
+	Text_DrawStringAtXY(&global_screen[ID_CHANNEL_B], 0, 49, (char*)"ROW49", FG_COLOR_BLACK, BG_COLOR_GREEN);	
+	Text_ShowFontChars(&global_screen[ID_CHANNEL_B], 10);
 
 	getchar();
+	Text_SetVideoMode(&global_screen[ID_CHANNEL_B], RES_800X600);
 	Text_FillCharMem(&global_screen[ID_CHANNEL_B], ' ');
 	Text_FillAttrMem(&global_screen[ID_CHANNEL_B], 159);
-	Text_SetVideoMode(&global_screen[ID_CHANNEL_B], RES_800X600);
 	Text_DrawStringAtXY(&global_screen[ID_CHANNEL_B], 0, 0, (char*)"800x600 should now be showing. assuming 2 cols/rows borders, 96x71 visible", FG_COLOR_BLACK, BG_COLOR_GREEN);
 	Text_DrawStringAtXY(&global_screen[ID_CHANNEL_B], 0, 1, (char*)"0123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789", FG_COLOR_DK_BLUE, BG_COLOR_YELLOW);
 	Text_DrawStringAtXY(&global_screen[ID_CHANNEL_B], 0, 2, (char*)"<-START OF LINE", FG_COLOR_BLACK, BG_COLOR_GREEN);
+	Text_DrawStringAtXY(&global_screen[ID_CHANNEL_B], 0, 66, (char*)"ROW66", FG_COLOR_BLACK, BG_COLOR_GREEN);
 	Text_DrawStringAtXY(&global_screen[ID_CHANNEL_B], 0, 70, (char*)"ROW70", FG_COLOR_BLACK, BG_COLOR_GREEN);
+	Text_ShowFontChars(&global_screen[ID_CHANNEL_B], 10);
 
 	getchar();
+	Text_SetVideoMode(&global_screen[ID_CHANNEL_B], RES_640X480);
 	Text_FillCharMem(&global_screen[ID_CHANNEL_B], ' ');
 	Text_FillAttrMem(&global_screen[ID_CHANNEL_B], 159);
-	Text_SetVideoMode(&global_screen[ID_CHANNEL_B], RES_640X480);
 	Text_DrawStringAtXY(&global_screen[ID_CHANNEL_B], 0, 0, (char*)"640x480 should now be showing. assuming 2 cols/rows borders, 76x56 visible", FG_COLOR_BLACK, BG_COLOR_GREEN);
 	Text_DrawStringAtXY(&global_screen[ID_CHANNEL_B], 0, 1, (char*)"01234567890123456789012345678901234567890123456789012345678901234567890123456789", FG_COLOR_DK_BLUE, BG_COLOR_YELLOW);
 	Text_DrawStringAtXY(&global_screen[ID_CHANNEL_B], 0, 1, (char*)"<-START OF LINE", FG_COLOR_BLACK, BG_COLOR_GREEN);
 	Text_DrawStringAtXY(&global_screen[ID_CHANNEL_B], 0, 46, (char*)"ROW46", FG_COLOR_BLACK, BG_COLOR_GREEN);
+	Text_DrawStringAtXY(&global_screen[ID_CHANNEL_B], 0, 51, (char*)"ROW51", FG_COLOR_BLACK, BG_COLOR_GREEN);
 	Text_DrawStringAtXY(&global_screen[ID_CHANNEL_B], 0, 55, (char*)"ROW55", FG_COLOR_BLACK, BG_COLOR_GREEN);
+	Text_ShowFontChars(&global_screen[ID_CHANNEL_B], 10);
 
 	getchar();
+	Text_SetVideoMode(&global_screen[ID_CHANNEL_A], RES_800X600);
 	Text_FillCharMem(&global_screen[ID_CHANNEL_A], ' ');
 	Text_FillAttrMem(&global_screen[ID_CHANNEL_A], 159);
-	Text_SetVideoMode(&global_screen[ID_CHANNEL_A], RES_800X600);
+	Text_DrawStringAtXY(&global_screen[ID_CHANNEL_B], 0, 5, (char*)"800x600 should now be showing on Channel A", FG_COLOR_RED, BG_COLOR_GREEN);
 	Text_DrawStringAtXY(&global_screen[ID_CHANNEL_A], 0, 0, (char*)"800x600 should now be showing. assuming 2 cols/rows borders, 96x71 visible", FG_COLOR_BLACK, BG_COLOR_GREEN);
 	Text_DrawStringAtXY(&global_screen[ID_CHANNEL_A], 0, 1, (char*)"0123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789", FG_COLOR_DK_BLUE, BG_COLOR_YELLOW);
 	Text_DrawStringAtXY(&global_screen[ID_CHANNEL_A], 0, 2, (char*)"<-START OF LINE", FG_COLOR_BLACK, BG_COLOR_GREEN);
+	Text_DrawStringAtXY(&global_screen[ID_CHANNEL_A], 0, 66, (char*)"ROW66", FG_COLOR_BLACK, BG_COLOR_GREEN);
 	Text_DrawStringAtXY(&global_screen[ID_CHANNEL_A], 0, 70, (char*)"ROW70", FG_COLOR_BLACK, BG_COLOR_GREEN);
+	Text_ShowFontChars(&global_screen[ID_CHANNEL_A], 10);
 
 	getchar();
+	Text_SetVideoMode(&global_screen[ID_CHANNEL_A], RES_1024X768);
 	Text_FillCharMem(&global_screen[ID_CHANNEL_A], ' ');
 	Text_FillAttrMem(&global_screen[ID_CHANNEL_A], 159);
-	Text_SetVideoMode(&global_screen[ID_CHANNEL_A], RES_1024X768);
 	Text_DrawStringAtXY(&global_screen[ID_CHANNEL_A], 0, 0, (char*)"1024x768 should now be showing. assuming 2 cols/rows borders, 124x92 visible", FG_COLOR_BLACK, BG_COLOR_GREEN);
+	Text_DrawStringAtXY(&global_screen[ID_CHANNEL_B], 0, 5, (char*)"1024x768 should now be showing on Channel A", FG_COLOR_RED, BG_COLOR_GREEN);
 	Text_DrawStringAtXY(&global_screen[ID_CHANNEL_A], 0, 1, (char*)"0123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567", FG_COLOR_DK_BLUE, BG_COLOR_YELLOW);
 	Text_DrawStringAtXY(&global_screen[ID_CHANNEL_A], 0, 2, (char*)"<-START OF LINE", FG_COLOR_BLACK, BG_COLOR_GREEN);
+	Text_DrawStringAtXY(&global_screen[ID_CHANNEL_A], 0, 87, (char*)"ROW87", FG_COLOR_BLACK, BG_COLOR_GREEN);
+	Text_DrawStringAtXY(&global_screen[ID_CHANNEL_A], 0, 89, (char*)"ROW89", FG_COLOR_BLACK, BG_COLOR_GREEN);
 	Text_DrawStringAtXY(&global_screen[ID_CHANNEL_A], 0, 91, (char*)"ROW91", FG_COLOR_BLACK, BG_COLOR_GREEN);
+	Text_ShowFontChars(&global_screen[ID_CHANNEL_A], 10);
 
 }
 
@@ -501,12 +513,13 @@ boolean Text_SetVideoMode(Screen* the_screen, screen_resolution new_mode)
 		}
 		else if (new_mode == RES_800X600)
 		{
+// 			DEBUG_OUT(("%s %d: RES_800X600", __func__, __LINE__));
 			new_mode_flag = VICKY_IIIB_RES_800X600_FLAGS;
 		}
 	}
 	else if (the_screen->vicky_ == VICKY_A2560U)
 	{
-		DEBUG_OUT(("%s %d: vicky identified as VICKY_A2560U", __func__, __LINE__));
+ 		DEBUG_OUT(("%s %d: vicky identified as VICKY_A2560U", __func__, __LINE__));
 		if (new_mode == RES_640X400)
 		{
 			new_mode_flag = VICKY_II_RES_640X400_FLAGS;
@@ -520,7 +533,7 @@ boolean Text_SetVideoMode(Screen* the_screen, screen_resolution new_mode)
 			new_mode_flag = VICKY_II_RES_800X600_FLAGS;
 		}
 	}
-	DEBUG_OUT(("%s %d: specified video mode = %u, flag=%u", __func__, __LINE__, new_mode, new_mode_flag));
+// 	DEBUG_OUT(("%s %d: specified video mode = %u, flag=%u", __func__, __LINE__, new_mode, new_mode_flag));
 	
 	if (new_mode_flag == 0xFF)
 	{
@@ -528,7 +541,9 @@ boolean Text_SetVideoMode(Screen* the_screen, screen_resolution new_mode)
 		return false;
 	}
 	
-	*the_screen->vicky_ = (*the_screen->vicky_ & VIDEO_MODE_MASK | (new_mode << 8));
+// 	DEBUG_OUT(("%s %d: vicky before = %lu", __func__, __LINE__, *the_screen->vicky_ ));
+	*the_screen->vicky_ = (*the_screen->vicky_ & VIDEO_MODE_MASK | (new_mode_flag << 8));
+// 	DEBUG_OUT(("%s %d: vicky after = %lu", __func__, __LINE__, *the_screen->vicky_ ));
 	
 	// teach screen about the new settings
 	switch (new_mode)
@@ -560,8 +575,6 @@ boolean Text_SetVideoMode(Screen* the_screen, screen_resolution new_mode)
 	the_screen->text_rows_vis_ = the_screen->text_mem_rows_ - TEXTA_NUM_COLS_BORDER; // not measured 
 	the_screen->rect_.MaxX = the_screen->width_;
 	the_screen->rect_.MaxY = the_screen->height_;	
-	
-	Text_ShowFontChars(the_screen, 10);
 
 	// tell the MCP that we changed res so it can update it's internal col sizes, etc. 
 	//sys_text_setsizes();
@@ -586,6 +599,54 @@ boolean Test_MyGetUserResponseFunc(void)
 	return true;
 }
 
+void play_GraphicsModes(Screen* the_screen);
+
+void play_GraphicsModes(Screen* the_screen)
+{
+	unsigned long*	abs_vram_addr;
+	unsigned char*	vram_addr;
+	unsigned long	my_vram_addr;
+	unsigned long*	vram_addr_control;
+	int				x;
+	
+	DEBUG_OUT(("%s %d: chanB ctr reg value=%#x", __func__, __LINE__, *the_screen->vicky_));
+	*the_screen->vicky_ = (*the_screen->vicky_ & GRAPHICS_MODE_MASK | (GRAPHICS_MODE_GRAPHICS) | GRAPHICS_MODE_EN_BITMAP);
+	DEBUG_OUT(("%s %d: chanB ctr reg value=%#x", __func__, __LINE__, *the_screen->vicky_));
+	DEBUG_OUT(("%s %d: chanB VRAM addr value=%#x", __func__, __LINE__, *BITMAP_VRAM_ADDR_A2560_0));
+	vram_addr_control = (unsigned long*)BITMAP_VRAM_ADDR_A2560_0;
+	DEBUG_OUT(("%s %d: chanB VRAM addr value=%#x", __func__, __LINE__, *vram_addr_control));
+	my_vram_addr = (unsigned long)(*vram_addr_control);
+	abs_vram_addr = (unsigned long*)(*BITMAP_VRAM_ADDR_A2560_0 + VRAM_BUFFER_A);
+	vram_addr = (char*)abs_vram_addr;
+	*vram_addr_control = ++my_vram_addr;
+	
+// 	for (x=0; x < (640*3000); x = x + 2)
+// 	{
+// 		*vram_addr = 0xaa;
+// 	}
+}
+
+// #define GRAPHICS_MODE_MASK		0xFFFFFF00	//!> for all VICKYs, the mask for the system control register that holds the graphics/bitmap/text/sprite mode bits
+// #define GRAPHICS_MODE_TEXT		0x01	// 0b00000001	Enable the Text Mode
+// #define GRAPHICS_MODE_TEXT_OVER	0x02	// 0b00000010	Enable the Overlay of the text mode on top of Graphic Mode (the Background Color is ignored)
+// #define GRAPHICS_MODE_GRAPHICS	0x04	// 0b00000100	Enable the Graphic Mode
+// #define GRAPHICS_MODE_EN_BITMAP	0x08	// 0b00001000	Enable the Bitmap Module In Vicky
+// #define GRAPHICS_MODE_EN_TILE	0x10	// 0b00010000	Enable the Tile Module in Vicky
+// #define GRAPHICS_MODE_EN_SPRITE	0x20	// 0b00100000	Enable the Sprite Module in Vicky
+// #define GRAPHICS_MODE_EN_GAMMA	0x40	// 0b01000000	Enable the GAMMA correction - The Analog and DVI have different color values, the GAMMA is great to correct the difference
+// #define GRAPHICS_MODE_DIS_VIDEO	0x80	// 0b10000000	This will disable the Scanning of the Video information in the 4Meg of VideoRAM hence giving 100% bandwidth to the CPU
+// 
+// #define default_start_a2560k_vram	0x00011000	// offset against vicky I think though. add to VICKYB_A2560K? based on doing peek32 in f68. 
+// #define VRAM_BUFFER_A			0x0080000
+// #define VRAM_BUFFER_B			0x00C0000
+
+// #define default_start_a2560k_vram	0x00011000	// offset against vicky I think though. add to VICKYB_A2560K? based on doing peek32 in f68. 
+// #define VRAM_BUFFER_A				0x0080000
+// #define VRAM_BUFFER_B				0x00C0000
+// #define BITMAP_CTRL_REG_A2560_0		VICKYB_A2560K + 0x0100	//! Bitmap Layer0 Control Register (Foreground Layer)
+// #define BITMAP_VRAM_ADDR_A2560_0	VICKYB_A2560K + 0x0104	//! Bitmap Layer0 VRAM Address Pointer. Offset within the VRAM memory from VICKY’s perspective. VRAM Address begins @ $00:0000 and ends @ $1FFFFF
+// #define BITMAP_CTRL_REG_A2560_1		VICKYB_A2560K + 0x0108	//! Bitmap Layer1 Control Register (Background Layer)
+// #define BITMAP_VRAM_ADDR_A2560_1	VICKYB_A2560K + 0x010C	//! Bitmap Layer0 VRAM Address Pointer. Offset within the VRAM memory from VICKY’s perspective. VRAM Address begins @ $00:0000 and ends @ $1FFFFF
 
 /*****************************************************************************/
 /*                        Public Function Definitions                        */
@@ -600,6 +661,8 @@ int main(int argc, char* argv[])
 	AutoConfigureScreens();
 	
 	TestResolution();
+	
+	//play_GraphicsModes(&global_screen[ID_CHANNEL_B]);
 	
 	// move to startup function
 

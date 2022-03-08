@@ -263,7 +263,7 @@ boolean Text_FillMemoryBox(Screen* the_screen, signed int x, signed int y, signe
 
 // **** Block copy functions ****
 
-//! Copy a full screen of attr from an off-screen buffer (in c)
+//! Copy a full screen of attr from an off-screen buffer
 //! @param	the_screen: valid pointer to a configured Screen object (a2650_platform.h)
 //! @param	the_source_buffer: valid pointer to attribute value data that will be copied to the screen. It must be at least as large as the visible rows X visible columns of the screen.
 //! @return	returns false on any error/invalid input.

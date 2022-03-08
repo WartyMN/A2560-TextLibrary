@@ -56,6 +56,17 @@
 #define VIDEO_MODE_BIT1			0x00	//!> for all VICKYs, the bits in the 2nd byte of the system control register that define video mode (resolution)
 #define VIDEO_MODE_BIT2			0x01	//!> for all VICKYs, the bits in the 2nd byte of the system control register that define video mode (resolution)
 
+#define GRAPHICS_MODE_MASK		0xFFFFFF00	//!> for all VICKYs, the mask for the system control register that holds the graphics/bitmap/text/sprite mode bits
+#define GRAPHICS_MODE_TEXT		0x01	// 0b00000001	Enable the Text Mode
+#define GRAPHICS_MODE_TEXT_OVER	0x02	// 0b00000010	Enable the Overlay of the text mode on top of Graphic Mode (the Background Color is ignored)
+#define GRAPHICS_MODE_GRAPHICS	0x04	// 0b00000100	Enable the Graphic Mode
+#define GRAPHICS_MODE_EN_BITMAP	0x08	// 0b00001000	Enable the Bitmap Module In Vicky
+#define GRAPHICS_MODE_EN_TILE	0x10	// 0b00010000	Enable the Tile Module in Vicky
+#define GRAPHICS_MODE_EN_SPRITE	0x20	// 0b00100000	Enable the Sprite Module in Vicky
+#define GRAPHICS_MODE_EN_GAMMA	0x40	// 0b01000000	Enable the GAMMA correction - The Analog and DVI have different color values, the GAMMA is great to correct the difference
+#define GRAPHICS_MODE_DIS_VIDEO	0x80	// 0b10000000	This will disable the Scanning of the Video information in the 4Meg of VideoRAM hence giving 100% bandwidth to the CPU
+
+
 // VICKY RESOLUTION FLAGS Per A2560K_UM_Rev0.0.1.pdf and A2560U_UM_Rev0.0.2.pdf
 // VICKY II / VICKY III Chan B
 // 640x480  @ 60FPS > 0 0
@@ -78,7 +89,7 @@
 #define VICKY_IIIB_RES_640X400_FLAGS	0x03	// 0b00000011
 
 #define VICKY_IIIA_RES_800X600_FLAGS	0x00	// 0b00000000
-#define VICKY_IIIA_RES_1024X768_FLAGS	0x04	// 0b00000100
+#define VICKY_IIIA_RES_1024X768_FLAGS	0x08	// 0b00000100
 
 
 // ** A2560K and A2560X
@@ -94,6 +105,15 @@
 #define TEXTB_ATTR_A2560K			(char*)0xfeca8000		// channel B attr
 #define FONT_MEMORY_BANKA_A2560K	(char*)0xfec48000		// chan A
 #define FONT_MEMORY_BANKB_A2560K	(char*)0xfec88000		// chan B
+
+#define default_start_a2560k_vram	0x00011000	// offset against vicky I think though. add to VICKYB_A2560K? based on doing peek32 in f68. 
+#define VRAM_BUFFER_A				0x0080000
+#define VRAM_BUFFER_B				0x00C0000
+#define BITMAP_CTRL_REG_A2560_0		VICKYB_A2560K + 0x0100	//! Bitmap Layer0 Control Register (Foreground Layer)
+#define BITMAP_VRAM_ADDR_A2560_0	VICKYB_A2560K + 0x0104	//! Bitmap Layer0 VRAM Address Pointer. Offset within the VRAM memory from VICKY’s perspective. VRAM Address begins @ $00:0000 and ends @ $1FFFFF
+#define BITMAP_CTRL_REG_A2560_1		VICKYB_A2560K + 0x0108	//! Bitmap Layer1 Control Register (Background Layer)
+#define BITMAP_VRAM_ADDR_A2560_1	VICKYB_A2560K + 0x010C	//! Bitmap Layer0 VRAM Address Pointer. Offset within the VRAM memory from VICKY’s perspective. VRAM Address begins @ $00:0000 and ends @ $1FFFFF
+
 
 // ** A2560U and A2560U+
 #define VICKY_A2560U				(unsigned long*)0xb40000	// Vicky II offset/first register
