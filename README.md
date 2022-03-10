@@ -45,6 +45,8 @@ The A2650 kernel/OS doesn't support dynamically linked libraries yet, so for now
  * display a string in a rectangular block on the screen, with wrap, taking a hook for a "display more" event, and scrolling text vertically up after hook func returns 'continue' (or exit, returning control to calling func, if hook returns 'stop')
  * replace current text font with another, loading from specified ram loc.
  * configure at compile time for use in various Foenix machines
+ * Auto recognize the screen resolution, num text cols, size of borders, etc. 
+ * ability to change screen resolution
  
 ## Completed
  * work with either channel A or channel B
@@ -70,14 +72,16 @@ The A2650 kernel/OS doesn't support dynamically linked libraries yet, so for now
  * replace current text font with another, loading from specified ram loc.
  * documentation (for text lib, have not started on general lib)
  * prep and clean up to be a standalone static library
+ * Auto recognize the screen resolution, num text cols, size of borders, etc. 
+ * ability to change screen resolution
 
 ## ToDo
  * copy a full screen of text and attr between channel A and B
  * ~~clean up the A2650U/K vs morfe addresses, default colors, etc.~~
  * optimization
- * add function(s) to switch resolutions, and automatically adjust number of cols/rows
- * add function(s) to adjust border sizes, and automatically adjust number of visible rows/columns
- * configure at compile time for use in various Foenix machines
+ * ~~add function(s) to switch resolutions, and automatically adjust number of cols/rows~~
+ * ~~add function(s) to adjust border sizes, and automatically adjust number of visible rows/columns~~
+ * ~~configure at RUN time for use in various A2560 machines~~
  * ~~fix bug with word wrap declining to present the final line in the string if string is shorter than box.~~
  * clean up text wrap buffers etc
  * strategy for handling DEBUG macros (build 2 versions of library? one debug mode, one not? TBD)

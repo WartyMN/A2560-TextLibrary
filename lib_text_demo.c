@@ -62,6 +62,32 @@ void RunDemo(void);
 //! @return	returns true if the user wants to continue, or false if the user wants to stop the current action.
 boolean Test_MyGetUserResponseFunc(void);
 
+// various demos
+void Demo_Text_FillCharMem1(void);
+void Demo_Text_FillCharMem2(void);
+void Demo_Text_FillAttrMem1(void);
+void Demo_Text_FillAttrMem2(void);
+void Demo_Text_FillBoxSlow1(void);
+void Demo_Text_FillBoxSlow2(void);
+void Demo_Text_FillBox1(void);
+void Demo_Text_FillBox2(void);
+void Demo_Text_FillBox3(void);
+void Demo_Text_InvertBox(void);
+void Demo_Text_ShowFontChars(void);
+void Demo_Text_SetCharAndColorAtXY(void);
+void Demo_Text_DrawHLine1(void);
+void Demo_Text_DrawHLine2(void);
+void Demo_Text_DrawHLine3(void);
+void Demo_Text_NamedColors(void);
+void Demo_Text_DrawBox(void);
+void Demo_Text_DrawBoxCoords(void);
+void Demo_Text_DrawBoxCoordsFancy(void);
+void Demo_Text_DrawStringAtXY(void);
+void Demo_Text_DrawStringInBox1(void);
+void Demo_Text_DrawStringInBox2(void);
+void Demo_Text_UpdateFontData(void);
+
+
 /*****************************************************************************/
 /*                       Private Function Definitions                        */
 /*****************************************************************************/
@@ -114,18 +140,6 @@ void ShowDescription(char* the_message)
 	Text_DrawStringInBox(&global_screen[ID_CHANNEL_B], x1+1, y1+1, x2-1, y2-1, the_message, FG_COLOR_WHITE, BG_COLOR_DK_BLUE, NULL);
 }
 
-void Demo_Text_FillCharMem1(void);
-void Demo_Text_FillCharMem2(void);
-void Demo_Text_FillAttrMem1(void);
-void Demo_Text_FillAttrMem2(void);
-void Demo_Text_FillBoxSlow1(void);
-void Demo_Text_FillBoxSlow2(void);
-void Demo_Text_FillBox1(void);
-void Demo_Text_FillBox2(void);
-void Demo_Text_FillBox3(void);
-void Demo_Text_InvertBox(void);
-void Demo_Text_ShowFontChars(void);
-
 
 void Demo_Text_FillCharMem1(void)
 {
@@ -164,7 +178,7 @@ void Demo_Text_FillAttrMem2(void)
 void Demo_Text_FillBoxSlow1(void)
 {
 	ShowDescription("Text_FillBoxSlow -> fill a square on screen with a checkered pattern, black on white (slow routine)");	
-	Text_FillBoxSlow(&global_screen[ID_CHANNEL_B], 0, 6, 75, 35, CH_CHECKERED1, COLOR_BLACK, BG_COLOR_WHITE, CHAR_AND_ATTR);
+	Text_FillBoxSlow(&global_screen[ID_CHANNEL_B], 0, 6, global_screen[ID_CHANNEL_B].text_cols_vis_ - 1, 35, CH_CHECKERED1, COLOR_BLACK, BG_COLOR_WHITE, CHAR_AND_ATTR);
 	WaitForUser();
 }
 
@@ -172,7 +186,7 @@ void Demo_Text_FillBoxSlow1(void)
 void Demo_Text_FillBoxSlow2(void)
 {
 	ShowDescription("Text_FillBoxSlow -> fill a square on screen with a different checkered pattern, blue on dark blue (slow routine)");	
-	Text_FillBoxSlow(&global_screen[ID_CHANNEL_B], 2, 9, 75, 35, CH_CHECKERED3, COLOR_BLUE, COLOR_DK_BLUE, CHAR_AND_ATTR);
+	Text_FillBoxSlow(&global_screen[ID_CHANNEL_B], 2, 9, global_screen[ID_CHANNEL_B].text_cols_vis_ - 1, 35, CH_CHECKERED3, COLOR_BLUE, COLOR_DK_BLUE, CHAR_AND_ATTR);
 	WaitForUser();
 }
 
@@ -180,7 +194,7 @@ void Demo_Text_FillBoxSlow2(void)
 void Demo_Text_FillBox1(void)
 {
 	ShowDescription("Text_FillBox -> fill a square on screen with a checkered pattern, black on white (fast routine)");	
-	Text_FillBox(&global_screen[ID_CHANNEL_B], 4, 11, 73, 32, CH_CHECKERED1, COLOR_BLACK, BG_COLOR_WHITE);
+	Text_FillBox(&global_screen[ID_CHANNEL_B], 4, 11, global_screen[ID_CHANNEL_B].text_cols_vis_ - 1, 32, CH_CHECKERED1, COLOR_BLACK, BG_COLOR_WHITE);
 	WaitForUser();
 }
 
@@ -188,7 +202,7 @@ void Demo_Text_FillBox1(void)
 void Demo_Text_FillBox2(void)
 {
 	ShowDescription("Text_FillBox -> fill a square on screen with a different checkered pattern, blue on dark blue (fast routine)");	
-	Text_FillBox(&global_screen[ID_CHANNEL_B], 6, 13, 65, 39, CH_CHECKERED3, COLOR_BLUE, COLOR_DK_BLUE);
+	Text_FillBox(&global_screen[ID_CHANNEL_B], 6, 13, global_screen[ID_CHANNEL_B].text_cols_vis_ - 1, 39, CH_CHECKERED3, COLOR_BLUE, COLOR_DK_BLUE);
 	WaitForUser();
 }
 
@@ -207,7 +221,7 @@ void Demo_Text_InvertBox(void)
 {
 	ShowDescription("Text_InvertBox -> invert a rectangle of colors");	
 	Text_FillBox(&global_screen[ID_CHANNEL_B], 6, 10, 60, 35, CH_DIAMOND, COLOR_RED, BG_COLOR_WHITE);
-	Text_InvertBox(&global_screen[ID_CHANNEL_B], 40, 0, 71, 33);
+	Text_InvertBox(&global_screen[ID_CHANNEL_B], 40, 0, global_screen[ID_CHANNEL_B].text_cols_vis_ - 1, 33);
 	WaitForUser();
 }
 
@@ -219,7 +233,6 @@ void Demo_Text_ShowFontChars(void)
 	WaitForUser();
 }
 
-void Demo_Text_SetCharAndColorAtXY(void);
 
 void Demo_Text_SetCharAndColorAtXY(void)
 {
@@ -259,7 +272,6 @@ void Demo_Text_SetCharAndColorAtXY(void)
 	WaitForUser();
 }
 
-void Demo_Text_DrawHLine1(void);
 
 void Demo_Text_DrawHLine1(void)
 {
@@ -285,7 +297,6 @@ void Demo_Text_DrawHLine1(void)
 }
 
 
-void Demo_Text_DrawHLine2(void);
 
 void Demo_Text_DrawHLine2(void)
 {
@@ -310,7 +321,6 @@ void Demo_Text_DrawHLine2(void)
 	WaitForUser();
 }
 
-void Demo_Text_DrawHLine3(void);
 
 void Demo_Text_DrawHLine3(void)
 {
@@ -335,7 +345,6 @@ void Demo_Text_DrawHLine3(void)
 	WaitForUser();
 }
 
-void Demo_Text_NamedColors(void);
 
 void Demo_Text_NamedColors(void)
 {
@@ -381,7 +390,6 @@ void Demo_Text_NamedColors(void)
 	WaitForUser();
 }
 
-void Demo_Text_DrawBox(void);
 
 void Demo_Text_DrawBox(void)
 {
@@ -403,7 +411,6 @@ void Demo_Text_DrawBox(void)
 	WaitForUser();
 }
 
-void Demo_Text_DrawBoxCoords(void);
 
 void Demo_Text_DrawBoxCoords(void)
 {
@@ -425,7 +432,6 @@ void Demo_Text_DrawBoxCoords(void)
 	WaitForUser();
 }
 
-void Demo_Text_DrawBoxCoordsFancy(void);
 
 void Demo_Text_DrawBoxCoordsFancy(void)
 {
@@ -446,7 +452,6 @@ void Demo_Text_DrawBoxCoordsFancy(void)
 	WaitForUser();
 }
 
-void Demo_Text_DrawStringAtXY(void);
 
 void Demo_Text_DrawStringAtXY(void)
 {
@@ -457,7 +462,7 @@ void Demo_Text_DrawStringAtXY(void)
 
 	the_message = General_StrlcpyWithAlloc((char*)"this is a string", 250);
 	
-	for (i = 6; i < 40; i = i + 10)
+	for (i = 6; i < global_screen[ID_CHANNEL_B].text_rows_vis_ - 1 && i*2 < global_screen[ID_CHANNEL_B].text_cols_vis_ - 1; i = i + 8)
 	{	
 		Text_DrawStringAtXY(&global_screen[ID_CHANNEL_B], i*2, i, the_message, FG_COLOR_YELLOW, BG_COLOR_DK_BLUE);
 	}
@@ -465,7 +470,6 @@ void Demo_Text_DrawStringAtXY(void)
 	WaitForUser();
 }
 
-void Demo_Text_DrawStringInBox1(void);
 
 void Demo_Text_DrawStringInBox1(void)
 {
@@ -482,7 +486,7 @@ void Demo_Text_DrawStringInBox1(void)
 	// small box
 	x1 = 39;
 	y1 = 19;
-	x2 = 71;
+	x2 = global_screen[ID_CHANNEL_B].text_cols_vis_ - 1;
 	y2 = 41;
 
 	Text_FillBox(&global_screen[ID_CHANNEL_B], x1+1, y1+1, x2-1, y2-1, ' ', BG_COLOR_CYAN, BG_COLOR_BLACK);
@@ -494,7 +498,6 @@ void Demo_Text_DrawStringInBox1(void)
 	WaitForUser();
 }
 
-void Demo_Text_DrawStringInBox2(void);
 
 void Demo_Text_DrawStringInBox2(void)
 {
@@ -511,7 +514,7 @@ void Demo_Text_DrawStringInBox2(void)
 	// medium box
 	x1 = 12;
 	y1 = 6;
-	x2 = 68;
+	x2 = global_screen[ID_CHANNEL_B].text_cols_vis_ - 3;
 	y2 = 51;
 
 	Text_FillBox(&global_screen[ID_CHANNEL_B], x1+1, y1+1, x2-1, y2-1, ' ', FG_COLOR_LT_GRAY, BG_COLOR_WHITE);
@@ -671,7 +674,6 @@ void Demo_Text_UpdateFontData(void)
 	WaitForUser();
 }
 
-void Demo_Text_UpdateFontData(void);
 
 
 
@@ -721,54 +723,6 @@ void RunDemo(void)
 }
 
 
-// pre-configure screen data. TODO: use sys info to populate based on what's in hardware.
-void InitScreen(void)
-{
-
-	// set up screen info
-	// Channel A
-	global_screen[ID_CHANNEL_A].id_ = ID_CHANNEL_A;
-	global_screen[ID_CHANNEL_A].text_temp_buffer_1_[0] = '\0';
-	global_screen[ID_CHANNEL_A].text_temp_buffer_2_[0] = '\0';
-	global_screen[ID_CHANNEL_A].text_font_width_ = TEXT_FONT_WIDTH_A2650;
-	global_screen[ID_CHANNEL_A].text_font_height_ = TEXT_FONT_HEIGHT_A2650;
-	global_screen[ID_CHANNEL_A].width_ = 1024;	
-	global_screen[ID_CHANNEL_A].height_ = 768;
-	global_screen[ID_CHANNEL_A].rect_.MinX = 0;
-	global_screen[ID_CHANNEL_A].rect_.MinY = 0;	
-	global_screen[ID_CHANNEL_A].rect_.MaxX = global_screen[ID_CHANNEL_A].width_;
-	global_screen[ID_CHANNEL_A].rect_.MaxY = global_screen[ID_CHANNEL_A].height_;	
-	global_screen[ID_CHANNEL_A].text_ram_ = TEXTA_RAM_A2560K;
-	global_screen[ID_CHANNEL_A].text_attr_ram_ = TEXTA_ATTR_A2560K;
-	global_screen[ID_CHANNEL_A].text_font_ram_ = FONT_MEMORY_BANKA_A2560K;
-	global_screen[ID_CHANNEL_A].text_mem_cols_ = global_screen[ID_CHANNEL_A].width_ / global_screen[ID_CHANNEL_A].text_font_width_;
-	global_screen[ID_CHANNEL_A].text_mem_rows_ = global_screen[ID_CHANNEL_A].height_ / global_screen[ID_CHANNEL_A].text_font_height_;
-	global_screen[ID_CHANNEL_A].text_cols_vis_ = global_screen[ID_CHANNEL_A].text_mem_cols_ - TEXTA_NUM_COLS_BORDER; // not measured
-	global_screen[ID_CHANNEL_A].text_rows_vis_ = global_screen[ID_CHANNEL_A].text_mem_rows_ - TEXTA_NUM_COLS_BORDER; // not measured 
-
-	// Channel B
-	global_screen[ID_CHANNEL_B].id_ = ID_CHANNEL_B;
-	global_screen[ID_CHANNEL_B].text_temp_buffer_1_[0] = '\0';
-	global_screen[ID_CHANNEL_B].text_temp_buffer_2_[0] = '\0';
-	global_screen[ID_CHANNEL_B].text_font_width_ = TEXT_FONT_WIDTH_A2650;
-	global_screen[ID_CHANNEL_B].text_font_height_ = TEXT_FONT_HEIGHT_A2650;
-	global_screen[ID_CHANNEL_B].width_ = 640;	
-	global_screen[ID_CHANNEL_B].height_ = 480;	
-	global_screen[ID_CHANNEL_B].rect_.MinX = 0;
-	global_screen[ID_CHANNEL_B].rect_.MinY = 0;
-	global_screen[ID_CHANNEL_B].rect_.MaxX = global_screen[ID_CHANNEL_B].width_;
-	global_screen[ID_CHANNEL_B].rect_.MaxY = global_screen[ID_CHANNEL_B].height_;	
-	global_screen[ID_CHANNEL_B].text_ram_ = TEXTB_RAM_A2560K;
-	global_screen[ID_CHANNEL_B].text_attr_ram_ = TEXTB_ATTR_A2560K;
-	global_screen[ID_CHANNEL_B].text_font_ram_ = FONT_MEMORY_BANKB_A2560K;
-	global_screen[ID_CHANNEL_B].text_mem_cols_ = global_screen[ID_CHANNEL_B].width_ / global_screen[ID_CHANNEL_B].text_font_width_;
-	global_screen[ID_CHANNEL_B].text_mem_rows_ = global_screen[ID_CHANNEL_B].height_ / global_screen[ID_CHANNEL_B].text_font_height_;
-	global_screen[ID_CHANNEL_B].text_cols_vis_ = global_screen[ID_CHANNEL_B].text_mem_cols_ - TEXTB_NUM_COLS_BORDER;
-	global_screen[ID_CHANNEL_B].text_rows_vis_ = global_screen[ID_CHANNEL_B].text_mem_rows_ - TEXTB_NUM_COLS_BORDER;	// not measured
-
-	return;
-}
-
 /*****************************************************************************/
 /*                        Public Function Definitions                        */
 /*****************************************************************************/
@@ -778,8 +732,22 @@ void InitScreen(void)
 
 int main(int argc, char* argv[])
 {
-	InitScreen();
+	
+	global_screen[ID_CHANNEL_A].id_ = ID_CHANNEL_A;
+	global_screen[ID_CHANNEL_B].id_ = ID_CHANNEL_B;
 
+	if (Text_AutoConfigureScreen(&global_screen[ID_CHANNEL_A]) == false)
+	{
+		DEBUG_OUT(("%s %d: Auto configure failed for screen A", __func__, __LINE__));
+		exit(0);
+	}
+	
+	if (Text_AutoConfigureScreen(&global_screen[ID_CHANNEL_B]) == false)
+	{
+		DEBUG_OUT(("%s %d: Auto configure failed for screen B", __func__, __LINE__));
+		exit(0);
+	}
+	
 	RunDemo();
 	
 	exit(0);

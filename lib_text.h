@@ -316,4 +316,26 @@ char* Text_DrawStringInBox(Screen* the_screen, signed int x1, signed int y1, sig
 signed int Text_MeasureStringWidth(Screen* the_screen, char* the_string, signed int the_len, signed int available_width);
 
 
+
+// **** Screen mode/resolution/size functions *****
+
+
+//! Detect the current screen mode/resolution, and set # of columns, rows, H pixels, V pixels, accordingly
+//! @return	returns false on any error/invalid input.
+boolean Text_SetSizes(Screen* the_screen);
+
+//! Change video mode to the one passed.
+//! @param new_mode: Must correspond to a valid VICKY video mode. See VICKY_IIIA_RES_800X600_FLAGS, etc. defined in a2560_platform.h
+//! @return	returns false on any error/invalid input.
+boolean Text_SetVideoMode(Screen* the_screen, screen_resolution new_mode);
+
+//! Find out what kind of machine the software is running on, and configure the passed screen accordingly
+//! Configures screen settings, RAM addresses, etc. based on known info about machine types
+//! Configures screen width, height, total text rows and cols, and visible text rows and cols by checking hardware
+//! For machines with 2 screens, call this once per screen
+//! @return	Returns false if the machine is known to be incompatible with this software. 
+boolean Text_AutoConfigureScreen(Screen* the_screen);
+
+
+
 #endif /* LIB_TEXT_H_ */

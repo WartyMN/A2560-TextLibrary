@@ -38,6 +38,9 @@
 // A2560 OTHER
 #define EA_USER						(char*)0x020000	// start of user space. ie, put your program here.
 
+// adapted from vinz67
+#define R32(x)						*((volatile unsigned long* const)(x))	// make sure we read a 32 bit long; needed for many VICKY registers, etc.
+#define P32(x)						(volatile unsigned long* const)(x)		// make sure we read a 32 bit long; needed for many VICKY registers, etc.
 
 // ** believe to be common to all A2560 platforms... 
 #define TEXTA_NUM_COLS_BORDER		4	// need to measure.... 
@@ -55,6 +58,15 @@
 #define VIDEO_MODE_BYTE			0x01	//!> for all VICKYs, the byte offset from system control register that holds the video mode bits
 #define VIDEO_MODE_BIT1			0x00	//!> for all VICKYs, the bits in the 2nd byte of the system control register that define video mode (resolution)
 #define VIDEO_MODE_BIT2			0x01	//!> for all VICKYs, the bits in the 2nd byte of the system control register that define video mode (resolution)
+
+#define BORDER_X_MASK				0xFFFF00FF	//!> for all VICKYs, the mask for the Border control register (0x0004) long, for the X border
+#define BORDER_Y_MASK				0xFF00FFFF	//!> for all VICKYs, the mask for the Border control register (0x0004) long, for the Y border
+#define BORDER_CTRL_OFFSET_L		0x01		//!> for all VICKYs, the (long) offset from the VICKY control register to the border control register		
+#define BORDER_COLOR_OFFSET_L		0x02		//!> for all VICKYs, the (long) offset from the VICKY control register to the border color register		
+#define BORDER_BACK_COLOR_OFFSET_L	0x03		//!> for all VICKYs, the (long) offset from the VICKY control register to the border background color register		
+#define CURSOR_CTRL_OFFSET_L		0x04		//!> for all VICKYs, the (long) offset from the VICKY control register to the cursor control register		
+#define CURSOR_POS_OFFSET_L			0x04		//!> for all VICKYs, the (long) offset from the VICKY control register to the cursor position register		
+#define LN_INTERRUPT_01_OFFSET_L	0x05		//!> for all VICKYs, the (long) offset from the VICKY control register to the line interrupts 0 and 1 registers		
 
 #define GRAPHICS_MODE_MASK		0xFFFFFF00	//!> for all VICKYs, the mask for the system control register that holds the graphics/bitmap/text/sprite mode bits
 #define GRAPHICS_MODE_TEXT		0x01	// 0b00000001	Enable the Text Mode
@@ -93,12 +105,13 @@
 
 
 // ** A2560K and A2560X
-#define VICKYA_A2560K				(unsigned long*)0xfec40000	// vicky III channel A offset
-#define VICKYA_CURSOR_CTRL_A2560K	VICKYA_A2560K + 0x10		// vicky III channel A cursor control register
-#define VICKYA_CURSOR_POS_A2560K	VICKYA_A2560K + 0x14		// vicky III channel A cursor position register (x pos is lower word, y pos is upper word)
-#define VICKYB_A2560K				(unsigned long*)0xfec80000	// vicky III channel B offset
-#define VICKYB_CURSOR_CTRL_A2560K	VICKYB_A2560K + 0x10		// vicky III channel B cursor control register
-#define VICKYB_CURSOR_POS_A2560K	VICKYB_A2560K + 0x14		// vicky III channel B cursor position register
+#define VICKY_A2560K_A				0xfec40000				// vicky III channel A control register
+#define VICKYA_CURSOR_CTRL_A2560K	VICKY_A2560K_A + 0x10	// vicky III channel A cursor control register
+#define VICKYA_CURSOR_POS_A2560K	VICKY_A2560K_A + 0x14	// vicky III channel A cursor position register (x pos is lower word, y pos is upper word)
+#define VICKY_A2560K_B				0xfec80000				// vicky III channel B control register
+#define VICKYB_BORDER_CTRL_A2560K	VICKY_A2560K_B + 0x04	// vicky III channel B border control register
+#define VICKYB_CURSOR_CTRL_A2560K	VICKY_A2560K_B + 0x10	// vicky III channel B cursor control register
+#define VICKYB_CURSOR_POS_A2560K	VICKY_A2560K_B + 0x14	// vicky III channel B cursor position register
 #define TEXTA_RAM_A2560K			(char*)0xfec60000		// channel A text
 #define TEXTA_ATTR_A2560K			(char*)0xfec68000		// channel A attr
 #define TEXTB_RAM_A2560K			(char*)0xfeca0000		// channel B text
@@ -106,17 +119,17 @@
 #define FONT_MEMORY_BANKA_A2560K	(char*)0xfec48000		// chan A
 #define FONT_MEMORY_BANKB_A2560K	(char*)0xfec88000		// chan B
 
-#define default_start_a2560k_vram	0x00011000	// offset against vicky I think though. add to VICKYB_A2560K? based on doing peek32 in f68. 
+#define default_start_a2560k_vram	0x00011000	// offset against vicky I think though. add to VICKY_A2560K_B? based on doing peek32 in f68. 
 #define VRAM_BUFFER_A				0x0080000
 #define VRAM_BUFFER_B				0x00C0000
-#define BITMAP_CTRL_REG_A2560_0		VICKYB_A2560K + 0x0100	//! Bitmap Layer0 Control Register (Foreground Layer)
-#define BITMAP_VRAM_ADDR_A2560_0	VICKYB_A2560K + 0x0104	//! Bitmap Layer0 VRAM Address Pointer. Offset within the VRAM memory from VICKY’s perspective. VRAM Address begins @ $00:0000 and ends @ $1FFFFF
-#define BITMAP_CTRL_REG_A2560_1		VICKYB_A2560K + 0x0108	//! Bitmap Layer1 Control Register (Background Layer)
-#define BITMAP_VRAM_ADDR_A2560_1	VICKYB_A2560K + 0x010C	//! Bitmap Layer0 VRAM Address Pointer. Offset within the VRAM memory from VICKY’s perspective. VRAM Address begins @ $00:0000 and ends @ $1FFFFF
+#define BITMAP_CTRL_REG_A2560_0		VICKY_A2560K_B + 0x0100	//! Bitmap Layer0 Control Register (Foreground Layer)
+#define BITMAP_VRAM_ADDR_A2560_0	VICKY_A2560K_B + 0x0104	//! Bitmap Layer0 VRAM Address Pointer. Offset within the VRAM memory from VICKY’s perspective. VRAM Address begins @ $00:0000 and ends @ $1FFFFF
+#define BITMAP_CTRL_REG_A2560_1		VICKY_A2560K_B + 0x0108	//! Bitmap Layer1 Control Register (Background Layer)
+#define BITMAP_VRAM_ADDR_A2560_1	VICKY_A2560K_B + 0x010C	//! Bitmap Layer0 VRAM Address Pointer. Offset within the VRAM memory from VICKY’s perspective. VRAM Address begins @ $00:0000 and ends @ $1FFFFF
 
 
 // ** A2560U and A2560U+
-#define VICKY_A2560U				(unsigned long*)0xb40000	// Vicky II offset/first register
+#define VICKY_A2560U				0xb40000				// Vicky II offset/first register
 #define VICKY_CURSOR_CTRL_A2560U	VICKY_A2560U + 0x10		// vicky II channel A cursor control register
 #define VICKY_CURSOR_POS_A2560U		VICKY_A2560U + 0x14		// vicky II channel A cursor position register (x pos is lower word, y pos is upper word)
 #define TEXT_RAM_A2560U				(char*)0xb60000			// text (A2560U only has one video channel)
@@ -244,7 +257,7 @@ typedef struct Rectangle
 typedef struct Screen
 {
 	signed int		id_;				// 0 for channel A, 1 for channel B. not all foenix's have 2 channels.
-	unsigned long*	vicky_;				// VICKY primary register RAM loc. See VICKYA_A2560K, VICKYB_A2560K, VICKY_A2560U, etc.
+	volatile unsigned long*	vicky_;				// VICKY primary register RAM loc. See VICKY_A2560K_A, VICKY_A2560K_B, VICKY_A2560U, etc.
 	Rectangle		rect_;				// the x1, y1, > x2, y2 coordinates of the screen, taking into account any borders. 
 	signed int		width_;				// for the current resolution, the max horizontal pixel count 
 	signed int		height_;			// for the current resolution, the max vertical pixel count 
