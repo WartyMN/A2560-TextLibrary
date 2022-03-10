@@ -77,7 +77,9 @@
 	#define LOG_ALLOC(x)
 #endif
 
-
+// control if target is for real machine or f68
+// matters: f68 has a special log feature at 0xffffffff-4 that will not work on real machine
+#define _f68_	1	// undefine "_f68_" when building for real hardware
 
 
 
