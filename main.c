@@ -59,8 +59,6 @@ boolean keyboard_test_2(void);
 
 boolean keyboard_test(void);
 
-void TestResolution(void);
-
 // simple function for testing passing a function hook for "do something to see another page of text" for the drawstringinbox stuff. 
 boolean Test_MyGetUserResponseFunc(void);
 
@@ -176,225 +174,6 @@ boolean keyboard_test(void)
 }
 
 
-void TestResolution(void)
-{
-// #define VIDEO_MODE_BYTE			0x01	//!> for all VICKYs, the byte offset from system control register that holds the video mode bits
-// #define VIDEO_MODE_BIT1			0x00	//!> for all VICKYs, the bits in the 2nd byte of the system control register that define video mode (resolution)
-// #define VIDEO_MODE_BIT2			0x01	//!> for all VICKYs, the bits in the 2nd byte of the system control register that define video mode (resolution)
-// 
-// // VICKY RESOLUTION FLAGS Per A2560K_UM_Rev0.0.1.pdf and A2560U_UM_Rev0.0.2.pdf
-// // VICKY II / VICKY III Chan B
-// // 640x480  @ 60FPS > 0 0
-// // 800x600  @ 60FPS > 0 1
-// // reserved         > 1 0
-// // 640x400  @ 70FPS > 1 1
-// 
-// // VICKY III Chan A
-// // 800x600  @ 60FPS > 0 0
-// // 1024x768 @ 60FPS > 0 1
-// // reserved         > 1 0
-// // reserved         > 1 1
-// 
-// #define VICKY_II_RES_640X480_FLAGS		0x00	// 0b00000000
-// #define VICKY_II_RES_800X600_FLAGS		0x01	// 0b00000001
-// #define VICKY_II_RES_640X400_FLAGS		0x03	// 0b00000011
-// 
-// #define VICKY_IIIB_RES_640X480_FLAGS	0x00	// 0b00000000
-// #define VICKY_IIIB_RES_800X600_FLAGS	0x01	// 0b00000001
-// #define VICKY_IIIB_RES_640X400_FLAGS	0x03	// 0b00000011
-// 
-// #define VICKY_IIIA_RES_800X600_FLAGS	0x00	// 0b00000000
-// #define VICKY_IIIA_RES_1024X768_FLAGS	0x01	// 0b00000001
-
-	unsigned long*	the_vicky_register;
-	unsigned long	the_vicky_value;
-	unsigned char	the_video_mode_offset;
-	unsigned char	the_video_mode_value;
-	unsigned char	the_video_mode_bits;
-	int				i;
-	char			msg_buffer[80*3];
-	char*			the_message = msg_buffer;
-	
-// 	the_video_mode_offset = VIDEO_MODE_BYTE;
-// 	
-// 	// test channel A
-// 	the_vicky_register = (unsigned long*)VICKY_A2560K_A;
-// 	the_vicky_value = *the_vicky_register;
-// 	DEBUG_OUT(("%s %d: chan A vicky value=%lu before shifting right", __func__, __LINE__, the_vicky_value));
-// 	
-// 	for (i = 0; i < VIDEO_MODE_BYTE; i++)
-// 	{
-// 		the_vicky_value = the_vicky_value >> 8;
-// 	}
-// 	DEBUG_OUT(("%s %d: chan A vicky value=%lu after shifting right", __func__, __LINE__, the_vicky_value));
-// 	
-// 	the_video_mode_value = the_vicky_value & 0xFF;
-// 	DEBUG_OUT(("%s %d: chan A video mode byte=%u, vicky reg=%lu, vicky value=%lu", __func__, __LINE__, the_video_mode_value, *the_vicky_register, the_vicky_value));
-	
-	//R32(VICKY_CTRL) = (R32(VICKY_CTRL) & ~VICKY_MODE_MASK) | ((mode & 0x07) << 8);
-	
-	// try setting different mode
-// 	the_video_mode_value = (char)VICKY_IIIA_RES_800X600_FLAGS; 
-// 	the_vicky_value = *the_vicky_register;
-// 	DEBUG_OUT(("%s %d: chan A vicky value=%lu before change, video byte before=%u", __func__, __LINE__, the_vicky_value, the_video_mode_value));
-// 	the_vicky_value = the_vicky_value & 0xFFFF00FF;
-// 	the_video_mode_value = the_video_mode_value << 8;
-// 	DEBUG_OUT(("%s %d: chan A vicky value=%lu after masking, vid byte after shift=%u", __func__, __LINE__, the_vicky_value, the_video_mode_value));
-// 	the_vicky_value = the_vicky_value | (the_video_mode_value);
-// 	//the_vicky_value = (the_vicky_value & 0x0000FF00) | (the_video_mode_value << 8);
-// 	DEBUG_OUT(("%s %d: chan A vicky value=%lu after remasking", __func__, __LINE__, the_vicky_value));
-// 
-// 	*the_vicky_register = the_vicky_value;
-// 	Text_ShowFontChars(&global_screen[ID_CHANNEL_A], 10);
-// 	
-// 	// test channel B
-// 	the_vicky_register = (unsigned long*)VICKY_A2560K_B;
-// 	//the_vicky_value = *the_vicky_register;
-// 	the_vicky_value = *global_screen[ID_CHANNEL_B].vicky_;
-// 	DEBUG_OUT(("%s %d: chan B vicky value=%lu before shifting right", __func__, __LINE__, the_vicky_value));
-// 	
-// 	for (i = 0; i < VIDEO_MODE_BYTE; i++)
-// 	{
-// 		the_vicky_value = the_vicky_value >> 8;
-// 	}
-// 	DEBUG_OUT(("%s %d: chan B vicky value=%lu after shifting right", __func__, __LINE__, the_vicky_value));
-// 	
-// 	the_video_mode_value = the_vicky_value & 0xFF;
-// 	DEBUG_OUT(("%s %d: chan B video mode byte=%u, vicky reg=%lu, vicky value=%lu", __func__, __LINE__, the_video_mode_value, *the_vicky_register, the_vicky_value));
-// 	
-// 	// try setting different mode
-// 	getchar();
-// 	the_video_mode_value = (unsigned short)VICKY_IIIB_RES_640X400_FLAGS; 
-// 	//the_vicky_value = *the_vicky_register;
-// 	the_vicky_value = *global_screen[ID_CHANNEL_B].vicky_;
-// 	the_vicky_value = (the_vicky_value & VIDEO_MODE_MASK | (the_video_mode_value << 8));
-// 	DEBUG_OUT(("%s %d: chan B vicky value=%lu after remasking", __func__, __LINE__, the_vicky_value));
-// 	*the_vicky_register = the_vicky_value;
-// 	Text_ShowFontChars(&global_screen[ID_CHANNEL_B], 10);
-// 	getchar();
-// 	
-// 	the_video_mode_value = (unsigned short)VICKY_IIIB_RES_800X600_FLAGS; 
-// 	//the_vicky_value = *the_vicky_register;
-// 	the_vicky_value = *global_screen[ID_CHANNEL_B].vicky_;
-// 	the_vicky_value = (the_vicky_value & VIDEO_MODE_MASK | (the_video_mode_value << 8));
-// 	DEBUG_OUT(("%s %d: chan B vicky value=%lu after remasking", __func__, __LINE__, the_vicky_value));
-// 	*the_vicky_register = the_vicky_value;
-// 	Text_ShowFontChars(&global_screen[ID_CHANNEL_B], 10);
-// 	getchar();
-		
-// 	the_video_mode_value = (unsigned short)VICKY_IIIB_RES_640X480_FLAGS; 
-// 	the_vicky_value = *the_vicky_register;
-// 	the_vicky_value = (the_vicky_value & VIDEO_MODE_MASK | (the_video_mode_value << 8));
-// 	DEBUG_OUT(("%s %d: chan B vicky value=%lu after remasking", __func__, __LINE__, the_vicky_value));
-// 	*the_vicky_register = the_vicky_value;
-// 	Text_ShowFontChars(&global_screen[ID_CHANNEL_B], 10);
-
-// 	the_video_mode_value = (unsigned short)VICKY_IIIB_RES_640X480_FLAGS; 
-// 	*the_vicky_register = (*the_vicky_register & VIDEO_MODE_MASK | (the_video_mode_value << 8));
-	
-	// test the function call version
-// 	getchar();
-// 	Text_SetVideoMode(&global_screen[ID_CHANNEL_B], RES_640X400);
-// 	Text_FillCharMem(&global_screen[ID_CHANNEL_B], ' ');
-// 	Text_FillAttrMem(&global_screen[ID_CHANNEL_B], 159);
-// 	sprintf(the_message, "640x400 should now be showing. Measured: %i x %i, %i x %i text, %i x %i visible text", 
-// 		global_screen[ID_CHANNEL_B].width_, 
-// 		global_screen[ID_CHANNEL_B].height_, 
-// 		global_screen[ID_CHANNEL_B].text_mem_cols_, 
-// 		global_screen[ID_CHANNEL_B].text_mem_rows_, 
-// 		global_screen[ID_CHANNEL_B].text_cols_vis_, 
-// 		global_screen[ID_CHANNEL_B].text_rows_vis_
-// 		);
-// 	Text_DrawStringAtXY(&global_screen[ID_CHANNEL_B], 0, 0, the_message, FG_COLOR_BLACK, BG_COLOR_GREEN);
-// 	Text_DrawStringAtXY(&global_screen[ID_CHANNEL_B], 0, 1, (char*)"01234567890123456789012345678901234567890123456789012345678901234567890123456789", FG_COLOR_DK_BLUE, BG_COLOR_YELLOW);
-// 	Text_DrawStringAtXY(&global_screen[ID_CHANNEL_B], 0, 2, (char*)"<-START OF LINE", FG_COLOR_BLACK, BG_COLOR_GREEN);
-// 	Text_DrawStringAtXY(&global_screen[ID_CHANNEL_B], 0, 45, (char*)"ROW45", FG_COLOR_BLACK, BG_COLOR_GREEN);
-// 	Text_DrawStringAtXY(&global_screen[ID_CHANNEL_B], 0, 46, (char*)"ROW46", FG_COLOR_BLACK, BG_COLOR_GREEN);
-// 	Text_DrawStringAtXY(&global_screen[ID_CHANNEL_B], 0, 48, (char*)"ROW48", FG_COLOR_BLACK, BG_COLOR_GREEN);
-// 	Text_DrawStringAtXY(&global_screen[ID_CHANNEL_B], 0, 49, (char*)"ROW49", FG_COLOR_BLACK, BG_COLOR_GREEN);	
-// 	Text_ShowFontChars(&global_screen[ID_CHANNEL_B], 10);
-
-	getchar();
-	Text_SetVideoMode(&global_screen[ID_CHANNEL_B], RES_800X600);
-	Text_FillCharMem(&global_screen[ID_CHANNEL_B], ' ');
-	Text_FillAttrMem(&global_screen[ID_CHANNEL_B], 159);
-	sprintf(the_message, "800x600 should now be showing. Measured: %i x %i, %i x %i text, %i x %i visible text", 
-		global_screen[ID_CHANNEL_B].width_, 
-		global_screen[ID_CHANNEL_B].height_, 
-		global_screen[ID_CHANNEL_B].text_mem_cols_, 
-		global_screen[ID_CHANNEL_B].text_mem_rows_, 
-		global_screen[ID_CHANNEL_B].text_cols_vis_, 
-		global_screen[ID_CHANNEL_B].text_rows_vis_
-		);
-	Text_DrawStringAtXY(&global_screen[ID_CHANNEL_B], 0, 0, the_message, FG_COLOR_BLACK, BG_COLOR_GREEN);
-	Text_DrawStringAtXY(&global_screen[ID_CHANNEL_B], 0, 1, (char*)"0123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789", FG_COLOR_DK_BLUE, BG_COLOR_YELLOW);
-	Text_DrawStringAtXY(&global_screen[ID_CHANNEL_B], 0, 2, (char*)"<-START OF LINE", FG_COLOR_BLACK, BG_COLOR_GREEN);
-	Text_DrawStringAtXY(&global_screen[ID_CHANNEL_B], 0, 66, (char*)"ROW66", FG_COLOR_BLACK, BG_COLOR_GREEN);
-	Text_DrawStringAtXY(&global_screen[ID_CHANNEL_B], 0, 70, (char*)"ROW70", FG_COLOR_BLACK, BG_COLOR_GREEN);
-	Text_ShowFontChars(&global_screen[ID_CHANNEL_B], 10);
-
-	getchar();
-	Text_SetVideoMode(&global_screen[ID_CHANNEL_B], RES_640X480);
-	Text_FillCharMem(&global_screen[ID_CHANNEL_B], ' ');
-	Text_FillAttrMem(&global_screen[ID_CHANNEL_B], 159);
-	sprintf(the_message, "640x480 should now be showing. Measured: %i x %i, %i x %i text, %i x %i visible text", 
-		global_screen[ID_CHANNEL_B].width_, 
-		global_screen[ID_CHANNEL_B].height_, 
-		global_screen[ID_CHANNEL_B].text_mem_cols_, 
-		global_screen[ID_CHANNEL_B].text_mem_rows_, 
-		global_screen[ID_CHANNEL_B].text_cols_vis_, 
-		global_screen[ID_CHANNEL_B].text_rows_vis_
-		);
-	Text_DrawStringAtXY(&global_screen[ID_CHANNEL_B], 0, 0, the_message, FG_COLOR_BLACK, BG_COLOR_GREEN);
-	Text_DrawStringAtXY(&global_screen[ID_CHANNEL_B], 0, 1, (char*)"01234567890123456789012345678901234567890123456789012345678901234567890123456789", FG_COLOR_DK_BLUE, BG_COLOR_YELLOW);
-	Text_DrawStringAtXY(&global_screen[ID_CHANNEL_B], 0, 1, (char*)"<-START OF LINE", FG_COLOR_BLACK, BG_COLOR_GREEN);
-	Text_DrawStringAtXY(&global_screen[ID_CHANNEL_B], 0, 46, (char*)"ROW46", FG_COLOR_BLACK, BG_COLOR_GREEN);
-	Text_DrawStringAtXY(&global_screen[ID_CHANNEL_B], 0, 51, (char*)"ROW51", FG_COLOR_BLACK, BG_COLOR_GREEN);
-	Text_DrawStringAtXY(&global_screen[ID_CHANNEL_B], 0, 55, (char*)"ROW55", FG_COLOR_BLACK, BG_COLOR_GREEN);
-	Text_ShowFontChars(&global_screen[ID_CHANNEL_B], 10);
-
-	getchar();
-	Text_SetVideoMode(&global_screen[ID_CHANNEL_A], RES_800X600);
-	Text_FillCharMem(&global_screen[ID_CHANNEL_A], ' ');
-	Text_FillAttrMem(&global_screen[ID_CHANNEL_A], 159);
-	sprintf(the_message, "800x600 should now be showing. Measured: %i x %i, %i x %i text, %i x %i visible text", 
-		global_screen[ID_CHANNEL_A].width_, 
-		global_screen[ID_CHANNEL_A].height_, 
-		global_screen[ID_CHANNEL_A].text_mem_cols_, 
-		global_screen[ID_CHANNEL_A].text_mem_rows_, 
-		global_screen[ID_CHANNEL_A].text_cols_vis_, 
-		global_screen[ID_CHANNEL_A].text_rows_vis_
-		);
-	Text_DrawStringAtXY(&global_screen[ID_CHANNEL_A], 0, 0, the_message, FG_COLOR_BLACK, BG_COLOR_GREEN);
-	Text_DrawStringAtXY(&global_screen[ID_CHANNEL_B], 0, 5, (char*)"800x600 should now be showing on Channel A", FG_COLOR_RED, BG_COLOR_GREEN);
-	Text_DrawStringAtXY(&global_screen[ID_CHANNEL_A], 0, 1, (char*)"0123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789", FG_COLOR_DK_BLUE, BG_COLOR_YELLOW);
-	Text_DrawStringAtXY(&global_screen[ID_CHANNEL_A], 0, 2, (char*)"<-START OF LINE", FG_COLOR_BLACK, BG_COLOR_GREEN);
-	Text_DrawStringAtXY(&global_screen[ID_CHANNEL_A], 0, 66, (char*)"ROW66", FG_COLOR_BLACK, BG_COLOR_GREEN);
-	Text_DrawStringAtXY(&global_screen[ID_CHANNEL_A], 0, 70, (char*)"ROW70", FG_COLOR_BLACK, BG_COLOR_GREEN);
-	Text_ShowFontChars(&global_screen[ID_CHANNEL_A], 10);
-
-	getchar();
-	Text_SetVideoMode(&global_screen[ID_CHANNEL_A], RES_1024X768);
-	Text_FillCharMem(&global_screen[ID_CHANNEL_A], ' ');
-	Text_FillAttrMem(&global_screen[ID_CHANNEL_A], 159);
-	sprintf(the_message, "1024x768 should now be showing. Measured: %i x %i, %i x %i text, %i x %i visible text", 
-		global_screen[ID_CHANNEL_A].width_, 
-		global_screen[ID_CHANNEL_A].height_, 
-		global_screen[ID_CHANNEL_A].text_mem_cols_, 
-		global_screen[ID_CHANNEL_A].text_mem_rows_, 
-		global_screen[ID_CHANNEL_A].text_cols_vis_, 
-		global_screen[ID_CHANNEL_A].text_rows_vis_
-		);
-	Text_DrawStringAtXY(&global_screen[ID_CHANNEL_A], 0, 0, the_message, FG_COLOR_BLACK, BG_COLOR_GREEN);
-	Text_DrawStringAtXY(&global_screen[ID_CHANNEL_B], 0, 5, (char*)"1024x768 should now be showing on Channel A", FG_COLOR_RED, BG_COLOR_GREEN);
-	Text_DrawStringAtXY(&global_screen[ID_CHANNEL_A], 0, 1, (char*)"0123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567", FG_COLOR_DK_BLUE, BG_COLOR_YELLOW);
-	Text_DrawStringAtXY(&global_screen[ID_CHANNEL_A], 0, 2, (char*)"<-START OF LINE", FG_COLOR_BLACK, BG_COLOR_GREEN);
-	Text_DrawStringAtXY(&global_screen[ID_CHANNEL_A], 0, 87, (char*)"ROW87", FG_COLOR_BLACK, BG_COLOR_GREEN);
-	Text_DrawStringAtXY(&global_screen[ID_CHANNEL_A], 0, 89, (char*)"ROW89", FG_COLOR_BLACK, BG_COLOR_GREEN);
-	Text_DrawStringAtXY(&global_screen[ID_CHANNEL_A], 0, 91, (char*)"ROW91", FG_COLOR_BLACK, BG_COLOR_GREEN);
-	Text_ShowFontChars(&global_screen[ID_CHANNEL_A], 10);
-
-}
 
 // simple function for testing passing a function hook for "do something to see another page of text" for the drawstringinbox stuff. 
 //! @return	returns true if the user wants to continue, or false if the user wants to stop the current action.
@@ -486,8 +265,6 @@ int main(int argc, char* argv[])
 		exit(0);
 	}
 	
-	TestResolution();
-	
 	//play_GraphicsModes(&global_screen[ID_CHANNEL_B]);
 	
 	//General_LogInitialize();
@@ -495,7 +272,7 @@ int main(int argc, char* argv[])
 	//keyboard_test();
 	   
 	#if defined(RUN_TESTS)
-//		Text_RunTests();
+		Text_RunTests();
 	#endif
 	
 }

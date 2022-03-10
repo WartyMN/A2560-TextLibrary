@@ -85,6 +85,10 @@ void Demo_Text_DrawBoxCoordsFancy(void);
 void Demo_Text_DrawStringAtXY(void);
 void Demo_Text_DrawStringInBox1(void);
 void Demo_Text_DrawStringInBox2(void);
+void Demo_Text_ScreenResolution1(void);
+void Demo_Text_ScreenResolution2(void);
+void Demo_Text_ScreenResolution3(void);
+void Demo_Text_ScreenResolution4(void);
 void Demo_Text_UpdateFontData(void);
 
 
@@ -526,6 +530,117 @@ void Demo_Text_DrawStringInBox2(void)
 	WaitForUser();
 }
 
+
+void Demo_Text_ScreenResolution1(void)
+{
+	char			msg_buffer[80*3];
+	char*			the_message = msg_buffer;
+	int				y = 7;
+	
+	Text_SetVideoMode(&global_screen[ID_CHANNEL_B], RES_800X600);
+	ShowDescription("Text_SetVideoMode -> (RES_800X600) Changes resolution to 800x600 if available for this screen/channel.");	
+
+	sprintf(the_message, "Requested 800x600. Actual: %i x %i, %i x %i text, %i x %i visible text", 
+		global_screen[ID_CHANNEL_B].width_, 
+		global_screen[ID_CHANNEL_B].height_, 
+		global_screen[ID_CHANNEL_B].text_mem_cols_, 
+		global_screen[ID_CHANNEL_B].text_mem_rows_, 
+		global_screen[ID_CHANNEL_B].text_cols_vis_, 
+		global_screen[ID_CHANNEL_B].text_rows_vis_
+		);
+	Text_DrawStringAtXY(&global_screen[ID_CHANNEL_B], 0, y, the_message, FG_COLOR_BLACK, BG_COLOR_GREEN);
+	Text_DrawStringAtXY(&global_screen[ID_CHANNEL_B], 0, y + 1, (char*)"0123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789", FG_COLOR_DK_BLUE, BG_COLOR_YELLOW);
+	Text_DrawStringAtXY(&global_screen[ID_CHANNEL_B], 0, y + 2, (char*)"<-START OF LINE", FG_COLOR_BLACK, BG_COLOR_GREEN);
+	Text_DrawStringAtXY(&global_screen[ID_CHANNEL_B], 0, 70, (char*)"ROW70", FG_COLOR_BLACK, BG_COLOR_GREEN);
+	Text_ShowFontChars(&global_screen[ID_CHANNEL_B], y + 3);
+
+	WaitForUser();
+}
+
+
+void Demo_Text_ScreenResolution2(void)
+{
+	char			msg_buffer[80*3];
+	char*			the_message = msg_buffer;
+	int				y = 7;
+	
+	Text_SetVideoMode(&global_screen[ID_CHANNEL_B], RES_640X480);
+	ShowDescription("Text_SetVideoMode -> (RES_640X480) Changes resolution to 640x480 if available for this screen/channel.");	
+
+	sprintf(the_message, "Requested 640x480. Actual: %i x %i, %i x %i text, %i x %i visible text", 
+		global_screen[ID_CHANNEL_B].width_, 
+		global_screen[ID_CHANNEL_B].height_, 
+		global_screen[ID_CHANNEL_B].text_mem_cols_, 
+		global_screen[ID_CHANNEL_B].text_mem_rows_, 
+		global_screen[ID_CHANNEL_B].text_cols_vis_, 
+		global_screen[ID_CHANNEL_B].text_rows_vis_
+		);
+	Text_DrawStringAtXY(&global_screen[ID_CHANNEL_B], 0, y, the_message, FG_COLOR_BLACK, BG_COLOR_GREEN);
+	Text_DrawStringAtXY(&global_screen[ID_CHANNEL_B], 0, y + 1, (char*)"01234567890123456789012345678901234567890123456789012345678901234567890123456789", FG_COLOR_DK_BLUE, BG_COLOR_YELLOW);
+	Text_DrawStringAtXY(&global_screen[ID_CHANNEL_B], 0, y + 2, (char*)"<-START OF LINE", FG_COLOR_BLACK, BG_COLOR_GREEN);
+	Text_DrawStringAtXY(&global_screen[ID_CHANNEL_B], 0, 55, (char*)"ROW55", FG_COLOR_BLACK, BG_COLOR_GREEN);
+	Text_ShowFontChars(&global_screen[ID_CHANNEL_B], y + 3);
+
+	WaitForUser();
+}
+
+
+void Demo_Text_ScreenResolution3(void)
+{
+	char			msg_buffer[80*3];
+	char*			the_message = msg_buffer;
+	int				y = 7;
+	
+	Text_SetVideoMode(&global_screen[ID_CHANNEL_A], RES_800X600);
+	ShowDescription("Text_SetVideoMode -> (RES_800X600) Changes resolution to 800x600 if available for this screen/channel.");	
+
+	sprintf(the_message, "Requested 800x600. Actual: %i x %i, %i x %i text, %i x %i visible text", 
+		global_screen[ID_CHANNEL_A].width_, 
+		global_screen[ID_CHANNEL_A].height_, 
+		global_screen[ID_CHANNEL_A].text_mem_cols_, 
+		global_screen[ID_CHANNEL_A].text_mem_rows_, 
+		global_screen[ID_CHANNEL_A].text_cols_vis_, 
+		global_screen[ID_CHANNEL_A].text_rows_vis_
+		);
+	Text_DrawStringAtXY(&global_screen[ID_CHANNEL_A], 0, y, the_message, FG_COLOR_BLACK, BG_COLOR_GREEN);
+	Text_DrawStringAtXY(&global_screen[ID_CHANNEL_A], 0, y + 1, (char*)"0123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789", FG_COLOR_DK_BLUE, BG_COLOR_YELLOW);
+	Text_DrawStringAtXY(&global_screen[ID_CHANNEL_A], 0, y + 2, (char*)"<-START OF LINE", FG_COLOR_BLACK, BG_COLOR_GREEN);
+	Text_DrawStringAtXY(&global_screen[ID_CHANNEL_B], 0, y + 3, (char*)"800x600 should now be showing on Channel A", FG_COLOR_RED, BG_COLOR_GREEN);
+	Text_DrawStringAtXY(&global_screen[ID_CHANNEL_A], 0, 70, (char*)"ROW70", FG_COLOR_BLACK, BG_COLOR_GREEN);
+	Text_ShowFontChars(&global_screen[ID_CHANNEL_A], y + 4);
+
+	WaitForUser();
+}
+
+
+void Demo_Text_ScreenResolution4(void)
+{
+	char			msg_buffer[80*3];
+	char*			the_message = msg_buffer;
+	int				y = 7;
+	
+	Text_SetVideoMode(&global_screen[ID_CHANNEL_A], RES_1024X768);
+	ShowDescription("Text_SetVideoMode -> (RES_1024X768) Changes resolution to 1024x768 if available for this screen/channel.");	
+
+	sprintf(the_message, "Requested 1024x768. Actual: %i x %i, %i x %i text, %i x %i visible text", 
+		global_screen[ID_CHANNEL_A].width_, 
+		global_screen[ID_CHANNEL_A].height_, 
+		global_screen[ID_CHANNEL_A].text_mem_cols_, 
+		global_screen[ID_CHANNEL_A].text_mem_rows_, 
+		global_screen[ID_CHANNEL_A].text_cols_vis_, 
+		global_screen[ID_CHANNEL_A].text_rows_vis_
+		);
+	Text_DrawStringAtXY(&global_screen[ID_CHANNEL_A], 0, y, the_message, FG_COLOR_BLACK, BG_COLOR_GREEN);
+	Text_DrawStringAtXY(&global_screen[ID_CHANNEL_A], 0, y + 1, (char*)"0123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567", FG_COLOR_DK_BLUE, BG_COLOR_YELLOW);
+	Text_DrawStringAtXY(&global_screen[ID_CHANNEL_A], 0, y + 2, (char*)"<-START OF LINE", FG_COLOR_BLACK, BG_COLOR_GREEN);
+	Text_DrawStringAtXY(&global_screen[ID_CHANNEL_B], 0, y + 3, (char*)"1024x768 should now be showing on Channel A", FG_COLOR_RED, BG_COLOR_GREEN);
+	Text_DrawStringAtXY(&global_screen[ID_CHANNEL_A], 0, 91, (char*)"ROW91", FG_COLOR_BLACK, BG_COLOR_GREEN);
+	Text_ShowFontChars(&global_screen[ID_CHANNEL_A], y + 4);
+
+	WaitForUser();
+}
+
+
 void Demo_Text_UpdateFontData(void)
 {
 	// until file objects available in emulator, need to embed data to test font replacement.
@@ -717,6 +832,11 @@ void RunDemo(void)
 	Demo_Text_DrawStringAtXY();
 	Demo_Text_DrawStringInBox1();
 	Demo_Text_DrawStringInBox2();
+
+	Demo_Text_ScreenResolution1();
+	Demo_Text_ScreenResolution2();
+	Demo_Text_ScreenResolution3();
+	Demo_Text_ScreenResolution4();
 
 	Demo_Text_UpdateFontData();
 	

@@ -1647,11 +1647,8 @@ boolean Text_SetSizes(Screen* the_screen)
 	screen_resolution	new_mode;
 	unsigned long		the_vicky_value;
 	unsigned char		the_video_mode_bits;
-	unsigned long		the_border_control_value;
-	unsigned char		the_border_x_bits;
-	unsigned char		the_border_y_bits;
 	volatile unsigned long*		the_border_reg;
-	unsigned char*		v;	// char pointer to the vicky control register. Not sure this will work on real hardware (need to read a whole long?)
+	unsigned long		the_border_control_value;
 	int					border_x_cols;
 	int					border_y_cols;
 	int					border_x_pixels;
@@ -1754,29 +1751,10 @@ boolean Text_SetSizes(Screen* the_screen)
 			break;		
 	}
 	
-	
 	// detect borders, and set text cols/rows based on resolution modified by borders (if any)
-// 	the_border_control_value = R32(the_screen->vicky_ + BORDER_CONTROL_OFFSET);
-//  	the_border_control_value = R32(VICKYB_BORDER_CTRL_A2560K);
-// 	DEBUG_OUT(("%s %d: border value=%x", __func__, __LINE__, the_border_control_value));
-//  	the_border_reg = the_screen->vicky_ + 1;
-//  	the_border_control_value = R32(the_border_reg);
  	the_border_control_value = R32(the_screen->vicky_ + BORDER_CTRL_OFFSET_L);
-// 	DEBUG_OUT(("%s %d: border value=%x, border reg=%p", __func__, __LINE__, the_border_control_value, the_border_reg));
 	border_x_pixels = (the_border_control_value >> 8) & 0xFF & 0x3F;
 	border_y_pixels = (the_border_control_value >> 16) & 0xFF & 0x3F;
-// 	DEBUG_OUT(("%s %d: border value=%x, border_x_pixels=%i, border_y_pixels=%i", __func__, __LINE__, the_border_control_value, border_x_pixels, border_y_pixels));
-
-//	{
-// 		unsigned char*	v;
-// 		v = (unsigned char*)the_screen->vicky_;
-// 		DEBUG_OUT(("%s %d: v[0]=%u, v[1]=%u, v[2]=%u, v[3]=%u, v[4]=%u, v[5]=%u, v[6]=%u, v[7]=%u", __func__, __LINE__, v[0], v[1], v[2], v[3], v[4], v[5], v[6], v[7]));
-// 	}
-	
-// 	the_border_x_bits = v[5];
-// 	the_border_y_bits = v[6];
-// 	border_x_cols = ((the_border_x_bits & 0x3F) * 2) / the_screen->text_font_width_;
-// 	border_y_cols = ((the_border_y_bits & 0x3F) * 2) / the_screen->text_font_height_;
 	border_x_cols = border_x_pixels * 2 / the_screen->text_font_width_;
 	border_y_cols = border_y_pixels * 2 / the_screen->text_font_height_;
 // 	DEBUG_OUT(("%s %d: border xcols=%i, ycols=%i", __func__, __LINE__, border_x_cols, border_y_cols));
