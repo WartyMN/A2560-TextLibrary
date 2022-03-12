@@ -5,10 +5,10 @@
  *      Author: micahbly (not really, see below)
  *		This is an adaption of minunit.h, as found at https://raw.githubusercontent.com/siu/minunit/master/minunit.h
  *		I modified it as follows:
- *		- to run on A2650
+ *		- to run on A2560
  *		- removed cross-platform stuff
  *		- snprintf replaced with sprintf, as snprintf not available in my amiga compilers
- *		- hacked together A2650-compatible time function
+ *		- hacked together A2560-compatible time function
  *		- removed the CPU time, leaving just real time.
  */
 
@@ -52,7 +52,7 @@
 #include <stdlib.h>
 
 
-// A2650 includes
+// A2560 includes
 #include <mcp/syscalls.h>
 
 
@@ -228,7 +228,7 @@ static void (*minunit_teardown)(void) = NULL;
  */
 static long mu_timer_real(void)
 {
-	// A2650
+	// A2560
 	long		the_ticks;
 
 	the_ticks = sys_time_jiffies();

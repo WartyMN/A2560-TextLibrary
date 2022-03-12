@@ -24,7 +24,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-// A2650 includes
+// A2560 includes
 #include <mcp/syscalls.h>
 #include "a2560_platform.h"
 #include "lib_general.h"
@@ -265,7 +265,7 @@ boolean Text_FillMemoryBox(Screen* the_screen, signed int x, signed int y, signe
 // **** Block copy functions ****
 
 //! Copy a full screen of attr from an off-screen buffer
-//! @param	the_screen: valid pointer to a configured Screen object (a2650_platform.h)
+//! @param	the_screen: valid pointer to a configured Screen object (a2560_platform.h)
 //! @param	the_source_buffer: valid pointer to attribute value data that will be copied to the screen. It must be at least as large as the visible rows X visible columns of the screen.
 //! @return	returns false on any error/invalid input.
 boolean Text_CopyAttrMemToScreen(Screen* the_screen, char* the_source_buffer)
@@ -288,7 +288,7 @@ boolean Text_CopyAttrMemToScreen(Screen* the_screen, char* the_source_buffer)
 }
 
 //! Copy a full screen of text attributes to an off-screen buffer.
-//! @param	the_screen: valid pointer to a configured Screen object (a2650_platform.h)
+//! @param	the_screen: valid pointer to a configured Screen object (a2560_platform.h)
 //! @param	the_target_buffer: valid pointer to a block of memory big enough to hold the attribute data copied from the screen. It must be at least as large as the visible rows X visible columns of the screen.
 //! @return returns false on any error/invalid input.
 boolean Text_CopyAttrMemFromScreen(Screen* the_screen, char* the_target_buffer)
@@ -1876,8 +1876,8 @@ boolean Text_AutoConfigureScreen(Screen* the_screen)
 	the_screen->rect_.MinY = 0;	
 	the_screen->text_temp_buffer_1_[0] = '\0';
 	the_screen->text_temp_buffer_2_[0] = '\0';
-	the_screen->text_font_width_ = TEXT_FONT_WIDTH_A2650;
-	the_screen->text_font_height_ = TEXT_FONT_HEIGHT_A2650;
+	the_screen->text_font_width_ = TEXT_FONT_WIDTH_A2560;
+	the_screen->text_font_height_ = TEXT_FONT_HEIGHT_A2560;
 
 	switch (the_model_number)
 	{

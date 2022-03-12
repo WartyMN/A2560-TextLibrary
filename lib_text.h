@@ -16,26 +16,26 @@
  * This handles writing and reading information to/from the VICKY's text mode memory
  *
  *** things this library needs to be able to do
- * x work with either channel A or channel B
- * x clear / fill an entire screen of text characters
- * x clear / fill an entire screen of text attributes
- * x invert the colors of a screen
- * x clear / fill a smaller-than-screen rectangular area of text/attrs
- * x Draw a char to a specified x, y coord
- * x Get the currently displayed character at the specified coord
- * x Set the foreground and background colors at the specified coord
- * x Set the attribute value at the specified coord
- * x Get the attribute value at the specified coord
- * x Get the foreground or background color at the specified coord
- * x draw a line using "graphic" characters
- * x draw a box using "graphic" characters
- * x copy a full screen of text or attr from an off-screen buffer
- * x copy a full screen of text or attr TO an off-screen buffer
+ * work with either channel A or channel B
+ * clear / fill an entire screen of text characters
+ * clear / fill an entire screen of text attributes
+ * invert the colors of a screen
+ * clear / fill a smaller-than-screen rectangular area of text/attrs
+ * Draw a char to a specified x, y coord
+ * Get the currently displayed character at the specified coord
+ * Set the foreground and background colors at the specified coord
+ * Set the attribute value at the specified coord
+ * Get the attribute value at the specified coord
+ * Get the foreground or background color at the specified coord
+ * draw a line using "graphic" characters
+ * draw a box using "graphic" characters
+ * copy a full screen of text or attr from an off-screen buffer
+ * copy a full screen of text or attr TO an off-screen buffer
  * copy a full screen of text and attr between channel A and B
  * copy a rectangular area of text or attr TO/FROM an off-screen buffer
- * x display a string at a specified x, y coord (no wrap)
- * x display a pre-formatted string in a rectangular block on the screen, breaking on \n characters
- * x display a string in a rectangular block on the screen, with wrap
+ * display a string at a specified x, y coord (no wrap)
+ * display a pre-formatted string in a rectangular block on the screen, breaking on \n characters
+ * display a string in a rectangular block on the screen, with wrap
  * display a string in a rectangular block on the screen, with wrap, taking a hook for a "display more" event, and scrolling text vertically up after hook func returns 'continue' (or exit, returning control to calling func, if hook returns 'stop')
  * replace current text font with another, loading from specified ram loc.
  */
@@ -47,7 +47,7 @@
 
 // project includes
 
-// A2650 includes
+// A2560 includes
 #include "a2560_platform.h"
 #include "lib_general.h"
 
@@ -62,7 +62,7 @@
 #define SCREEN_COPY_TO_SCREEN	true	// param for functions doing block copy to/from screen / off-screen buffer
 #define SCREEN_COPY_FROM_SCREEN	false	// param for functions doing block copy to/from screen / off-screen buffer
 
-// based on observations in morfe:
+// based on observations in f68:
 #define COLOR_BLACK				(unsigned char)0x00
 #define COLOR_DK_RED			(unsigned char)0x01
 #define COLOR_DK_GREEN			(unsigned char)0x02
@@ -114,7 +114,7 @@
 #define BG_COLOR_CYAN			(unsigned char)0x0E
 #define BG_COLOR_WHITE			(unsigned char)0x0F
 
-// update: the numbers shown in vicky2 file in morfe don't match up to what's shown on screen, at least with a2650 config. eg, 20/00/00 is not a super dark blue, it's some totally bright thing. need to spend some time mapping these out better. But since user configurable, will wait until real machine comes and I can make sure of what's in flash rom. 
+// update: the numbers shown in vicky2 file in morfe don't match up to what's shown on screen, at least with a2560 config. eg, 20/00/00 is not a super dark blue, it's some totally bright thing. need to spend some time mapping these out better. But since user configurable, will wait until real machine comes and I can make sure of what's in flash rom. 
 
 /*****************************************************************************/
 /*                  Character-codes (IBM Page 437 charset)                   */
@@ -172,7 +172,7 @@ typedef enum text_draw_choice
 /*****************************************************************************/
 
 
-// ** NOTE: there is no destructor or constructor for this library, as it does not track any allocated memory. It works on the basis of a screen ID, which corresponds to the text memory for Vicky's Channel A and Channel B video memory.
+// ** NOTE: there is no destructor or constructor for this library, as it does not track any allocated memory.
 
 
 // **** Block copy functions ****

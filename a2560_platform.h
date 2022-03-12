@@ -1,12 +1,12 @@
 /*
- * a2650_platform.h
+ * a2560_platform.h
  *
  *  Created on: Feb 19, 2022
  *      Author: micahbly
  */
 
-#ifndef A2650_PLATFORM_H_
-#define A2650_PLATFORM_H_
+#ifndef A2560_PLATFORM_H_
+#define A2560_PLATFORM_H_
 
 
 /* about this class
@@ -14,7 +14,7 @@
  *
  *
  *** things this class needs to be able to do
- * nothing - this is not a functional class, but a set of useful headers providing structs and defines useful for developing on the A2650 platform
+ * nothing - this is not a functional class, but a set of useful headers providing structs and defines useful for developing on the A2560 platform
  *
  *** things objects of this class have
  *
@@ -36,6 +36,7 @@
 #define ID_CHANNEL_B				1	// for use in lib_text() calls, etc.
 
 // A2560 OTHER
+#define EA_MCP						(char*)0x010000	// start of MCP kernel
 #define EA_USER						(char*)0x020000	// start of user space. ie, put your program here.
 
 // adapted from vinz67
@@ -51,8 +52,8 @@
 #define TEXT_COL_COUNT_FOR_PLOTTING		TEXT_COL_COUNT_FOR_PLOTTING_A2560K	// regardless of visible cols (between borders), VRAM seems to be fixed at 80 cols across.
 #define TEXT_ROW_COUNT_FOR_PLOTTING		TEXT_ROW_COUNT_FOR_PLOTTING_A2560K	// regardless of visible rows (between borders), VRAM seems to be fixed at 60 rows up/down.
 
-#define TEXT_FONT_WIDTH_A2650	8	// for text mode, the width of the fixed-sized font chars
-#define TEXT_FONT_HEIGHT_A2650	8	// for text mode, the height of the fixed-sized font chars. I believe this is supposed to be 16, but its 8 in morfe at the moment.
+#define TEXT_FONT_WIDTH_A2560	8	// for text mode, the width of the fixed-sized font chars
+#define TEXT_FONT_HEIGHT_A2560	8	// for text mode, the height of the fixed-sized font chars. I believe this is supposed to be 16, but its 8 in morfe at the moment.
 
 #define VIDEO_MODE_MASK			0xFFFF00FF	//!> for all VICKYs, the mask for the system control register that holds the video mode bits
 #define VIDEO_MODE_BYTE			0x01	//!> for all VICKYs, the byte offset from system control register that holds the video mode bits
@@ -67,6 +68,10 @@
 #define CURSOR_CTRL_OFFSET_L		0x04		//!> for all VICKYs, the (long) offset from the VICKY control register to the cursor control register		
 #define CURSOR_POS_OFFSET_L			0x04		//!> for all VICKYs, the (long) offset from the VICKY control register to the cursor position register		
 #define LN_INTERRUPT_01_OFFSET_L	0x05		//!> for all VICKYs, the (long) offset from the VICKY control register to the line interrupts 0 and 1 registers		
+#define BITMAP_L0_CTRL_L			0x40		//!> for all VICKYs, the (long) offset from the VICKY control register to the bitmap layer0 control register (foreground layer)		
+#define BITMAP_L0_VRAM_ADDR_L		0x41		//!> for all VICKYs, the (long) offset from the VICKY control register to the bitmap layer0 VRAM address pointer)		
+#define BITMAP_L1_CTRL_L			0x42		//!> for all VICKYs, the (long) offset from the VICKY control register to the bitmap layer1 control register (background layer)		
+#define BITMAP_L1_VRAM_ADDR_L		0x43		//!> for all VICKYs, the (long) offset from the VICKY control register to the bitmap layer1 VRAM address pointer)		
 
 #define GRAPHICS_MODE_MASK		0xFFFFFF00	//!> for all VICKYs, the mask for the system control register that holds the graphics/bitmap/text/sprite mode bits
 #define GRAPHICS_MODE_TEXT		0x01	// 0b00000001	Enable the Text Mode
@@ -120,8 +125,8 @@
 #define FONT_MEMORY_BANKB_A2560K	(char*)0xfec88000		// chan B
 
 #define default_start_a2560k_vram	0x00011000	// offset against vicky I think though. add to VICKY_A2560K_B? based on doing peek32 in f68. 
-#define VRAM_BUFFER_A				0x0080000
-#define VRAM_BUFFER_B				0x00C0000
+#define VRAM_BUFFER_A				0x00800000
+#define VRAM_BUFFER_B				0x00C00000
 #define BITMAP_CTRL_REG_A2560_0		VICKY_A2560K_B + 0x0100	//! Bitmap Layer0 Control Register (Foreground Layer)
 #define BITMAP_VRAM_ADDR_A2560_0	VICKY_A2560K_B + 0x0104	//! Bitmap Layer0 VRAM Address Pointer. Offset within the VRAM memory from VICKY’s perspective. VRAM Address begins @ $00:0000 and ends @ $1FFFFF
 #define BITMAP_CTRL_REG_A2560_1		VICKY_A2560K_B + 0x0108	//! Bitmap Layer1 Control Register (Background Layer)
@@ -289,4 +294,4 @@ typedef struct Screen
 
 
 
-#endif /* A2650_PLATFORM_H_ */
+#endif /* A2560_PLATFORM_H_ */

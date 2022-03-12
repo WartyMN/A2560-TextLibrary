@@ -1,9 +1,23 @@
+/*
+ * lib_text_test.c
+ *
+ *  Created on: Feb 19, 2022
+ *      Author: micahbly
+ */
+
+
+
+
+
+
+/*****************************************************************************/
+/*                                Includes                                   */
+/*****************************************************************************/
+
 // unit testing framework
 #include "minunit.h"
 
 // project includes
-#include "test_base.h"
-//#include "lib_general.h"
 
 // class being tested
 #include "lib_text.h"
@@ -11,14 +25,161 @@
 // C includes
 
 
-// A2650 includes
-#include "a2560_platform.h"
+// A2560 includes
+#include <mb/a2560_platform.h>
+#include <mb/lib_general.h>
 
 
 
-// variables needed for testing
+/*****************************************************************************/
+/*                               Definitions                                 */
+/*****************************************************************************/
 
-extern Screen global_screen[2];
+
+
+/*****************************************************************************/
+/*                               Enumerations                                */
+/*****************************************************************************/
+
+
+
+/*****************************************************************************/
+/*                             Global Variables                              */
+/*****************************************************************************/
+
+Screen global_screen[2];
+
+
+
+
+/*****************************************************************************/
+/*                       Private Function Prototypes                         */
+/*****************************************************************************/
+
+// test using sys_kbd_scancode() instead of a channel driver - TEMP - BAD
+boolean keyboard_test_2(void);
+
+// test using channel driver - TEMP - BAD
+boolean keyboard_test(void);
+
+
+/*****************************************************************************/
+/*                       Private Function Definitions                        */
+/*****************************************************************************/
+
+
+// test using sys_kbd_scancode() instead of a channel driver - TEMP - BAD
+boolean keyboard_test_2(void)
+{
+	// LOGIC: 
+	//   page 34 of FoenixMCP Manual
+	//   try a simple loop that just keeps banging on the keyboard scanner
+	
+	//   keys return their keycode when pushed, and their keyboard + 128 when released.
+	
+	unsigned short	the_code;
+	
+	do
+	{
+		the_code = sys_kbd_scancode();
+		
+		if (the_code > 127)
+		{
+			DEBUG_OUT(("%s %d: key released: code=%u, keycode=%u", __func__, __LINE__, the_code, the_code & 0xF0));
+			// handle_event_key_up()
+			
+		}
+		else
+		{
+			DEBUG_OUT(("%s %d: key pressed: code=%u", __func__, __LINE__, the_code));
+		}
+		
+	} while (the_code != 0);
+	
+	return true;
+}
+
+
+// test using channel driver - TEMP - BAD
+boolean keyboard_test(void)
+{
+	signed short			bytes_read = 0;
+	signed short			bytes_requested = 5;
+	static unsigned char	keyboard_buff[256];
+	unsigned char*			the_keyboard_buff = keyboard_buff;
+	signed short			the_channel_id;
+	signed short			the_device_id = 0;
+	boolean					stop = false;
+	signed int				y = 30;
+	
+// 	Text_DrawStringAtXY(ID_CHANNEL_B, 0, y++, (char*)"Trying to open keyboard device...", FG_COLOR_DK_BLUE, BG_COLOR_YELLOW);
+	DEBUG_OUT(("%s %d: Trying to open keyboard device...", __func__, __LINE__));
+	
+	// open keyboard console for reading. Console is on device 0 and 1. 
+	the_channel_id = sys_chan_open(the_device_id, (unsigned char*)"", 1);
+	
+	if (the_channel_id < 0)
+	{
+		//DEBUG_OUT(("%s %d: Failed to open channel for device %i. Error# %i", __func__, __LINE__, the_device_id, the_channel_id));
+		//Text_DrawStringAtXY(ID_CHANNEL_A, 0, y++, (char*)"Failed to open keyboard device", FG_COLOR_DK_BLUE, BG_COLOR_YELLOW);
+		DEBUG_OUT(("%s %d: Failed to open keyboard device. proceeding anyway...", __func__, __LINE__));
+// 		return false;
+	}
+	else
+	{
+		//Text_DrawStringAtXY(ID_CHANNEL_A, 0, y++, (char*)"Opened keyboard device", FG_COLOR_DK_BLUE, BG_COLOR_YELLOW);
+		DEBUG_OUT(("%s %d: Opened keyboard device", __func__, __LINE__));
+	}
+	
+	sys_chan_flush(the_channel_id);
+	
+	//Text_DrawStringAtXY(ID_CHANNEL_A, 0, y++, (char*)"flushed channel", FG_COLOR_DK_BLUE, BG_COLOR_YELLOW);
+	DEBUG_OUT(("%s %d: Flushed channel", __func__, __LINE__));
+
+	if ( ((sys_chan_status(the_channel_id) & CDEV_STAT_ERROR) == 1) )
+	{
+		//Text_DrawStringAtXY(ID_CHANNEL_A, 0, y++, (char*)"channel status had error (0x01)", FG_COLOR_DK_BLUE, BG_COLOR_YELLOW);
+		DEBUG_OUT(("%s %d: channel status had error (0x01)", __func__, __LINE__));
+		return false;
+	}
+	else
+	{
+		//Text_DrawStringAtXY(ID_CHANNEL_A, 0, y++, (char*)"channel status says no error condition", FG_COLOR_DK_BLUE, BG_COLOR_YELLOW);
+		DEBUG_OUT(("%s %d: channel status says no error condition", __func__, __LINE__));
+	}
+	
+	// read and type characters to screen until there is an channel error, or the char typed is tab
+	while ( ((sys_chan_status(the_channel_id) & CDEV_STAT_ERROR) == 0) && !stop)
+	{
+		unsigned char	the_char;
+		
+		//bytes_read = sys_chan_read(the_channel_id, the_keyboard_buff, bytes_requested);
+		the_char = sys_chan_read_b(the_channel_id);
+		bytes_read++;
+		
+		if (the_char == '\t')
+		{
+			stop = true;
+		}
+		else
+		{
+			Text_SetCharAtXY(ID_CHANNEL_A, bytes_read, 40, the_char);
+		}
+		
+		//Text_DrawStringAtXY(ID_CHANNEL_A, 0, 40, (char*)the_keyboard_buff, FG_COLOR_DK_BLUE, BG_COLOR_YELLOW);
+	}
+
+	// close channel
+	sys_chan_close(the_channel_id);
+		
+	return true;
+}
+
+
+
+/*****************************************************************************/
+/*                        MinUnit Function Defintions                        */
+/*****************************************************************************/
 
 
 
@@ -34,6 +195,7 @@ void text_test_teardown(void)	// this is called EVERY test
 {
 
 }
+
 
 
 MU_TEST(text_test_block_copy)
@@ -845,10 +1007,37 @@ MU_TEST_SUITE(text_test_suite_units)
 
 
 
-int Text_RunTests(void)
-{	
-	MU_RUN_SUITE(text_test_suite_units);
-//  	MU_RUN_SUITE(text_test_suite_speed);
-	MU_REPORT();
-	return MU_EXIT_CODE;
+/*****************************************************************************/
+/*                        Public Function Definitions                        */
+/*****************************************************************************/
+
+
+
+int main(int argc, char* argv[])
+{
+
+	// find out what kind of machine the software is running on, and configure global screens accordingly
+	global_screen[ID_CHANNEL_A].id_ = ID_CHANNEL_A;
+	global_screen[ID_CHANNEL_B].id_ = ID_CHANNEL_B;
+
+	if (Text_AutoConfigureScreen(&global_screen[ID_CHANNEL_A]) == false)
+	{
+		DEBUG_OUT(("%s %d: Auto configure failed for screen A", __func__, __LINE__));
+		exit(0);
+	}
+	
+	if (Text_AutoConfigureScreen(&global_screen[ID_CHANNEL_B]) == false)
+	{
+		DEBUG_OUT(("%s %d: Auto configure failed for screen B", __func__, __LINE__));
+		exit(0);
+	}
+	
+
+	#if defined(RUN_TESTS)
+// 		MU_RUN_SUITE(text_test_suite_units);
+// 		MU_RUN_SUITE(text_test_suite_speed);
+// 		MU_REPORT();
+		return MU_EXIT_CODE;
+	#endif
+
 }
