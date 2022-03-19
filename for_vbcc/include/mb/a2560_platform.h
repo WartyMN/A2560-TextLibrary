@@ -247,6 +247,11 @@ typedef enum
 /*                                 Structs                                   */
 /*****************************************************************************/
 
+// forward declarations
+typedef struct Font Font;
+
+
+
 typedef struct Coordinate
 {
     int x;

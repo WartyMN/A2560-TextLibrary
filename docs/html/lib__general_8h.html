@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.9.3"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Foenix A2650 Text Mode Library: lib_general.h File Reference</title>
+<title>Foenix A2560 Text Mode Library: lib_general.h File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -30,7 +30,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">Foenix A2650 Text Mode Library
+   <div id="projectname">Foenix A2560 Text Mode Library
    </div>
   </td>
     <td>        <div id="MSearchBox" class="MSearchBoxInactive">
@@ -102,9 +102,9 @@ $(document).ready(function(){initNavTree('lib__general_8h.html',''); initResizab
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:aa2202d1a54143d31095057e69a2ecb8c"><td class="memItemLeft" align="right" valign="top">signed int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="lib__general_8h.html#aa2202d1a54143d31095057e69a2ecb8c">General_WrapAndTrimTextToFit</a> (<a class="el" href="struct_screen.html">Screen</a> *the_screen, char **orig_string, char **formatted_string, signed int max_chars_to_format, signed int max_width, signed int max_height, signed int(*measure_function)(<a class="el" href="struct_screen.html">Screen</a> *, char *, signed int, signed int))</td></tr>
-<tr class="memdesc:aa2202d1a54143d31095057e69a2ecb8c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Format a string by wrapping and trimming to fit the passed width and height.  <a href="lib__general_8h.html#aa2202d1a54143d31095057e69a2ecb8c">More...</a><br /></td></tr>
-<tr class="separator:aa2202d1a54143d31095057e69a2ecb8c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8caa9f7a3d1853cb16b5a7ab11f950ba"><td class="memItemLeft" align="right" valign="top">signed int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="lib__general_8h.html#a8caa9f7a3d1853cb16b5a7ab11f950ba">General_WrapAndTrimTextToFit</a> (char **orig_string, char **formatted_string, signed int max_chars_to_format, signed int max_width, signed int max_height, signed int one_char_width, signed int one_row_height, Font *the_font, signed int(*measure_function)(Font *, char *, signed int, signed int, signed int))</td></tr>
+<tr class="memdesc:a8caa9f7a3d1853cb16b5a7ab11f950ba"><td class="mdescLeft">&#160;</td><td class="mdescRight">Format a string by wrapping and trimming to fit the passed width and height.  <a href="lib__general_8h.html#a8caa9f7a3d1853cb16b5a7ab11f950ba">More...</a><br /></td></tr>
+<tr class="separator:a8caa9f7a3d1853cb16b5a7ab11f950ba"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a07938c6f1d87889b1195665eefd24389"><td class="memItemLeft" align="right" valign="top">boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="lib__general_8h.html#a07938c6f1d87889b1195665eefd24389">General_ExtractFileExtensionFromFilename</a> (const char *the_file_name, char *the_extension)</td></tr>
 <tr class="memdesc:a07938c6f1d87889b1195665eefd24389"><td class="mdescLeft">&#160;</td><td class="mdescRight">Extract file extension into the passed char pointer, as new lowercased string pointer, if any found.  <a href="lib__general_8h.html#a07938c6f1d87889b1195665eefd24389">More...</a><br /></td></tr>
 <tr class="separator:a07938c6f1d87889b1195665eefd24389"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -148,8 +148,8 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="aa2202d1a54143d31095057e69a2ecb8c" name="aa2202d1a54143d31095057e69a2ecb8c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa2202d1a54143d31095057e69a2ecb8c">&#9670;&nbsp;</a></span>General_WrapAndTrimTextToFit()</h2>
+<a id="a8caa9f7a3d1853cb16b5a7ab11f950ba" name="a8caa9f7a3d1853cb16b5a7ab11f950ba"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8caa9f7a3d1853cb16b5a7ab11f950ba">&#9670;&nbsp;</a></span>General_WrapAndTrimTextToFit()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -157,12 +157,6 @@ Functions</h2></td></tr>
         <tr>
           <td class="memname">signed int General_WrapAndTrimTextToFit </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="struct_screen.html">Screen</a> *&#160;</td>
-          <td class="paramname"><em>the_screen</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
           <td class="paramtype">char **&#160;</td>
           <td class="paramname"><em>orig_string</em>, </td>
         </tr>
@@ -193,7 +187,25 @@ Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">signed int(*)(<a class="el" href="struct_screen.html">Screen</a> *, char *, signed int, signed int)&#160;</td>
+          <td class="paramtype">signed int&#160;</td>
+          <td class="paramname"><em>one_char_width</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">signed int&#160;</td>
+          <td class="paramname"><em>one_row_height</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Font *&#160;</td>
+          <td class="paramname"><em>the_font</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">signed int(*)(Font *, char *, signed int, signed int, signed int)&#160;</td>
           <td class="paramname"><em>measure_function</em>&#160;</td>
         </tr>
         <tr>
@@ -212,6 +224,9 @@ Functions</h2></td></tr>
     <tr><td class="paramname">max_chars_to_format</td><td>the length of the string to format (in characters). If max_chars_to_format is less than the length of string, processing will stop after that many characters. </td></tr>
     <tr><td class="paramname">max_width</td><td>the width into which the text must fit, in pixels. </td></tr>
     <tr><td class="paramname">max_height</td><td>the height into which the text must fit, in pixels. Pass a 0 to disable the governor on vertical space. </td></tr>
+    <tr><td class="paramname">one_char_width</td><td>the width in pixels, of one character. NOTE: This is only used for fixed-width, text mode operations. </td></tr>
+    <tr><td class="paramname">one_row_height</td><td>the height in pixels, of one row of text, including any leading. </td></tr>
+    <tr><td class="paramname">the_font</td><td>the font object to be used in measuring width. This is optional and ignore if called for text mode operations. </td></tr>
     <tr><td class="paramname">measure_function</td><td>pointer to the function responsible for measuring the graphical width of a string </td></tr>
   </table>
   </dd>

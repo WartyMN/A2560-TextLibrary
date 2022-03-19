@@ -1014,6 +1014,7 @@ unsigned char Text_GetBackColorAtXY(Screen* the_screen, signed int x, signed int
 
 
 //! Draws a horizontal line from specified coords, for n characters, using the specified char and/or attribute
+//! @param	the_line_len: The total length of the line, in characters, including the start and end character.
 //! @param	fore_color: Index to the desired foreground color (0-15). The predefined macro constants may be used (COLOR_DK_RED, etc.), but be aware that the colors are not fixed, and may not correspond to the names if the LUT in RAM has been modified.
 //! @param	back_color: Index to the desired background color (0-15). The predefined macro constants may be used (COLOR_DK_RED, etc.), but be aware that the colors are not fixed, and may not correspond to the names if the LUT in RAM has been modified.
 //! @param	the_draw_choice: controls the scope of the action, and is one of CHAR_ONLY, ATTR_ONLY, or CHAR_AND_ATTR. See the text_draw_choice enum.
@@ -1065,6 +1066,7 @@ boolean Text_DrawHLine(Screen* the_screen, signed int x, signed int y, signed in
 
 //! Draws a horizontal line from specified coords, for n characters, using the specified char and/or attribute
 //! This version uses char-by-char functions, so it is very slow. It will be removed before release. 
+//! @param	the_line_len: The total length of the line, in characters, including the start and end character.
 //! @param	fore_color: Index to the desired foreground color (0-15). The predefined macro constants may be used (COLOR_DK_RED, etc.), but be aware that the colors are not fixed, and may not correspond to the names if the LUT in RAM has been modified.
 //! @param	back_color: Index to the desired background color (0-15). The predefined macro constants may be used (COLOR_DK_RED, etc.), but be aware that the colors are not fixed, and may not correspond to the names if the LUT in RAM has been modified.
 //! @param	the_draw_choice: controls the scope of the action, and is one of CHAR_ONLY, ATTR_ONLY, or CHAR_AND_ATTR. See the text_draw_choice enum.
@@ -1115,6 +1117,7 @@ boolean Text_DrawHLineSlow(Screen* the_screen, signed int x, signed int y, signe
 
 
 //! Draws a vertical line from specified coords, for n characters, using the specified char and/or attribute
+//! @param	the_line_len: The total length of the line, in characters, including the start and end character.
 //! @param	fore_color: Index to the desired foreground color (0-15). The predefined macro constants may be used (COLOR_DK_RED, etc.), but be aware that the colors are not fixed, and may not correspond to the names if the LUT in RAM has been modified.
 //! @param	back_color: Index to the desired background color (0-15). The predefined macro constants may be used (COLOR_DK_RED, etc.), but be aware that the colors are not fixed, and may not correspond to the names if the LUT in RAM has been modified.
 //! @param	the_draw_choice: controls the scope of the action, and is one of CHAR_ONLY, ATTR_ONLY, or CHAR_AND_ATTR. See the text_draw_choice enum.
@@ -1494,7 +1497,7 @@ char* Text_DrawStringInBox(Screen* the_screen, signed int x1, signed int y1, sig
 		memset(formatted_string, 0, TEXT_COL_COUNT_FOR_PLOTTING_A2560K * TEXT_ROW_COUNT_FOR_PLOTTING_A2560K + 1);
 		
 		// format the string into chunks that will fit in the width specified, with line breaks on each line
-		v_pixels = General_WrapAndTrimTextToFit(the_screen, &needs_formatting, &formatted_string, orig_len, max_pix_width, max_pix_height, &Text_MeasureStringWidth);
+		v_pixels = General_WrapAndTrimTextToFit(&needs_formatting, &formatted_string, orig_len, max_pix_width, max_pix_height, the_screen->text_font_width_, the_screen->text_font_height_, NULL, &Text_MeasureStringWidth);
 		num_rows = v_pixels / the_screen->text_font_height_;
 	
 		// LOGIC:
@@ -1593,22 +1596,16 @@ char* Text_DrawStringInBox(Screen* the_screen, signed int x1, signed int y1, sig
 
 //! Calculates how many characters of the passed string will fit into the passed pixel width.
 //! In Text Mode, all characters have the same fixed width, so this is measuring against the font width described in the screen object.
+//! @param	the_font: this is for consistency with the graphical font code. Pass a NULL here, the result will not be used.
 //! @param	the_string: the null-terminated string to be measured.
 //! @param	the_len: the length of the passed string. If the entire string fits, this len will be returned.
 //! @param	available_width: the width, in pixels, of the space the string is to be measured against.
 //! @return	returns -1 in any error condition, or the number of characters that fit. If the entire string fits, the passed len will be returned.
-signed int Text_MeasureStringWidth(Screen* the_screen, char* the_string, signed int the_len, signed int available_width)
+signed int Text_MeasureStringWidth(Font* the_font, char* the_string, signed int the_len, signed int available_width, signed int fixed_char_width)
 {
 	signed int		fit_count;
-	signed int		char_width;
 	signed int		required_width;
 	
-	if (the_screen == NULL)
-	{
-		LOG_ERR(("%s %d: passed screen object was null", __func__ , __LINE__));
-		return -1;
-	}
-
 	if (the_len < 1)
 	{
 		return -1;
@@ -1620,8 +1617,7 @@ signed int Text_MeasureStringWidth(Screen* the_screen, char* the_string, signed 
 	//   if foenix or users add a way to do proportionally spaced fonts in the future, this will need a helper routine a la Amiga's TextFit()
 	//   for now, we can just multiply chars * char width
 	
-	char_width = the_screen->text_font_width_;
-	required_width = the_len * char_width;
+	required_width = the_len * fixed_char_width;
 	
 	if (available_width >= required_width)
 	{
@@ -1629,7 +1625,7 @@ signed int Text_MeasureStringWidth(Screen* the_screen, char* the_string, signed 
 	}
 	else
 	{
-		fit_count = available_width / char_width;
+		fit_count = available_width / fixed_char_width;
 	}
 	
 	return fit_count;	
@@ -1771,7 +1767,7 @@ boolean Text_SetSizes(Screen* the_screen)
 
 
 //! Change video mode to the one passed.
-//! @param new_mode: One of the enumerated screen_resolution values. Must correspond to a valid VICKY video mode for the host machine. See VICKY_IIIA_RES_800X600_FLAGS, etc. defined in a2560_platform.h
+//! @param	new_mode: One of the enumerated screen_resolution values. Must correspond to a valid VICKY video mode for the host machine. See VICKY_IIIA_RES_800X600_FLAGS, etc. defined in a2560_platform.h
 //! @return	returns false on any error/invalid input.
 boolean Text_SetVideoMode(Screen* the_screen, screen_resolution new_mode)
 {

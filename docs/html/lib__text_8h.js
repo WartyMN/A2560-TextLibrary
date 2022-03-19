@@ -1,6 +1,7 @@
 var lib__text_8h =
 [
     [ "SCREEN_FOR_TEXT_ATTR", "lib__text_8h.html#a0eabf752e6ffe09710263d4ab17d606c", null ],
+    [ "Text_AutoConfigureScreen", "lib__text_8h.html#aea282d396d0afb178c476a615fe74d1d", null ],
     [ "Text_CopyAttrMemFromScreen", "lib__text_8h.html#a044e0193af7b1b25a0fc0d9e19bc3f26", null ],
     [ "Text_CopyAttrMemToScreen", "lib__text_8h.html#aecd882f2e7e6588058f32a6e3d222990", null ],
     [ "Text_CopyCharMemFromScreen", "lib__text_8h.html#a2a8bb3cc759f4ca2993aa189e0b5fa54", null ],
@@ -24,10 +25,12 @@ var lib__text_8h =
     [ "Text_GetCharAtXY", "lib__text_8h.html#a60951746e733a1c3a42342154ebd9925", null ],
     [ "Text_GetForeColorAtXY", "lib__text_8h.html#a1d759d7161e622c5c3dc797d40197c3f", null ],
     [ "Text_InvertBox", "lib__text_8h.html#a2da6f5be162e3c038637d18363186998", null ],
-    [ "Text_MeasureStringWidth", "lib__text_8h.html#adc1ddeaf0c0e1974275a94efa4862289", null ],
+    [ "Text_MeasureStringWidth", "lib__text_8h.html#a19133257b1f43a70622fb4ab1006a49a", null ],
     [ "Text_SetAttrAtXY", "lib__text_8h.html#a6141a2b6b2c374f204e24d36449b9da5", null ],
     [ "Text_SetCharAndColorAtXY", "lib__text_8h.html#ad9c44311118dab960fda2a822ab13c4f", null ],
     [ "Text_SetCharAtXY", "lib__text_8h.html#a46155f1f57562c20ef5c1debe26b27c0", null ],
+    [ "Text_SetSizes", "lib__text_8h.html#ad9fc0e2b28302e39a38e63fd5078a85d", null ],
+    [ "Text_SetVideoMode", "lib__text_8h.html#addb55fbea00e21d84f9d136be01e846f", null ],
     [ "Text_ShowFontChars", "lib__text_8h.html#a580eb506a1374b69a1437c85dad6e24b", null ],
     [ "Text_UpdateFontData", "lib__text_8h.html#a44cea628ddcee0ac1a8a75961bef0072", null ]
 ];

@@ -278,22 +278,51 @@ unsigned char Text_GetBackColorAtXY(Screen* the_screen, signed int x, signed int
 // **** Drawing functions *****
 
 
-// draws a horizontal line from specified coords, for n characters, using the specified char and/or attribute
+//! Draws a horizontal line from specified coords, for n characters, using the specified char and/or attribute
+//! This version uses char-by-char functions, so it is very slow. It will be removed before release. 
+//! @param	the_line_len: The total length of the line, in characters, including the start and end character.
+//! @param	fore_color: Index to the desired foreground color (0-15). The predefined macro constants may be used (COLOR_DK_RED, etc.), but be aware that the colors are not fixed, and may not correspond to the names if the LUT in RAM has been modified.
+//! @param	back_color: Index to the desired background color (0-15). The predefined macro constants may be used (COLOR_DK_RED, etc.), but be aware that the colors are not fixed, and may not correspond to the names if the LUT in RAM has been modified.
+//! @param	the_draw_choice: controls the scope of the action, and is one of CHAR_ONLY, ATTR_ONLY, or CHAR_AND_ATTR. See the text_draw_choice enum.
+//! @return	returns false on any error/invalid input.
 boolean Text_DrawHLineSlow(Screen* the_screen, signed int x, signed int y, signed int the_line_len, unsigned char the_char, unsigned char fore_color, unsigned char back_color, text_draw_choice the_draw_choice);
 
-// draws a horizontal line from specified coords, for n characters, using the specified char and/or attribute
+//! Draws a horizontal line from specified coords, for n characters, using the specified char and/or attribute
+//! @param	the_line_len: The total length of the line, in characters, including the start and end character.
+//! @param	fore_color: Index to the desired foreground color (0-15). The predefined macro constants may be used (COLOR_DK_RED, etc.), but be aware that the colors are not fixed, and may not correspond to the names if the LUT in RAM has been modified.
+//! @param	back_color: Index to the desired background color (0-15). The predefined macro constants may be used (COLOR_DK_RED, etc.), but be aware that the colors are not fixed, and may not correspond to the names if the LUT in RAM has been modified.
+//! @param	the_draw_choice: controls the scope of the action, and is one of CHAR_ONLY, ATTR_ONLY, or CHAR_AND_ATTR. See the text_draw_choice enum.
+//! @return	returns false on any error/invalid input.
 boolean Text_DrawHLine(Screen* the_screen, signed int x, signed int y, signed int the_line_len, unsigned char the_char, unsigned char fore_color, unsigned char back_color, text_draw_choice the_draw_choice);
 
-// draws a vertical line from specified coords, for n characters, using the specified char and/or attribute
+//! Draws a vertical line from specified coords, for n characters, using the specified char and/or attribute
+//! @param	the_line_len: The total length of the line, in characters, including the start and end character.
+//! @param	fore_color: Index to the desired foreground color (0-15). The predefined macro constants may be used (COLOR_DK_RED, etc.), but be aware that the colors are not fixed, and may not correspond to the names if the LUT in RAM has been modified.
+//! @param	back_color: Index to the desired background color (0-15). The predefined macro constants may be used (COLOR_DK_RED, etc.), but be aware that the colors are not fixed, and may not correspond to the names if the LUT in RAM has been modified.
+//! @param	the_draw_choice: controls the scope of the action, and is one of CHAR_ONLY, ATTR_ONLY, or CHAR_AND_ATTR. See the text_draw_choice enum.
+//! @return	returns false on any error/invalid input.
 boolean Text_DrawVLine(Screen* the_screen, signed int x, signed int y, signed int the_line_len, unsigned char the_char, unsigned char fore_color, unsigned char back_color, text_draw_choice the_draw_choice);
 
-// draws a basic box based on 2 sets of coords, using the specified char and/or attribute for all cells
+//! Draws a basic box based on 2 sets of coords, using the specified char and/or attribute for all cells
+//! @param	fore_color: Index to the desired foreground color (0-15). The predefined macro constants may be used (COLOR_DK_RED, etc.), but be aware that the colors are not fixed, and may not correspond to the names if the LUT in RAM has been modified.
+//! @param	back_color: Index to the desired background color (0-15). The predefined macro constants may be used (COLOR_DK_RED, etc.), but be aware that the colors are not fixed, and may not correspond to the names if the LUT in RAM has been modified.
+//! @param	the_draw_choice: controls the scope of the action, and is one of CHAR_ONLY, ATTR_ONLY, or CHAR_AND_ATTR. See the text_draw_choice enum.
+//! @return	returns false on any error/invalid input.
 boolean Text_DrawBoxCoords(Screen* the_screen, signed int x1, signed int y1, signed int x2, signed int y2, unsigned char the_char, unsigned char fore_color, unsigned char back_color, text_draw_choice the_draw_choice);
 
-// draws a box based on 2 sets of coords, using the predetermined line and corner "graphics", and the passed colors
+//! Draws a box based on 2 sets of coords, using the predetermined line and corner "graphics", and the passed colors
+//! @param	fore_color: Index to the desired foreground color (0-15). The predefined macro constants may be used (COLOR_DK_RED, etc.), but be aware that the colors are not fixed, and may not correspond to the names if the LUT in RAM has been modified.
+//! @param	back_color: Index to the desired background color (0-15). The predefined macro constants may be used (COLOR_DK_RED, etc.), but be aware that the colors are not fixed, and may not correspond to the names if the LUT in RAM has been modified.
+//! @return	returns false on any error/invalid input.
 boolean Text_DrawBoxCoordsFancy(Screen* the_screen, signed int x1, signed int y1, signed int x2, signed int y2, unsigned char fore_color, unsigned char back_color);
 
-// draws a basic box based on start coords and width/height, using the specified char and/or attribute for all cells
+//! Draws a basic box based on start coords and width/height, using the specified char and/or attribute for all cells
+//! @param	width: width, in character cells, of the rectangle to be drawn
+//! @param	height: height, in character cells, of the rectangle to be drawn
+//! @param	fore_color: Index to the desired foreground color (0-15). The predefined macro constants may be used (COLOR_DK_RED, etc.), but be aware that the colors are not fixed, and may not correspond to the names if the LUT in RAM has been modified.
+//! @param	back_color: Index to the desired background color (0-15). The predefined macro constants may be used (COLOR_DK_RED, etc.), but be aware that the colors are not fixed, and may not correspond to the names if the LUT in RAM has been modified.
+//! @param	the_draw_choice: controls the scope of the action, and is one of CHAR_ONLY, ATTR_ONLY, or CHAR_AND_ATTR. See the text_draw_choice enum.
+//! @return	returns false on any error/invalid input.
 boolean Text_DrawBox(Screen* the_screen, signed int x, signed int y, signed int width, signed int height, unsigned char the_char, unsigned char fore_color, unsigned char back_color, text_draw_choice the_draw_choice);
 
 
@@ -301,19 +330,32 @@ boolean Text_DrawBox(Screen* the_screen, signed int x, signed int y, signed int 
 // **** Draw string functions *****
 
 
-// Draw a string at a specified x, y coord, also setting the color attributes
-// Truncate, but still draw the string if it is too long to display on the line it started.
-// No word wrap is performed. 
+//! Draw a string at a specified x, y coord, also setting the color attributes.
+//! If it is too long to display on the line it started, it will be truncated at the right edge of the screen.
+//! No word wrap is performed. 
+//! @param	the_string: the null-terminated string to be measured.
+//! @param	fore_color: Index to the desired foreground color (0-15). The predefined macro constants may be used (COLOR_DK_RED, etc.), but be aware that the colors are not fixed, and may not correspond to the names if the LUT in RAM has been modified.
+//! @param	back_color: Index to the desired background color (0-15). The predefined macro constants may be used (COLOR_DK_RED, etc.), but be aware that the colors are not fixed, and may not correspond to the names if the LUT in RAM has been modified.
+//! @return	returns false on any error/invalid input.
 boolean Text_DrawStringAtXY(Screen* the_screen, signed int x, signed int y, char* the_string, unsigned char fore_color, unsigned char back_color);
 
-// Draw a string in a rectangular block on the screen, with wrap
-// If a word can't be wrapped, it will break the word and move on to the next line. So if you pass a rect with 1 char of width, it will draw a vertical line of chars down the screen.
-// returns false on any error/invalid input.
+//! Draw a string in a rectangular block on the screen, with wrap.
+//! If a word can't be wrapped, it will break the word and move on to the next line. So if you pass a rect with 1 char of width, it will draw a vertical line of chars down the screen.
+//! @param	the_string: the null-terminated string to be displayed.
+//! @param	fore_color: Index to the desired foreground color (0-15). The predefined macro constants may be used (COLOR_DK_RED, etc.), but be aware that the colors are not fixed, and may not correspond to the names if the LUT in RAM has been modified.
+//! @param	back_color: Index to the desired background color (0-15). The predefined macro constants may be used (COLOR_DK_RED, etc.), but be aware that the colors are not fixed, and may not correspond to the names if the LUT in RAM has been modified.
+//! @param	continue_function: optional hook to a function that will be called if the provided text cannot fit into the specified box. If provided, the function will be called each time text exceeds available space. If the function returns true, another chunk of text will be displayed, replacing the first. If the function returns false, processing will stop. If no function is provided, processing will stop at the point text exceeds the available space.
+//! @return	returns a pointer to the first character in the string after which it stopped processing (if string is too long to be displayed in its entirety). Returns the original string if the entire string was processed successfully. Returns NULL in the event of any error.
 char* Text_DrawStringInBox(Screen* the_screen, signed int x1, signed int y1, signed int x2, signed int y2, char* the_string, unsigned char fore_color, unsigned char back_color, boolean (* continue_function)(void));
 
-// calculates how many characters of the passed string will fit into the passed pixel width
-// returns -1 in any error condition
-signed int Text_MeasureStringWidth(Screen* the_screen, char* the_string, signed int the_len, signed int available_width);
+//! Calculates how many characters of the passed string will fit into the passed pixel width.
+//! In Text Mode, all characters have the same fixed width, so this is measuring against the font width described in the screen object.
+//! @param	the_font: this is for consistency with the graphical font code. Pass a NULL here, the result will not be used.
+//! @param	the_string: the null-terminated string to be measured.
+//! @param	the_len: the length of the passed string. If the entire string fits, this len will be returned.
+//! @param	available_width: the width, in pixels, of the space the string is to be measured against.
+//! @return	returns -1 in any error condition, or the number of characters that fit. If the entire string fits, the passed len will be returned.
+signed int Text_MeasureStringWidth(Font* the_font, char* the_string, signed int the_len, signed int available_width, signed int fixed_char_width);
 
 
 
@@ -325,7 +367,7 @@ signed int Text_MeasureStringWidth(Screen* the_screen, char* the_string, signed 
 boolean Text_SetSizes(Screen* the_screen);
 
 //! Change video mode to the one passed.
-//! @param new_mode: Must correspond to a valid VICKY video mode. See VICKY_IIIA_RES_800X600_FLAGS, etc. defined in a2560_platform.h
+//! @param	new_mode: One of the enumerated screen_resolution values. Must correspond to a valid VICKY video mode for the host machine. See VICKY_IIIA_RES_800X600_FLAGS, etc. defined in a2560_platform.h
 //! @return	returns false on any error/invalid input.
 boolean Text_SetVideoMode(Screen* the_screen, screen_resolution new_mode);
 

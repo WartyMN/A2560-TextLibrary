@@ -24,10 +24,10 @@
 */
 var NAVTREE =
 [
-  [ "Foenix A2650 Text Mode Library", "index.html", [
-    [ "Foenix A2650 Text Library", "index.html", [
-      [ "A2650-TextLibrary", "index.html#autotoc_md0", [
-        [ "What's an A2650?", "index.html#autotoc_md1", null ],
+  [ "Foenix A2560 Text Mode Library", "index.html", [
+    [ "Foenix A2560 Text Library", "index.html", [
+      [ "A2560-TextLibrary", "index.html#autotoc_md0", [
+        [ "What's an A2560?", "index.html#autotoc_md1", null ],
         [ "About this project", "index.html#autotoc_md2", null ],
         [ "Status", "index.html#autotoc_md3", null ],
         [ "Why you might want this:", "index.html#autotoc_md4", null ],

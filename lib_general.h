@@ -112,12 +112,19 @@ typedef enum LoggingLevel
 /*                       Public Function Prototypes                          */
 /*****************************************************************************/
 
-// Format a string by wrapping and trimming to fit the passed width and height. returns number of vertical pixels required. 
-// Passing a 0 for height disables the governor on allowed vertical space. 
-// If the string cannot be displayed in the specified height and width, processing will stop, but it is not an error condition
-// If max_chars_to_format is less than len of string, processing will stop after that many characters.
-// returns -1 in any error condition
-signed int General_WrapAndTrimTextToFit(Screen* the_screen, char** orig_string, char** formatted_string, signed int max_chars_to_format, signed int max_width, signed int max_height, signed int (* measure_function)(Screen*, char*, signed int, signed int));
+//! Format a string by wrapping and trimming to fit the passed width and height. 
+//! If the string cannot be displayed in the specified height and width, processing will stop, but it is not an error condition
+//! @param	orig_string: pointer to a string pointer that holds the text to be formatted. Upon return, this pointer will point to the next character after the last processed character (if the string was too long to fit). If the entire string fits, this pointer will not be adjusted.
+//! @param	formatted_string: pointer to a string pointer to an empty string buffer that will be filled with the formatted version of the text.
+//! @param	max_chars_to_format: the length of the string to format (in characters). If max_chars_to_format is less than the length of string, processing will stop after that many characters.
+//! @param	max_width: the width into which the text must fit, in pixels. 
+//! @param	max_height: the height into which the text must fit, in pixels. Pass a 0 to disable the governor on vertical space. 
+//! @param	one_char_width: the width in pixels, of one character. NOTE: This is only used for fixed-width, text mode operations. 
+//! @param	one_row_height: the height in pixels, of one row of text, including any leading. 
+//! @param	the_font: the font object to be used in measuring width. This is optional and ignore if called for text mode operations.
+//! @param	measure_function: pointer to the function responsible for measuring the graphical width of a string 
+//! @return Returns number of vertical pixels required. Returns -1 in any error condition.
+signed int General_WrapAndTrimTextToFit(char** orig_string, char** formatted_string, signed int max_chars_to_format, signed int max_width, signed int max_height, signed int one_char_width, signed int one_row_height, Font* the_font, signed int (* measure_function)(Font*, char*, signed int, signed int, signed int));
 
 // replacement for tolower() in c library, which doesn't seem to work here for some reason.
 char General_ToLower(char the_char);

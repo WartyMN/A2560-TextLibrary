@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.9.3"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Foenix A2650 Text Mode Library: lib_text.c File Reference</title>
+<title>Foenix A2560 Text Mode Library: lib_text.c File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -30,7 +30,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">Foenix A2650 Text Mode Library
+   <div id="projectname">Foenix A2560 Text Mode Library
    </div>
   </td>
     <td>        <div id="MSearchBox" class="MSearchBoxInactive">
@@ -101,6 +101,7 @@ $(document).ready(function(){initNavTree('lib__text_8c.html',''); initResizable(
 <code>#include &lt;stdio.h&gt;</code><br />
 <code>#include &lt;stdlib.h&gt;</code><br />
 <code>#include &lt;string.h&gt;</code><br />
+<code>#include &lt;mcp/syscalls.h&gt;</code><br />
 <code>#include &quot;a2560_platform.h&quot;</code><br />
 <code>#include &quot;<a class="el" href="lib__general_8h_source.html">lib_general.h</a>&quot;</code><br />
 </div><table class="memberdecls">
@@ -196,11 +197,42 @@ Functions</h2></td></tr>
 <tr class="memitem:a90a8f5463fa9827c2b74037c386eae06"><td class="memItemLeft" align="right" valign="top">char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="lib__text_8c.html#a90a8f5463fa9827c2b74037c386eae06">Text_DrawStringInBox</a> (<a class="el" href="struct_screen.html">Screen</a> *the_screen, signed int x1, signed int y1, signed int x2, signed int y2, char *the_string, unsigned char fore_color, unsigned char back_color, boolean(*continue_function)(void))</td></tr>
 <tr class="memdesc:a90a8f5463fa9827c2b74037c386eae06"><td class="mdescLeft">&#160;</td><td class="mdescRight">Draw a string in a rectangular block on the screen, with wrap.  <a href="lib__text_8c.html#a90a8f5463fa9827c2b74037c386eae06">More...</a><br /></td></tr>
 <tr class="separator:a90a8f5463fa9827c2b74037c386eae06"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:adc1ddeaf0c0e1974275a94efa4862289"><td class="memItemLeft" align="right" valign="top">signed int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="lib__text_8c.html#adc1ddeaf0c0e1974275a94efa4862289">Text_MeasureStringWidth</a> (<a class="el" href="struct_screen.html">Screen</a> *the_screen, char *the_string, signed int the_len, signed int available_width)</td></tr>
-<tr class="memdesc:adc1ddeaf0c0e1974275a94efa4862289"><td class="mdescLeft">&#160;</td><td class="mdescRight">Calculates how many characters of the passed string will fit into the passed pixel width.  <a href="lib__text_8c.html#adc1ddeaf0c0e1974275a94efa4862289">More...</a><br /></td></tr>
-<tr class="separator:adc1ddeaf0c0e1974275a94efa4862289"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a19133257b1f43a70622fb4ab1006a49a"><td class="memItemLeft" align="right" valign="top">signed int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="lib__text_8c.html#a19133257b1f43a70622fb4ab1006a49a">Text_MeasureStringWidth</a> (Font *the_font, char *the_string, signed int the_len, signed int available_width, signed int fixed_char_width)</td></tr>
+<tr class="memdesc:a19133257b1f43a70622fb4ab1006a49a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Calculates how many characters of the passed string will fit into the passed pixel width.  <a href="lib__text_8c.html#a19133257b1f43a70622fb4ab1006a49a">More...</a><br /></td></tr>
+<tr class="separator:a19133257b1f43a70622fb4ab1006a49a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad9fc0e2b28302e39a38e63fd5078a85d"><td class="memItemLeft" align="right" valign="top">boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="lib__text_8c.html#ad9fc0e2b28302e39a38e63fd5078a85d">Text_SetSizes</a> (<a class="el" href="struct_screen.html">Screen</a> *the_screen)</td></tr>
+<tr class="memdesc:ad9fc0e2b28302e39a38e63fd5078a85d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Detect the current screen mode/resolution, and set # of columns, rows, H pixels, V pixels, accordingly.  <a href="lib__text_8c.html#ad9fc0e2b28302e39a38e63fd5078a85d">More...</a><br /></td></tr>
+<tr class="separator:ad9fc0e2b28302e39a38e63fd5078a85d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:addb55fbea00e21d84f9d136be01e846f"><td class="memItemLeft" align="right" valign="top">boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="lib__text_8c.html#addb55fbea00e21d84f9d136be01e846f">Text_SetVideoMode</a> (<a class="el" href="struct_screen.html">Screen</a> *the_screen, screen_resolution new_mode)</td></tr>
+<tr class="memdesc:addb55fbea00e21d84f9d136be01e846f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Change video mode to the one passed.  <a href="lib__text_8c.html#addb55fbea00e21d84f9d136be01e846f">More...</a><br /></td></tr>
+<tr class="separator:addb55fbea00e21d84f9d136be01e846f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aea282d396d0afb178c476a615fe74d1d"><td class="memItemLeft" align="right" valign="top">boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="lib__text_8c.html#aea282d396d0afb178c476a615fe74d1d">Text_AutoConfigureScreen</a> (<a class="el" href="struct_screen.html">Screen</a> *the_screen)</td></tr>
+<tr class="memdesc:aea282d396d0afb178c476a615fe74d1d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Find out what kind of machine the software is running on, and configure the passed screen accordingly Configures screen settings, RAM addresses, etc.  <a href="lib__text_8c.html#aea282d396d0afb178c476a615fe74d1d">More...</a><br /></td></tr>
+<tr class="separator:aea282d396d0afb178c476a615fe74d1d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
+<a id="aea282d396d0afb178c476a615fe74d1d" name="aea282d396d0afb178c476a615fe74d1d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aea282d396d0afb178c476a615fe74d1d">&#9670;&nbsp;</a></span>Text_AutoConfigureScreen()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">boolean Text_AutoConfigureScreen </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="struct_screen.html">Screen</a> *&#160;</td>
+          <td class="paramname"><em>the_screen</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Find out what kind of machine the software is running on, and configure the passed screen accordingly Configures screen settings, RAM addresses, etc. </p>
+<p >based on known info about machine types Configures screen width, height, total text rows and cols, and visible text rows and cols by checking hardware For machines with 2 screens, call this once per screen </p><dl class="section return"><dt>Returns</dt><dd>Returns false if the machine is known to be incompatible with this software. <br  />
+ </dd></dl>
+
+</div>
+</div>
 <a id="a044e0193af7b1b25a0fc0d9e19bc3f26" name="a044e0193af7b1b25a0fc0d9e19bc3f26"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a044e0193af7b1b25a0fc0d9e19bc3f26">&#9670;&nbsp;</a></span>Text_CopyAttrMemFromScreen()</h2>
 
@@ -230,7 +262,7 @@ Functions</h2></td></tr>
 <p>Copy a full screen of text attributes to an off-screen buffer. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">the_screen</td><td>valid pointer to a configured <a class="el" href="struct_screen.html">Screen</a> object (a2650_platform.h) </td></tr>
+    <tr><td class="paramname">the_screen</td><td>valid pointer to a configured <a class="el" href="struct_screen.html">Screen</a> object (<a class="el" href="a2560__platform_8h_source.html">a2560_platform.h</a>) </td></tr>
     <tr><td class="paramname">the_target_buffer</td><td>valid pointer to a block of memory big enough to hold the attribute data copied from the screen. It must be at least as large as the visible rows X visible columns of the screen. </td></tr>
   </table>
   </dd>
@@ -268,7 +300,7 @@ Functions</h2></td></tr>
 <p>Copy a full screen of attr from an off-screen buffer. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">the_screen</td><td>valid pointer to a configured <a class="el" href="struct_screen.html">Screen</a> object (a2650_platform.h) </td></tr>
+    <tr><td class="paramname">the_screen</td><td>valid pointer to a configured <a class="el" href="struct_screen.html">Screen</a> object (<a class="el" href="a2560__platform_8h_source.html">a2560_platform.h</a>) </td></tr>
     <tr><td class="paramname">the_source_buffer</td><td>valid pointer to attribute value data that will be copied to the screen. It must be at least as large as the visible rows X visible columns of the screen. </td></tr>
   </table>
   </dd>
@@ -774,6 +806,7 @@ Functions</h2></td></tr>
 <p>Draws a horizontal line from specified coords, for n characters, using the specified char and/or attribute. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
+    <tr><td class="paramname">the_line_len</td><td>The total length of the line, in characters, including the start and end character. </td></tr>
     <tr><td class="paramname">fore_color</td><td>Index to the desired foreground color (0-15). The predefined macro constants may be used (COLOR_DK_RED, etc.), but be aware that the colors are not fixed, and may not correspond to the names if the LUT in RAM has been modified. </td></tr>
     <tr><td class="paramname">back_color</td><td>Index to the desired background color (0-15). The predefined macro constants may be used (COLOR_DK_RED, etc.), but be aware that the colors are not fixed, and may not correspond to the names if the LUT in RAM has been modified. </td></tr>
     <tr><td class="paramname">the_draw_choice</td><td>controls the scope of the action, and is one of CHAR_ONLY, ATTR_ONLY, or CHAR_AND_ATTR. See the text_draw_choice enum. </td></tr>
@@ -849,6 +882,7 @@ Functions</h2></td></tr>
 <p>Draws a horizontal line from specified coords, for n characters, using the specified char and/or attribute This version uses char-by-char functions, so it is very slow. </p>
 <p >It will be removed before release. </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
+    <tr><td class="paramname">the_line_len</td><td>The total length of the line, in characters, including the start and end character. </td></tr>
     <tr><td class="paramname">fore_color</td><td>Index to the desired foreground color (0-15). The predefined macro constants may be used (COLOR_DK_RED, etc.), but be aware that the colors are not fixed, and may not correspond to the names if the LUT in RAM has been modified. </td></tr>
     <tr><td class="paramname">back_color</td><td>Index to the desired background color (0-15). The predefined macro constants may be used (COLOR_DK_RED, etc.), but be aware that the colors are not fixed, and may not correspond to the names if the LUT in RAM has been modified. </td></tr>
     <tr><td class="paramname">the_draw_choice</td><td>controls the scope of the action, and is one of CHAR_ONLY, ATTR_ONLY, or CHAR_AND_ATTR. See the text_draw_choice enum. </td></tr>
@@ -1069,6 +1103,7 @@ Functions</h2></td></tr>
 <p>Draws a vertical line from specified coords, for n characters, using the specified char and/or attribute. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
+    <tr><td class="paramname">the_line_len</td><td>The total length of the line, in characters, including the start and end character. </td></tr>
     <tr><td class="paramname">fore_color</td><td>Index to the desired foreground color (0-15). The predefined macro constants may be used (COLOR_DK_RED, etc.), but be aware that the colors are not fixed, and may not correspond to the names if the LUT in RAM has been modified. </td></tr>
     <tr><td class="paramname">back_color</td><td>Index to the desired background color (0-15). The predefined macro constants may be used (COLOR_DK_RED, etc.), but be aware that the colors are not fixed, and may not correspond to the names if the LUT in RAM has been modified. </td></tr>
     <tr><td class="paramname">the_draw_choice</td><td>controls the scope of the action, and is one of CHAR_ONLY, ATTR_ONLY, or CHAR_AND_ATTR. See the text_draw_choice enum. </td></tr>
@@ -1628,8 +1663,8 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="adc1ddeaf0c0e1974275a94efa4862289" name="adc1ddeaf0c0e1974275a94efa4862289"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#adc1ddeaf0c0e1974275a94efa4862289">&#9670;&nbsp;</a></span>Text_MeasureStringWidth()</h2>
+<a id="a19133257b1f43a70622fb4ab1006a49a" name="a19133257b1f43a70622fb4ab1006a49a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a19133257b1f43a70622fb4ab1006a49a">&#9670;&nbsp;</a></span>Text_MeasureStringWidth()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1637,8 +1672,8 @@ Functions</h2></td></tr>
         <tr>
           <td class="memname">signed int Text_MeasureStringWidth </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="struct_screen.html">Screen</a> *&#160;</td>
-          <td class="paramname"><em>the_screen</em>, </td>
+          <td class="paramtype">Font *&#160;</td>
+          <td class="paramname"><em>the_font</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -1656,7 +1691,13 @@ Functions</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">signed int&#160;</td>
-          <td class="paramname"><em>available_width</em>&#160;</td>
+          <td class="paramname"><em>available_width</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">signed int&#160;</td>
+          <td class="paramname"><em>fixed_char_width</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -1669,6 +1710,7 @@ Functions</h2></td></tr>
 <p>Calculates how many characters of the passed string will fit into the passed pixel width. </p>
 <p >In Text Mode, all characters have the same fixed width, so this is measuring against the font width described in the screen object. </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
+    <tr><td class="paramname">the_font</td><td>this is for consistency with the graphical font code. Pass a NULL here, the result will not be used. </td></tr>
     <tr><td class="paramname">the_string</td><td>the null-terminated string to be measured. </td></tr>
     <tr><td class="paramname">the_len</td><td>the length of the passed string. If the entire string fits, this len will be returned. </td></tr>
     <tr><td class="paramname">available_width</td><td>the width, in pixels, of the space the string is to be measured against. </td></tr>
@@ -1836,6 +1878,64 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Set a char at a specified x, y coord. </p>
+<dl class="section return"><dt>Returns</dt><dd>returns false on any error/invalid input. </dd></dl>
+
+</div>
+</div>
+<a id="ad9fc0e2b28302e39a38e63fd5078a85d" name="ad9fc0e2b28302e39a38e63fd5078a85d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad9fc0e2b28302e39a38e63fd5078a85d">&#9670;&nbsp;</a></span>Text_SetSizes()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">boolean Text_SetSizes </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="struct_screen.html">Screen</a> *&#160;</td>
+          <td class="paramname"><em>the_screen</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Detect the current screen mode/resolution, and set # of columns, rows, H pixels, V pixels, accordingly. </p>
+<dl class="section return"><dt>Returns</dt><dd>returns false on any error/invalid input. </dd></dl>
+
+</div>
+</div>
+<a id="addb55fbea00e21d84f9d136be01e846f" name="addb55fbea00e21d84f9d136be01e846f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#addb55fbea00e21d84f9d136be01e846f">&#9670;&nbsp;</a></span>Text_SetVideoMode()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">boolean Text_SetVideoMode </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="struct_screen.html">Screen</a> *&#160;</td>
+          <td class="paramname"><em>the_screen</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">screen_resolution&#160;</td>
+          <td class="paramname"><em>new_mode</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Change video mode to the one passed. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">new_mode</td><td>One of the enumerated screen_resolution values. Must correspond to a valid VICKY video mode for the host machine. See VICKY_IIIA_RES_800X600_FLAGS, etc. defined in <a class="el" href="a2560__platform_8h_source.html">a2560_platform.h</a> </td></tr>
+  </table>
+  </dd>
+</dl>
 <dl class="section return"><dt>Returns</dt><dd>returns false on any error/invalid input. </dd></dl>
 
 </div>

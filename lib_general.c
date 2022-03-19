@@ -73,7 +73,7 @@ void General_WrapParaWriteLine(char** source, char** target, signed int write_le
 // PRIVATE - no checking of parameters
 // passed a string with no line breaks in it, and a buffer to write into, copies the string contents into the target buffer, performing line breaks as it goes
 // stops when all characters have been processed, or when all available vertical space has been used up.
-signed int General_WrapPara(Screen* the_screen, char* this_line_start, char* formatted_text, signed int remaining_len, signed int max_width, signed int remaining_v_pixels, signed int font_height, signed int (* measure_function)(Screen*, char*, signed int, signed int));
+signed int General_WrapPara(char* this_line_start, char* formatted_text, signed int remaining_len, signed int max_width, signed int remaining_v_pixels, signed int one_char_width, signed int one_row_height, Font* the_font, signed int (* measure_function)(Font*, char*, signed int, signed int, signed int));
 
 //! \endcond
 
@@ -101,7 +101,7 @@ void General_WrapParaWriteLine(char** source, char** target, signed int write_le
 // PRIVATE - no checking of parameters
 // passed a string with no line breaks in it, and a buffer to write into, copies the string contents into the target buffer, performing line breaks as it goes
 // stops when all characters have been processed, or when all available vertical space has been used up.
-signed int General_WrapPara(Screen* the_screen, char* this_line_start, char* formatted_text, signed int remaining_len, signed int max_width, signed int remaining_v_pixels, signed int font_height, signed int (* measure_function)(Screen*, char*, signed int, signed int))
+signed int General_WrapPara(char* this_line_start, char* formatted_text, signed int remaining_len, signed int max_width, signed int remaining_v_pixels, signed int one_char_width, signed int one_row_height, Font* the_font, signed int (* measure_function)(Font*, char*, signed int, signed int, signed int))
 {
 	signed int		v_pixels = 0;
 	boolean			line_complete;
@@ -130,7 +130,7 @@ signed int General_WrapPara(Screen* the_screen, char* this_line_start, char* for
 			signed int			next_soft_break_pos;
 		
 			next_soft_break_pos = General_StrFindNextWordEnd(next_line_start, next_line_len);
-				
+			
 			if (next_soft_break_pos < 0)
 			{
 				signed int		chars_that_fit;
@@ -148,7 +148,7 @@ signed int General_WrapPara(Screen* the_screen, char* this_line_start, char* for
 				
 				signed int	proposed_new_line_len = this_line_len + next_line_len;
 				
-				chars_that_fit = (*measure_function)(the_screen, this_line_start, proposed_new_line_len, max_width);
+				chars_that_fit = (*measure_function)(the_font, this_line_start, proposed_new_line_len, max_width, one_char_width);
 				
 				if (chars_that_fit >= proposed_new_line_len)
 				{
@@ -190,8 +190,8 @@ signed int General_WrapPara(Screen* the_screen, char* this_line_start, char* for
 				signed int	proposed_new_line_len = this_line_len + next_soft_break_pos;
 				signed int	chars_that_fit;
 			
-				chars_that_fit = (*measure_function)(the_screen, this_line_start, proposed_new_line_len, max_width);
-			
+				chars_that_fit = (*measure_function)(the_font, this_line_start, proposed_new_line_len, max_width, one_char_width);
+				
 				if (chars_that_fit >= proposed_new_line_len)
 				{
 					// the upcoming word will fit on current line
@@ -218,7 +218,7 @@ signed int General_WrapPara(Screen* the_screen, char* this_line_start, char* for
 					if (chars_that_fit == -1)
 					{
 						// handle error condition: having completed the current line, force function to exit with an error.
-						printf("\nError! ln %d next_line_len=%i, this_line_start='%s'", __LINE__, next_line_len, this_line_start);
+						LOG_ERR(("%s %d: next_line_len=%i, this_line_start='%s'", __func__, __LINE__, next_line_len, this_line_start));	
 						*(formatted_text) = '\0';
 						return -1;
 					}
@@ -226,8 +226,8 @@ signed int General_WrapPara(Screen* the_screen, char* this_line_start, char* for
 			}
 		}
 		
-		v_pixels += font_height;
-		remaining_v_pixels -= font_height;
+		v_pixels += one_row_height;
+		remaining_v_pixels -= one_row_height;
 		
 	} while (this_line_start != NULL && remaining_v_pixels > 0);
 	
@@ -289,11 +289,13 @@ boolean General_StringToUnsignedLong(const char* the_string_value, unsigned long
 //! @param	max_chars_to_format: the length of the string to format (in characters). If max_chars_to_format is less than the length of string, processing will stop after that many characters.
 //! @param	max_width: the width into which the text must fit, in pixels. 
 //! @param	max_height: the height into which the text must fit, in pixels. Pass a 0 to disable the governor on vertical space. 
+//! @param	one_char_width: the width in pixels, of one character. NOTE: This is only used for fixed-width, text mode operations. 
+//! @param	one_row_height: the height in pixels, of one row of text, including any leading. 
+//! @param	the_font: the font object to be used in measuring width. This is optional and ignore if called for text mode operations.
 //! @param	measure_function: pointer to the function responsible for measuring the graphical width of a string 
 //! @return Returns number of vertical pixels required. Returns -1 in any error condition.
-signed int General_WrapAndTrimTextToFit(Screen* the_screen, char** orig_string, char** formatted_string, signed int max_chars_to_format, signed int max_width, signed int max_height, signed int (* measure_function)(Screen*, char*, signed int, signed int))
+signed int General_WrapAndTrimTextToFit(char** orig_string, char** formatted_string, signed int max_chars_to_format, signed int max_width, signed int max_height, signed int one_char_width, signed int one_row_height, Font* the_font, signed int (* measure_function)(Font*, char*, signed int, signed int, signed int))
 {
-	signed int		font_height;
 	char*			formatted_text;
 	signed int		v_pixels = 0;
 	signed int		new_v_pixels_used;
@@ -303,14 +305,7 @@ signed int General_WrapAndTrimTextToFit(Screen* the_screen, char** orig_string, 
 	signed int		remaining_v_pixels;
 	static char		para_buff[1024];
 	char*			the_para = para_buff;
-	
-	if (the_screen == NULL)
-	{
-		LOG_ERR(("%s %d: passed screen was NULL", __func__, __LINE__));
-		return -1;
-	}
 
-	font_height = the_screen->text_font_height_;
 	remaining_v_pixels = max_height;
 	
 	remaining_text = *orig_string;
@@ -330,7 +325,7 @@ signed int General_WrapAndTrimTextToFit(Screen* the_screen, char** orig_string, 
 		{
 			*(formatted_text) = '\n';
 			// the first char in the string is a line break - skip over and continue
-			new_v_pixels_used = font_height;
+			new_v_pixels_used = one_row_height;
 			// account for the line break char we are skipping past
 			len_to_process = 1;
 		}
@@ -353,7 +348,7 @@ signed int General_WrapAndTrimTextToFit(Screen* the_screen, char** orig_string, 
 			}		
 				
 			// process one paragraph
-			new_v_pixels_used = General_WrapPara(the_screen, para_to_process, formatted_text, len_to_process, max_width, remaining_v_pixels, font_height, measure_function);		
+			new_v_pixels_used = General_WrapPara(para_to_process, formatted_text, len_to_process, max_width, remaining_v_pixels, one_row_height, one_char_width, the_font, measure_function);		
 		}
 	
 		if (new_v_pixels_used == -1)
@@ -372,8 +367,7 @@ signed int General_WrapAndTrimTextToFit(Screen* the_screen, char** orig_string, 
 				format_complete = true;
 			}
 			
-		}
-		
+		}		
 	} while ( format_complete == false);
 
 	//DEBUG_OUT(("%s %d: print out of formatted_text after processing...", __func__ , __LINE__));

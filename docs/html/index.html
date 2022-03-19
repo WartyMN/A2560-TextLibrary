@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.9.3"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Foenix A2650 Text Mode Library: Foenix A2650 Text Library</title>
+<title>Foenix A2560 Text Mode Library: Foenix A2560 Text Library</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -30,7 +30,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">Foenix A2650 Text Mode Library
+   <div id="projectname">Foenix A2560 Text Mode Library
    </div>
   </td>
     <td>        <div id="MSearchBox" class="MSearchBoxInactive">
@@ -91,27 +91,41 @@ $(document).ready(function(){initNavTree('index.html',''); initResizable(); });
 </div>
 
 <div><div class="header">
-  <div class="headertitle"><div class="title">Foenix A2650 Text Library </div></div>
+  <div class="headertitle"><div class="title">Foenix A2560 Text Library </div></div>
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><h1><a class="anchor" id="autotoc_md0"></a>
-A2650-TextLibrary</h1>
-<p >This is a simple C library providing basic functions for the A2650's text mode</p>
+A2560-TextLibrary</h1>
+<p >This is a simple C library providing basic functions for the A2560's text mode</p>
 <h2><a class="anchor" id="autotoc_md1"></a>
-What's an A2650?</h2>
-<p >The A2650 is a newly recreated retro computer based around a Motorolla 680x0. It is not a new Amiga, Atari ST, Mac, NeXT: it is a new thing, designed for hobbyist users who want to experience coding and using the "simpler" computers of the late 1980s/early 1990s. It is part of a family of computers that share much of the same architecture. Predecessors include the C256 Foenix, running a 65816 (fast) 8-bit processor. Web site: <a href="https://c256foenix.com/?v=3e8d115eb4b3">https://c256foenix.com/?v=3e8d115eb4b3</a></p>
+What's an A2560?</h2>
+<p >The A2560 is a newly recreated retro computer based around a Motorolla 680x0. It is not a new Amiga, Atari ST, Mac, NeXT: it is a new thing, designed for hobbyist users who want to experience coding and using the "simpler" computers of the late 1980s/early 1990s. It is part of a family of computers that share much of the same architecture. Predecessors include the C256 Foenix, running a 65816 (fast) 8-bit processor. Web site: <a href="https://c256foenix.com/?v=3e8d115eb4b3">https://c256foenix.com/?v=3e8d115eb4b3</a></p>
 <h2><a class="anchor" id="autotoc_md2"></a>
 About this project</h2>
-<p >This is a learning project for me, to build experience on the A2650. Aside from learning, the goal is to be able to build a library of functions that can be used to place characters, colors, strings, etc., on the screen, and to be able to query the screen about what is at a particular location. Think of it as a basic curses for the A2650 (but not at all related to curses, and using a completely different interface).</p>
+<p >This is a learning project for me, to build experience on the A2560. Aside from learning, the goal is to be able to build a library of functions that can be used to place characters, colors, strings, etc., on the screen, and to be able to query the screen about what is at a particular location. Think of it as a basic curses for the A2560 (but not at all related to curses, and using a completely different interface).</p>
 <h2><a class="anchor" id="autotoc_md3"></a>
 Status</h2>
-<p >75% complete. Next phase: Bug-fixing, smarter configuration, etc., No optimization done, no testing against hardware. I do not have any hardware yet. I'm doing all development against the f68 emulator, but that itself is also a tool in development.</p>
+<p >75% complete. Next phase: Bug-fixing, smarter configuration, etc., No optimization done, no testing against hardware. <br  />
+ I do not have any hardware yet. I'm doing all development against the f68 emulator, but that itself is also a tool in development.</p>
 <h2><a class="anchor" id="autotoc_md4"></a>
 Why you might want this:</h2>
-<p >If you have, or are considering acquiring an A2650 or GenX (680x0 + 65816), and want a simple library to put text on the screen in your C programs. Note: <b>NO ONE SHOULD USE THIS, OR EVEN LOOK IN ITS DIRECTION!</b> (until I get some real hardware and can complete the job).</p>
+<p >If you have, or are considering acquiring an A2560K or GenX (68040 OR 486 + 65816), and want a simple library to put text on the screen in your C programs. <br  />
+ Note: <b>NO ONE SHOULD USE THIS, OR EVEN LOOK IN ITS DIRECTION!</b> (until I get some real hardware and can complete the job).</p>
 <h2><a class="anchor" id="autotoc_md5"></a>
 How to use it</h2>
-<p >The A2650 kernel/OS doesn't support dynamically linked libraries yet, so for now, you have you just compile this into your app.</p>
+<p >The A2560 kernel/OS doesn't support dynamically linked libraries yet, so for now, it is only available as a static library. In the "for_vbcc" folder, you will file header files, and the library. Add these to your VBCC "targets/a2560-elf" folder. <br  />
+ <code>$VBCC/targets/a2560-elf/include/mb/lib_text.h</code> <br  />
+ <code>$VBCC/targets/a2560-elf/include/mb/lib_general.h</code> <br  />
+ <code>$VBCC/targets/a2560-elf/lib/a2560_text.lib</code> <br  />
+ <code>$VBCC/targets/a2560-elf/lib/a2560_general.lib</code> <br  />
+</p>
+<p >Include the headers in your C file(s): <br  />
+ <code>#include &lt;mb/a2560_platform.h&gt;</code> <br  />
+ <code>#include &lt;mb/lib_general.h&gt;</code> <br  />
+ <code>#include &lt;mb/lib_text.h&gt;</code> <br  />
+</p>
+<p >Modify your VBCC config file to include the library. Add "-la2560_general -la2560_text" to each vlink line. <br  />
+</p>
 <h2><a class="anchor" id="autotoc_md6"></a>
 Expected final functionality</h2>
 <ul>
@@ -140,6 +154,8 @@ Expected final functionality</h2>
 <li>display a string in a rectangular block on the screen, with wrap, taking a hook for a "display more" event, and scrolling text vertically up after hook func returns 'continue' (or exit, returning control to calling func, if hook returns 'stop')</li>
 <li>replace current text font with another, loading from specified ram loc.</li>
 <li>configure at compile time for use in various Foenix machines</li>
+<li>Auto recognize the screen resolution, num text cols, size of borders, etc.</li>
+<li>ability to change screen resolution</li>
 </ul>
 <h2><a class="anchor" id="autotoc_md7"></a>
 Completed</h2>
@@ -167,16 +183,18 @@ Completed</h2>
 <li>replace current text font with another, loading from specified ram loc.</li>
 <li>documentation (for text lib, have not started on general lib)</li>
 <li>prep and clean up to be a standalone static library</li>
+<li>Auto recognize the screen resolution, num text cols, size of borders, etc.</li>
+<li>ability to change screen resolution</li>
 </ul>
 <h2><a class="anchor" id="autotoc_md8"></a>
 ToDo</h2>
 <ul>
 <li>copy a full screen of text and attr between channel A and B</li>
-<li><strike>clean up the A2650U/K vs morfe addresses, default colors, etc.</strike></li>
+<li><strike>clean up the A2560U/K vs morfe addresses, default colors, etc.</strike></li>
 <li>optimization</li>
-<li>add function(s) to switch resolutions, and automatically adjust number of cols/rows</li>
-<li>add function(s) to adjust border sizes, and automatically adjust number of visible rows/columns</li>
-<li>configure at compile time for use in various Foenix machines</li>
+<li><strike>add function(s) to switch resolutions, and automatically adjust number of cols/rows</strike></li>
+<li><strike>add function(s) to adjust border sizes, and automatically adjust number of visible rows/columns</strike></li>
+<li><strike>configure at RUN time for use in various A2560 machines</strike></li>
 <li><strike>fix bug with word wrap declining to present the final line in the string if string is shorter than box.</strike></li>
 <li>clean up text wrap buffers etc</li>
 <li>strategy for handling DEBUG macros (build 2 versions of library? one debug mode, one not? TBD)</li>
