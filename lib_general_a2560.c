@@ -27,8 +27,8 @@
 #include <errno.h>
 
 // A2560 includes
-#include "a2560_platform.h"
-#include "lib_general.h"
+#include <mb/a2560_platform.h>
+#include <mb/lib_general.h>
 
 
 

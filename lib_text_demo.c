@@ -28,6 +28,7 @@
 #include <mb/a2560_platform.h>
 #include <mb/lib_general.h>
 #include <mb/lib_text.h>
+#include <mb/lib_sys.h>
 
 
 /*****************************************************************************/
@@ -40,7 +41,8 @@
 /*                             Global Variables                              */
 /*****************************************************************************/
 
-Screen	global_screen[2];
+System*			the_system;
+
 
 /*****************************************************************************/
 /*                       Private Function Prototypes                         */
@@ -118,36 +120,36 @@ boolean Test_MyGetUserResponseFunc(void)
 // have user hit a key, then clear screens
 void WaitForUser(void)
 {
-	Text_DrawStringAtXY(&global_screen[ID_CHANNEL_B], 1, 4, (char*)"Press any key to continue", FG_COLOR_YELLOW, BG_COLOR_DK_BLUE);
+	Text_DrawStringAtXY(the_system->screen_[ID_CHANNEL_B], 1, 4, (char*)"Press any key to continue", FG_COLOR_YELLOW, BG_COLOR_DK_BLUE);
 	
 	getchar();
 	
-	Text_FillCharMem(&global_screen[ID_CHANNEL_A], ' ');
-	Text_FillAttrMem(&global_screen[ID_CHANNEL_A], 159);
-	Text_FillCharMem(&global_screen[ID_CHANNEL_B], ' ');
-	Text_FillAttrMem(&global_screen[ID_CHANNEL_B], 159);
+	Text_FillCharMem(the_system->screen_[ID_CHANNEL_A], ' ');
+	Text_FillAttrMem(the_system->screen_[ID_CHANNEL_A], 159);
+	Text_FillCharMem(the_system->screen_[ID_CHANNEL_B], ' ');
+	Text_FillAttrMem(the_system->screen_[ID_CHANNEL_B], 159);
 }
 
 // Draw fancy box on the B screen and display demo description
 void ShowDescription(char* the_message)
 {
 	signed int	x1 = 0;
-	signed int	x2 = global_screen[ID_CHANNEL_B].text_cols_vis_ - 1;
+	signed int	x2 = the_system->screen_[ID_CHANNEL_B]->text_cols_vis_ - 1;
 	signed int	y1 = 0;
 	signed int	y2 = 5;
 
 	// draw box and fill contents in prep for next demo description
-	Text_DrawBoxCoordsFancy(&global_screen[ID_CHANNEL_B], x1, y1, x2, y2, FG_COLOR_BLUE, BG_COLOR_DK_BLUE);
-	Text_FillBox(&global_screen[ID_CHANNEL_B], x1+1, y1+1, x2-1, y2-1, ' ', FG_COLOR_WHITE, BG_COLOR_DK_BLUE);
+	Text_DrawBoxCoordsFancy(the_system->screen_[ID_CHANNEL_B], x1, y1, x2, y2, FG_COLOR_BLUE, BG_COLOR_DK_BLUE);
+	Text_FillBox(the_system->screen_[ID_CHANNEL_B], x1+1, y1+1, x2-1, y2-1, ' ', FG_COLOR_WHITE, BG_COLOR_DK_BLUE);
 	
 	// wrap text into the message box, leaving one row at the bottom for "press any key"
-	Text_DrawStringInBox(&global_screen[ID_CHANNEL_B], x1+1, y1+1, x2-1, y2-1, the_message, FG_COLOR_WHITE, BG_COLOR_DK_BLUE, NULL);
+	Text_DrawStringInBox(the_system->screen_[ID_CHANNEL_B], x1+1, y1+1, x2-1, y2-1, the_message, FG_COLOR_WHITE, BG_COLOR_DK_BLUE, NULL);
 }
 
 
 void Demo_Text_FillCharMem1(void)
 {
-	Text_FillCharMem(&global_screen[ID_CHANNEL_B], 'Z');
+	Text_FillCharMem(the_system->screen_[ID_CHANNEL_B], 'Z');
 	ShowDescription("Text_FillCharMem -> fill screen with the letter Z");	
 	WaitForUser();
 }
@@ -155,7 +157,7 @@ void Demo_Text_FillCharMem1(void)
 
 void Demo_Text_FillCharMem2(void)
 {
-	Text_FillCharMem(&global_screen[ID_CHANNEL_B], CH_DIAMOND);
+	Text_FillCharMem(the_system->screen_[ID_CHANNEL_B], CH_DIAMOND);
 	ShowDescription("Text_FillCharMem -> fill screen with a diamond character");	
 	WaitForUser();
 }
@@ -163,8 +165,8 @@ void Demo_Text_FillCharMem2(void)
 
 void Demo_Text_FillAttrMem1(void)
 {
-	Text_FillCharMem(&global_screen[ID_CHANNEL_B], CH_DIAMOND);
-	Text_FillAttrMem(&global_screen[ID_CHANNEL_B], 127);
+	Text_FillCharMem(the_system->screen_[ID_CHANNEL_B], CH_DIAMOND);
+	Text_FillAttrMem(the_system->screen_[ID_CHANNEL_B], 127);
 	ShowDescription("Text_FillAttrMem -> fill screen with gray-on-black colors without changing characters");	
 	WaitForUser();
 }
@@ -172,8 +174,8 @@ void Demo_Text_FillAttrMem1(void)
 
 void Demo_Text_FillAttrMem2(void)
 {
-	Text_FillCharMem(&global_screen[ID_CHANNEL_B], CH_DIAMOND);
-	Text_FillAttrMem(&global_screen[ID_CHANNEL_B], 147);
+	Text_FillCharMem(the_system->screen_[ID_CHANNEL_B], CH_DIAMOND);
+	Text_FillAttrMem(the_system->screen_[ID_CHANNEL_B], 147);
 	ShowDescription("Text_FillAttrMem -> fill screen with red-on-olive colors without changing characters");	
 	WaitForUser();
 }
@@ -182,7 +184,7 @@ void Demo_Text_FillAttrMem2(void)
 void Demo_Text_FillBoxSlow1(void)
 {
 	ShowDescription("Text_FillBoxSlow -> fill a square on screen with a checkered pattern, black on white (slow routine)");	
-	Text_FillBoxSlow(&global_screen[ID_CHANNEL_B], 0, 6, global_screen[ID_CHANNEL_B].text_cols_vis_ - 1, 35, CH_CHECKERED1, COLOR_BLACK, BG_COLOR_WHITE, CHAR_AND_ATTR);
+	Text_FillBoxSlow(the_system->screen_[ID_CHANNEL_B], 0, 6, the_system->screen_[ID_CHANNEL_B]->text_cols_vis_ - 1, 35, CH_CHECKERED1, COLOR_BLACK, BG_COLOR_WHITE, CHAR_AND_ATTR);
 	WaitForUser();
 }
 
@@ -190,7 +192,7 @@ void Demo_Text_FillBoxSlow1(void)
 void Demo_Text_FillBoxSlow2(void)
 {
 	ShowDescription("Text_FillBoxSlow -> fill a square on screen with a different checkered pattern, blue on dark blue (slow routine)");	
-	Text_FillBoxSlow(&global_screen[ID_CHANNEL_B], 2, 9, global_screen[ID_CHANNEL_B].text_cols_vis_ - 1, 35, CH_CHECKERED3, COLOR_BLUE, COLOR_DK_BLUE, CHAR_AND_ATTR);
+	Text_FillBoxSlow(the_system->screen_[ID_CHANNEL_B], 2, 9, the_system->screen_[ID_CHANNEL_B]->text_cols_vis_ - 1, 35, CH_CHECKERED3, COLOR_BLUE, COLOR_DK_BLUE, CHAR_AND_ATTR);
 	WaitForUser();
 }
 
@@ -198,7 +200,7 @@ void Demo_Text_FillBoxSlow2(void)
 void Demo_Text_FillBox1(void)
 {
 	ShowDescription("Text_FillBox -> fill a square on screen with a checkered pattern, black on white (fast routine)");	
-	Text_FillBox(&global_screen[ID_CHANNEL_B], 4, 11, global_screen[ID_CHANNEL_B].text_cols_vis_ - 1, 32, CH_CHECKERED1, COLOR_BLACK, BG_COLOR_WHITE);
+	Text_FillBox(the_system->screen_[ID_CHANNEL_B], 4, 11, the_system->screen_[ID_CHANNEL_B]->text_cols_vis_ - 1, 32, CH_CHECKERED1, COLOR_BLACK, BG_COLOR_WHITE);
 	WaitForUser();
 }
 
@@ -206,7 +208,7 @@ void Demo_Text_FillBox1(void)
 void Demo_Text_FillBox2(void)
 {
 	ShowDescription("Text_FillBox -> fill a square on screen with a different checkered pattern, blue on dark blue (fast routine)");	
-	Text_FillBox(&global_screen[ID_CHANNEL_B], 6, 13, global_screen[ID_CHANNEL_B].text_cols_vis_ - 1, 39, CH_CHECKERED3, COLOR_BLUE, COLOR_DK_BLUE);
+	Text_FillBox(the_system->screen_[ID_CHANNEL_B], 6, 13, the_system->screen_[ID_CHANNEL_B]->text_cols_vis_ - 1, 39, CH_CHECKERED3, COLOR_BLUE, COLOR_DK_BLUE);
 	WaitForUser();
 }
 
@@ -214,9 +216,9 @@ void Demo_Text_FillBox2(void)
 void Demo_Text_FillBox3(void)
 {
 	ShowDescription("Text_FillBox -> fill various squares with colors and characters (fast routine)");	
-	Text_FillBox(&global_screen[ID_CHANNEL_B], 0, 7, 3, 9, CH_RIGHT, COLOR_GREEN, COLOR_DK_BLUE);
-	Text_FillBox(&global_screen[ID_CHANNEL_B], 0, 10, 2, 12, CH_LEFT, COLOR_RED, COLOR_DK_BLUE);
-	Text_FillBox(&global_screen[ID_CHANNEL_B], 0, 13, 4, 16, CH_UP, COLOR_ORANGE, COLOR_DK_BLUE);
+	Text_FillBox(the_system->screen_[ID_CHANNEL_B], 0, 7, 3, 9, CH_RIGHT, COLOR_GREEN, COLOR_DK_BLUE);
+	Text_FillBox(the_system->screen_[ID_CHANNEL_B], 0, 10, 2, 12, CH_LEFT, COLOR_RED, COLOR_DK_BLUE);
+	Text_FillBox(the_system->screen_[ID_CHANNEL_B], 0, 13, 4, 16, CH_UP, COLOR_ORANGE, COLOR_DK_BLUE);
 	WaitForUser();
 }
 
@@ -224,8 +226,8 @@ void Demo_Text_FillBox3(void)
 void Demo_Text_InvertBox(void)
 {
 	ShowDescription("Text_InvertBox -> invert a rectangle of colors");	
-	Text_FillBox(&global_screen[ID_CHANNEL_B], 6, 10, 60, 35, CH_DIAMOND, COLOR_RED, BG_COLOR_WHITE);
-	Text_InvertBox(&global_screen[ID_CHANNEL_B], 40, 0, global_screen[ID_CHANNEL_B].text_cols_vis_ - 1, 33);
+	Text_FillBox(the_system->screen_[ID_CHANNEL_B], 6, 10, 60, 35, CH_DIAMOND, COLOR_RED, BG_COLOR_WHITE);
+	Text_InvertBox(the_system->screen_[ID_CHANNEL_B], 40, 0, the_system->screen_[ID_CHANNEL_B]->text_cols_vis_ - 1, 33);
 	WaitForUser();
 }
 
@@ -233,7 +235,7 @@ void Demo_Text_InvertBox(void)
 void Demo_Text_ShowFontChars(void)
 {
 	ShowDescription("Text_ShowFontChars -> show font characters on screen");	
-	Text_ShowFontChars(&global_screen[ID_CHANNEL_B], 10);
+	Text_ShowFontChars(the_system->screen_[ID_CHANNEL_B], 10);
 	WaitForUser();
 }
 
@@ -241,38 +243,38 @@ void Demo_Text_ShowFontChars(void)
 void Demo_Text_SetCharAndColorAtXY(void)
 {
 	ShowDescription("Text_SetCharAndColorAtXY -> Draw various characters and colors at various locations on screen");	
- 	Text_SetCharAndColorAtXY(&global_screen[ID_CHANNEL_B], 0, 14, 33, FG_COLOR_BLACK, BG_COLOR_DK_GRAY);
- 	Text_SetCharAndColorAtXY(&global_screen[ID_CHANNEL_B], 1, 14, 34, FG_COLOR_DK_RED, BG_COLOR_DK_GRAY);
- 	Text_SetCharAndColorAtXY(&global_screen[ID_CHANNEL_B], 2, 14, 35, FG_COLOR_GREEN, BG_COLOR_DK_GRAY);
- 	Text_SetCharAndColorAtXY(&global_screen[ID_CHANNEL_B], 3, 14, 36, FG_COLOR_BLUE, BG_COLOR_DK_GRAY);
- 	Text_SetCharAndColorAtXY(&global_screen[ID_CHANNEL_B], 4, 14, 37, COLOR_LT_GRAY, BG_COLOR_DK_GRAY);
- 	Text_SetCharAndColorAtXY(&global_screen[ID_CHANNEL_B], 5, 14, 38, COLOR_LT_GRAY, BG_COLOR_DK_GRAY);
- 	Text_SetCharAndColorAtXY(&global_screen[ID_CHANNEL_B], 6, 14, 39, FG_COLOR_VIOLET, BG_COLOR_DK_GRAY);
- 	Text_SetCharAndColorAtXY(&global_screen[ID_CHANNEL_B], 7, 14, 40, COLOR_LT_GRAY, BG_COLOR_DK_GRAY);
- 	Text_SetCharAndColorAtXY(&global_screen[ID_CHANNEL_B], 8, 14, 41, COLOR_BLACK, BG_COLOR_DK_GRAY);
- 	Text_SetCharAndColorAtXY(&global_screen[ID_CHANNEL_B], 9, 14, 42, COLOR_LT_GRAY, BG_COLOR_DK_GRAY);
- 	Text_SetCharAndColorAtXY(&global_screen[ID_CHANNEL_B], 10,14, 43, COLOR_LT_GRAY, BG_COLOR_DK_GRAY);
- 	Text_SetCharAndColorAtXY(&global_screen[ID_CHANNEL_B], 11,14, 44, COLOR_LT_GRAY, BG_COLOR_DK_GRAY);
- 	Text_SetCharAndColorAtXY(&global_screen[ID_CHANNEL_B], 12,14, 45, FG_COLOR_DK_GRAY, BG_COLOR_DK_GRAY);
- 	Text_SetCharAndColorAtXY(&global_screen[ID_CHANNEL_B], 13,14, 46, COLOR_LT_GRAY, BG_COLOR_DK_GRAY);
- 	Text_SetCharAndColorAtXY(&global_screen[ID_CHANNEL_B], 14,14, 47, FG_COLOR_WHITE, BG_COLOR_DK_GRAY);
- 	Text_SetCharAndColorAtXY(&global_screen[ID_CHANNEL_B], 15,14, 48, COLOR_LT_GRAY, BG_COLOR_DK_GRAY);
- 	Text_SetCharAndColorAtXY(&global_screen[ID_CHANNEL_B], 0, 15, 33, FG_COLOR_WHITE, BG_COLOR_BLACK);
- 	Text_SetCharAndColorAtXY(&global_screen[ID_CHANNEL_B], 1, 15, 34, FG_COLOR_WHITE, BG_COLOR_DK_RED);
- 	Text_SetCharAndColorAtXY(&global_screen[ID_CHANNEL_B], 2, 15, 35, FG_COLOR_WHITE, BG_COLOR_GREEN);
- 	Text_SetCharAndColorAtXY(&global_screen[ID_CHANNEL_B], 3, 15, 36, FG_COLOR_WHITE, BG_COLOR_BLUE);
- 	Text_SetCharAndColorAtXY(&global_screen[ID_CHANNEL_B], 4, 14, 37, FG_COLOR_WHITE, COLOR_RED);
- 	Text_SetCharAndColorAtXY(&global_screen[ID_CHANNEL_B], 5, 15, 38, FG_COLOR_WHITE, COLOR_RED);
- 	Text_SetCharAndColorAtXY(&global_screen[ID_CHANNEL_B], 6, 15, 39, FG_COLOR_WHITE, COLOR_RED);
- 	Text_SetCharAndColorAtXY(&global_screen[ID_CHANNEL_B], 7, 15, 40, FG_COLOR_WHITE, BG_COLOR_DK_GRAY);
- 	Text_SetCharAndColorAtXY(&global_screen[ID_CHANNEL_B], 8, 15, 41, FG_COLOR_WHITE, COLOR_RED);
- 	Text_SetCharAndColorAtXY(&global_screen[ID_CHANNEL_B], 9, 15, 42, FG_COLOR_WHITE, COLOR_RED);
- 	Text_SetCharAndColorAtXY(&global_screen[ID_CHANNEL_B], 10, 15, 43, FG_COLOR_WHITE, COLOR_RED);
- 	Text_SetCharAndColorAtXY(&global_screen[ID_CHANNEL_B], 11, 15, 44, FG_COLOR_WHITE, COLOR_RED);
- 	Text_SetCharAndColorAtXY(&global_screen[ID_CHANNEL_B], 12, 15, 45, FG_COLOR_WHITE, COLOR_RED);
- 	Text_SetCharAndColorAtXY(&global_screen[ID_CHANNEL_B], 13, 15, 46, FG_COLOR_WHITE, COLOR_RED);
- 	Text_SetCharAndColorAtXY(&global_screen[ID_CHANNEL_B], 14, 15, 47, FG_COLOR_WHITE, BG_COLOR_LT_GRAY);
- 	Text_SetCharAndColorAtXY(&global_screen[ID_CHANNEL_B], 15, 15, 48, FG_COLOR_WHITE, BG_COLOR_WHITE);
+ 	Text_SetCharAndColorAtXY(the_system->screen_[ID_CHANNEL_B], 0, 14, 33, FG_COLOR_BLACK, BG_COLOR_DK_GRAY);
+ 	Text_SetCharAndColorAtXY(the_system->screen_[ID_CHANNEL_B], 1, 14, 34, FG_COLOR_DK_RED, BG_COLOR_DK_GRAY);
+ 	Text_SetCharAndColorAtXY(the_system->screen_[ID_CHANNEL_B], 2, 14, 35, FG_COLOR_GREEN, BG_COLOR_DK_GRAY);
+ 	Text_SetCharAndColorAtXY(the_system->screen_[ID_CHANNEL_B], 3, 14, 36, FG_COLOR_BLUE, BG_COLOR_DK_GRAY);
+ 	Text_SetCharAndColorAtXY(the_system->screen_[ID_CHANNEL_B], 4, 14, 37, COLOR_LT_GRAY, BG_COLOR_DK_GRAY);
+ 	Text_SetCharAndColorAtXY(the_system->screen_[ID_CHANNEL_B], 5, 14, 38, COLOR_LT_GRAY, BG_COLOR_DK_GRAY);
+ 	Text_SetCharAndColorAtXY(the_system->screen_[ID_CHANNEL_B], 6, 14, 39, FG_COLOR_VIOLET, BG_COLOR_DK_GRAY);
+ 	Text_SetCharAndColorAtXY(the_system->screen_[ID_CHANNEL_B], 7, 14, 40, COLOR_LT_GRAY, BG_COLOR_DK_GRAY);
+ 	Text_SetCharAndColorAtXY(the_system->screen_[ID_CHANNEL_B], 8, 14, 41, COLOR_BLACK, BG_COLOR_DK_GRAY);
+ 	Text_SetCharAndColorAtXY(the_system->screen_[ID_CHANNEL_B], 9, 14, 42, COLOR_LT_GRAY, BG_COLOR_DK_GRAY);
+ 	Text_SetCharAndColorAtXY(the_system->screen_[ID_CHANNEL_B], 10,14, 43, COLOR_LT_GRAY, BG_COLOR_DK_GRAY);
+ 	Text_SetCharAndColorAtXY(the_system->screen_[ID_CHANNEL_B], 11,14, 44, COLOR_LT_GRAY, BG_COLOR_DK_GRAY);
+ 	Text_SetCharAndColorAtXY(the_system->screen_[ID_CHANNEL_B], 12,14, 45, FG_COLOR_DK_GRAY, BG_COLOR_DK_GRAY);
+ 	Text_SetCharAndColorAtXY(the_system->screen_[ID_CHANNEL_B], 13,14, 46, COLOR_LT_GRAY, BG_COLOR_DK_GRAY);
+ 	Text_SetCharAndColorAtXY(the_system->screen_[ID_CHANNEL_B], 14,14, 47, FG_COLOR_WHITE, BG_COLOR_DK_GRAY);
+ 	Text_SetCharAndColorAtXY(the_system->screen_[ID_CHANNEL_B], 15,14, 48, COLOR_LT_GRAY, BG_COLOR_DK_GRAY);
+ 	Text_SetCharAndColorAtXY(the_system->screen_[ID_CHANNEL_B], 0, 15, 33, FG_COLOR_WHITE, BG_COLOR_BLACK);
+ 	Text_SetCharAndColorAtXY(the_system->screen_[ID_CHANNEL_B], 1, 15, 34, FG_COLOR_WHITE, BG_COLOR_DK_RED);
+ 	Text_SetCharAndColorAtXY(the_system->screen_[ID_CHANNEL_B], 2, 15, 35, FG_COLOR_WHITE, BG_COLOR_GREEN);
+ 	Text_SetCharAndColorAtXY(the_system->screen_[ID_CHANNEL_B], 3, 15, 36, FG_COLOR_WHITE, BG_COLOR_BLUE);
+ 	Text_SetCharAndColorAtXY(the_system->screen_[ID_CHANNEL_B], 4, 14, 37, FG_COLOR_WHITE, COLOR_RED);
+ 	Text_SetCharAndColorAtXY(the_system->screen_[ID_CHANNEL_B], 5, 15, 38, FG_COLOR_WHITE, COLOR_RED);
+ 	Text_SetCharAndColorAtXY(the_system->screen_[ID_CHANNEL_B], 6, 15, 39, FG_COLOR_WHITE, COLOR_RED);
+ 	Text_SetCharAndColorAtXY(the_system->screen_[ID_CHANNEL_B], 7, 15, 40, FG_COLOR_WHITE, BG_COLOR_DK_GRAY);
+ 	Text_SetCharAndColorAtXY(the_system->screen_[ID_CHANNEL_B], 8, 15, 41, FG_COLOR_WHITE, COLOR_RED);
+ 	Text_SetCharAndColorAtXY(the_system->screen_[ID_CHANNEL_B], 9, 15, 42, FG_COLOR_WHITE, COLOR_RED);
+ 	Text_SetCharAndColorAtXY(the_system->screen_[ID_CHANNEL_B], 10, 15, 43, FG_COLOR_WHITE, COLOR_RED);
+ 	Text_SetCharAndColorAtXY(the_system->screen_[ID_CHANNEL_B], 11, 15, 44, FG_COLOR_WHITE, COLOR_RED);
+ 	Text_SetCharAndColorAtXY(the_system->screen_[ID_CHANNEL_B], 12, 15, 45, FG_COLOR_WHITE, COLOR_RED);
+ 	Text_SetCharAndColorAtXY(the_system->screen_[ID_CHANNEL_B], 13, 15, 46, FG_COLOR_WHITE, COLOR_RED);
+ 	Text_SetCharAndColorAtXY(the_system->screen_[ID_CHANNEL_B], 14, 15, 47, FG_COLOR_WHITE, BG_COLOR_LT_GRAY);
+ 	Text_SetCharAndColorAtXY(the_system->screen_[ID_CHANNEL_B], 15, 15, 48, FG_COLOR_WHITE, BG_COLOR_WHITE);
 	WaitForUser();
 }
 
@@ -283,19 +285,19 @@ void Demo_Text_DrawHLine1(void)
 	signed int		y;
 	signed int		line_len;
 
-	Text_FillCharMem(&global_screen[ID_CHANNEL_B], '.');
-	Text_FillAttrMem(&global_screen[ID_CHANNEL_B], 31);
+	Text_FillCharMem(the_system->screen_[ID_CHANNEL_B], '.');
+	Text_FillAttrMem(the_system->screen_[ID_CHANNEL_B], 31);
 
 	ShowDescription("Text_DrawHLine / Text_DrawVLine -> Draw straight lines using a specified character (CHAR_ONLY)");	
 	
 	x = 20;
 	y = 10;
 	line_len = 20;
-	Text_DrawHLine(&global_screen[ID_CHANNEL_B], x, y, line_len, CH_HEART, FG_COLOR_GREEN, BG_COLOR_BLACK, CHAR_ONLY);
-	Text_DrawHLine(&global_screen[ID_CHANNEL_B], x, y + 2, line_len, CH_HEART, FG_COLOR_GREEN, BG_COLOR_BLACK, CHAR_ONLY);
-	Text_DrawHLine(&global_screen[ID_CHANNEL_B], x, y + 4, line_len, CH_HEART, FG_COLOR_GREEN, BG_COLOR_BLACK, CHAR_ONLY);
-	Text_DrawVLine(&global_screen[ID_CHANNEL_B], x + 10, y - 1, line_len, CH_CLUB, FG_COLOR_YELLOW, BG_COLOR_BLACK, CHAR_ONLY);
-	Text_DrawVLine(&global_screen[ID_CHANNEL_B], x + 15, y - 1, line_len + 5, CH_CLUB, FG_COLOR_YELLOW, BG_COLOR_BLACK, CHAR_ONLY);
+	Text_DrawHLine(the_system->screen_[ID_CHANNEL_B], x, y, line_len, CH_HEART, FG_COLOR_GREEN, BG_COLOR_BLACK, CHAR_ONLY);
+	Text_DrawHLine(the_system->screen_[ID_CHANNEL_B], x, y + 2, line_len, CH_HEART, FG_COLOR_GREEN, BG_COLOR_BLACK, CHAR_ONLY);
+	Text_DrawHLine(the_system->screen_[ID_CHANNEL_B], x, y + 4, line_len, CH_HEART, FG_COLOR_GREEN, BG_COLOR_BLACK, CHAR_ONLY);
+	Text_DrawVLine(the_system->screen_[ID_CHANNEL_B], x + 10, y - 1, line_len, CH_CLUB, FG_COLOR_YELLOW, BG_COLOR_BLACK, CHAR_ONLY);
+	Text_DrawVLine(the_system->screen_[ID_CHANNEL_B], x + 15, y - 1, line_len + 5, CH_CLUB, FG_COLOR_YELLOW, BG_COLOR_BLACK, CHAR_ONLY);
 
 	WaitForUser();
 }
@@ -308,19 +310,19 @@ void Demo_Text_DrawHLine2(void)
 	signed int		y;
 	signed int		line_len;
 
-	Text_FillCharMem(&global_screen[ID_CHANNEL_B], '.');
-	Text_FillAttrMem(&global_screen[ID_CHANNEL_B], 31);
+	Text_FillCharMem(the_system->screen_[ID_CHANNEL_B], '.');
+	Text_FillAttrMem(the_system->screen_[ID_CHANNEL_B], 31);
 
 	ShowDescription("Text_DrawHLine / Text_DrawVLine -> Paint straight lines using a specified color combo (ATTR_ONLY)");	
 	
 	x = 20;
 	y = 10;
 	line_len = 20;
-	Text_DrawHLine(&global_screen[ID_CHANNEL_B], x, y, line_len, CH_HEART, FG_COLOR_GREEN, BG_COLOR_BLACK, ATTR_ONLY);
-	Text_DrawHLine(&global_screen[ID_CHANNEL_B], x, y + 2, line_len, CH_HEART, FG_COLOR_WHITE, BG_COLOR_GREEN, ATTR_ONLY);
-	Text_DrawHLine(&global_screen[ID_CHANNEL_B], x, y + 4, line_len, CH_HEART, FG_COLOR_BLUE, BG_COLOR_BLACK, ATTR_ONLY);
-	Text_DrawVLine(&global_screen[ID_CHANNEL_B], x + 10, y - 1, line_len, CH_CLUB, FG_COLOR_YELLOW, BG_COLOR_BLUE, ATTR_ONLY);
-	Text_DrawVLine(&global_screen[ID_CHANNEL_B], x + 15, y - 1, line_len + 5, CH_CLUB, FG_COLOR_YELLOW, BG_COLOR_BLACK, ATTR_ONLY);
+	Text_DrawHLine(the_system->screen_[ID_CHANNEL_B], x, y, line_len, CH_HEART, FG_COLOR_GREEN, BG_COLOR_BLACK, ATTR_ONLY);
+	Text_DrawHLine(the_system->screen_[ID_CHANNEL_B], x, y + 2, line_len, CH_HEART, FG_COLOR_WHITE, BG_COLOR_GREEN, ATTR_ONLY);
+	Text_DrawHLine(the_system->screen_[ID_CHANNEL_B], x, y + 4, line_len, CH_HEART, FG_COLOR_BLUE, BG_COLOR_BLACK, ATTR_ONLY);
+	Text_DrawVLine(the_system->screen_[ID_CHANNEL_B], x + 10, y - 1, line_len, CH_CLUB, FG_COLOR_YELLOW, BG_COLOR_BLUE, ATTR_ONLY);
+	Text_DrawVLine(the_system->screen_[ID_CHANNEL_B], x + 15, y - 1, line_len + 5, CH_CLUB, FG_COLOR_YELLOW, BG_COLOR_BLACK, ATTR_ONLY);
 
 	WaitForUser();
 }
@@ -332,19 +334,19 @@ void Demo_Text_DrawHLine3(void)
 	signed int		y;
 	signed int		line_len;
 
-	Text_FillCharMem(&global_screen[ID_CHANNEL_B], '.');
-	Text_FillAttrMem(&global_screen[ID_CHANNEL_B], 31);
+	Text_FillCharMem(the_system->screen_[ID_CHANNEL_B], '.');
+	Text_FillAttrMem(the_system->screen_[ID_CHANNEL_B], 31);
 
 	ShowDescription("Text_DrawHLine / Text_DrawVLine -> Draw straight lines using a specified character and color combo (CHAR_AND_ATTR)");	
 	
 	x = 20;
 	y = 10;
 	line_len = 20;
-	Text_DrawHLine(&global_screen[ID_CHANNEL_B], x, y, line_len, CH_HEART, FG_COLOR_GREEN, BG_COLOR_BLACK, CHAR_AND_ATTR);
-	Text_DrawHLine(&global_screen[ID_CHANNEL_B], x, y + 2, line_len, CH_DIAMOND, FG_COLOR_WHITE, BG_COLOR_GREEN, CHAR_AND_ATTR);
-	Text_DrawHLine(&global_screen[ID_CHANNEL_B], x, y + 4, line_len, CH_CLUB, FG_COLOR_BLUE, BG_COLOR_BLACK, CHAR_AND_ATTR);
-	Text_DrawVLine(&global_screen[ID_CHANNEL_B], x + 10, y - 1, line_len, CH_CLUB, FG_COLOR_YELLOW, BG_COLOR_BLUE, CHAR_AND_ATTR);
-	Text_DrawVLine(&global_screen[ID_CHANNEL_B], x + 15, y - 1, line_len + 5, CH_SMILEY1, FG_COLOR_YELLOW, BG_COLOR_BLACK, CHAR_AND_ATTR);
+	Text_DrawHLine(the_system->screen_[ID_CHANNEL_B], x, y, line_len, CH_HEART, FG_COLOR_GREEN, BG_COLOR_BLACK, CHAR_AND_ATTR);
+	Text_DrawHLine(the_system->screen_[ID_CHANNEL_B], x, y + 2, line_len, CH_DIAMOND, FG_COLOR_WHITE, BG_COLOR_GREEN, CHAR_AND_ATTR);
+	Text_DrawHLine(the_system->screen_[ID_CHANNEL_B], x, y + 4, line_len, CH_CLUB, FG_COLOR_BLUE, BG_COLOR_BLACK, CHAR_AND_ATTR);
+	Text_DrawVLine(the_system->screen_[ID_CHANNEL_B], x + 10, y - 1, line_len, CH_CLUB, FG_COLOR_YELLOW, BG_COLOR_BLUE, CHAR_AND_ATTR);
+	Text_DrawVLine(the_system->screen_[ID_CHANNEL_B], x + 15, y - 1, line_len + 5, CH_SMILEY1, FG_COLOR_YELLOW, BG_COLOR_BLACK, CHAR_AND_ATTR);
 
 	WaitForUser();
 }
@@ -370,27 +372,27 @@ void Demo_Text_NamedColors(void)
 
 	for (i = 0; i < num_colors; i++)
 	{
-		Text_DrawHLine(&global_screen[ID_CHANNEL_B], x, y + i, line_len, the_char, i, BG_COLOR_BLUE, CHAR_AND_ATTR);
-		Text_DrawHLine(&global_screen[ID_CHANNEL_B], x + 30, y + i, line_len, CH_MIDDOT, FG_COLOR_BLACK, i, CHAR_AND_ATTR);
+		Text_DrawHLine(the_system->screen_[ID_CHANNEL_B], x, y + i, line_len, the_char, i, BG_COLOR_BLUE, CHAR_AND_ATTR);
+		Text_DrawHLine(the_system->screen_[ID_CHANNEL_B], x + 30, y + i, line_len, CH_MIDDOT, FG_COLOR_BLACK, i, CHAR_AND_ATTR);
 	}
 
 	// manually line up named colors
-	Text_DrawHLine(&global_screen[ID_CHANNEL_B], x + line_len + 2, y + 0, 6, the_char, FG_COLOR_BLACK, BG_COLOR_BLUE, CHAR_AND_ATTR);
-	Text_DrawHLine(&global_screen[ID_CHANNEL_B], x + line_len + 2, y + 1, 6, the_char, FG_COLOR_DK_RED, BG_COLOR_BLUE, CHAR_AND_ATTR);
-	Text_DrawHLine(&global_screen[ID_CHANNEL_B], x + line_len + 2, y + 2, 6, the_char, FG_COLOR_DK_GREEN, BG_COLOR_BLUE, CHAR_AND_ATTR);
-	Text_DrawHLine(&global_screen[ID_CHANNEL_B], x + line_len + 2, y + 3, 6, the_char, FG_COLOR_DK_YELLOW, BG_COLOR_BLUE, CHAR_AND_ATTR);
-	Text_DrawHLine(&global_screen[ID_CHANNEL_B], x + line_len + 2, y + 4, 6, the_char, FG_COLOR_DK_BLUE, BG_COLOR_BLUE, CHAR_AND_ATTR);
-	Text_DrawHLine(&global_screen[ID_CHANNEL_B], x + line_len + 2, y + 5, 6, the_char, FG_COLOR_ORANGE, BG_COLOR_BLUE, CHAR_AND_ATTR);
-	Text_DrawHLine(&global_screen[ID_CHANNEL_A], x + line_len + 2, y + 6, 6, the_char, FG_COLOR_DK_CYAN, BG_COLOR_BLUE, CHAR_AND_ATTR);
-	Text_DrawHLine(&global_screen[ID_CHANNEL_B], x + line_len + 2, y + 7, 6, the_char, FG_COLOR_LT_GRAY, BG_COLOR_BLUE, CHAR_AND_ATTR);
-	Text_DrawHLine(&global_screen[ID_CHANNEL_B], x + line_len + 2, y + 8, 6, the_char, FG_COLOR_DK_GRAY, BG_COLOR_BLUE, CHAR_AND_ATTR);
-	Text_DrawHLine(&global_screen[ID_CHANNEL_B], x + line_len + 2, y + 9, 6, the_char, FG_COLOR_ORANGE, BG_COLOR_BLUE, CHAR_AND_ATTR);
-	Text_DrawHLine(&global_screen[ID_CHANNEL_B], x + line_len + 2, y + 10, 6, the_char, FG_COLOR_GREEN, BG_COLOR_BLUE, CHAR_AND_ATTR);
-	Text_DrawHLine(&global_screen[ID_CHANNEL_B], x + line_len + 2, y + 11, 6, the_char, FG_COLOR_YELLOW, BG_COLOR_BLUE, CHAR_AND_ATTR);
-	Text_DrawHLine(&global_screen[ID_CHANNEL_B], x + line_len + 2, y + 12, 6, the_char, FG_COLOR_BLUE, BG_COLOR_BLUE, CHAR_AND_ATTR);
-	Text_DrawHLine(&global_screen[ID_CHANNEL_B], x + line_len + 2, y + 13, 6, the_char, FG_COLOR_VIOLET, BG_COLOR_BLUE, CHAR_AND_ATTR);
-	Text_DrawHLine(&global_screen[ID_CHANNEL_B], x + line_len + 2, y + 14, 6, the_char, FG_COLOR_CYAN, BG_COLOR_BLUE, CHAR_AND_ATTR);
-	Text_DrawHLine(&global_screen[ID_CHANNEL_B], x + line_len + 2, y + 15, 6, the_char, FG_COLOR_WHITE, BG_COLOR_BLUE, CHAR_AND_ATTR);
+	Text_DrawHLine(the_system->screen_[ID_CHANNEL_B], x + line_len + 2, y + 0, 6, the_char, FG_COLOR_BLACK, BG_COLOR_BLUE, CHAR_AND_ATTR);
+	Text_DrawHLine(the_system->screen_[ID_CHANNEL_B], x + line_len + 2, y + 1, 6, the_char, FG_COLOR_DK_RED, BG_COLOR_BLUE, CHAR_AND_ATTR);
+	Text_DrawHLine(the_system->screen_[ID_CHANNEL_B], x + line_len + 2, y + 2, 6, the_char, FG_COLOR_DK_GREEN, BG_COLOR_BLUE, CHAR_AND_ATTR);
+	Text_DrawHLine(the_system->screen_[ID_CHANNEL_B], x + line_len + 2, y + 3, 6, the_char, FG_COLOR_DK_YELLOW, BG_COLOR_BLUE, CHAR_AND_ATTR);
+	Text_DrawHLine(the_system->screen_[ID_CHANNEL_B], x + line_len + 2, y + 4, 6, the_char, FG_COLOR_DK_BLUE, BG_COLOR_BLUE, CHAR_AND_ATTR);
+	Text_DrawHLine(the_system->screen_[ID_CHANNEL_B], x + line_len + 2, y + 5, 6, the_char, FG_COLOR_ORANGE, BG_COLOR_BLUE, CHAR_AND_ATTR);
+	Text_DrawHLine(the_system->screen_[ID_CHANNEL_A], x + line_len + 2, y + 6, 6, the_char, FG_COLOR_DK_CYAN, BG_COLOR_BLUE, CHAR_AND_ATTR);
+	Text_DrawHLine(the_system->screen_[ID_CHANNEL_B], x + line_len + 2, y + 7, 6, the_char, FG_COLOR_LT_GRAY, BG_COLOR_BLUE, CHAR_AND_ATTR);
+	Text_DrawHLine(the_system->screen_[ID_CHANNEL_B], x + line_len + 2, y + 8, 6, the_char, FG_COLOR_DK_GRAY, BG_COLOR_BLUE, CHAR_AND_ATTR);
+	Text_DrawHLine(the_system->screen_[ID_CHANNEL_B], x + line_len + 2, y + 9, 6, the_char, FG_COLOR_ORANGE, BG_COLOR_BLUE, CHAR_AND_ATTR);
+	Text_DrawHLine(the_system->screen_[ID_CHANNEL_B], x + line_len + 2, y + 10, 6, the_char, FG_COLOR_GREEN, BG_COLOR_BLUE, CHAR_AND_ATTR);
+	Text_DrawHLine(the_system->screen_[ID_CHANNEL_B], x + line_len + 2, y + 11, 6, the_char, FG_COLOR_YELLOW, BG_COLOR_BLUE, CHAR_AND_ATTR);
+	Text_DrawHLine(the_system->screen_[ID_CHANNEL_B], x + line_len + 2, y + 12, 6, the_char, FG_COLOR_BLUE, BG_COLOR_BLUE, CHAR_AND_ATTR);
+	Text_DrawHLine(the_system->screen_[ID_CHANNEL_B], x + line_len + 2, y + 13, 6, the_char, FG_COLOR_VIOLET, BG_COLOR_BLUE, CHAR_AND_ATTR);
+	Text_DrawHLine(the_system->screen_[ID_CHANNEL_B], x + line_len + 2, y + 14, 6, the_char, FG_COLOR_CYAN, BG_COLOR_BLUE, CHAR_AND_ATTR);
+	Text_DrawHLine(the_system->screen_[ID_CHANNEL_B], x + line_len + 2, y + 15, 6, the_char, FG_COLOR_WHITE, BG_COLOR_BLUE, CHAR_AND_ATTR);
 	WaitForUser();
 }
 
@@ -411,7 +413,7 @@ void Demo_Text_DrawBox(void)
 	v_line_len = 6;
 	the_char = CH_CHECKERED3;
 
-	Text_DrawBox(&global_screen[ID_CHANNEL_B], x, y, h_line_len, v_line_len, the_char, FG_COLOR_CYAN, BG_COLOR_DK_CYAN, CHAR_AND_ATTR);
+	Text_DrawBox(the_system->screen_[ID_CHANNEL_B], x, y, h_line_len, v_line_len, the_char, FG_COLOR_CYAN, BG_COLOR_DK_CYAN, CHAR_AND_ATTR);
 	WaitForUser();
 }
 
@@ -432,7 +434,7 @@ void Demo_Text_DrawBoxCoords(void)
 	y2 = 35;
 	the_char = CH_CHECKERED1;
 
-	Text_DrawBoxCoords(&global_screen[ID_CHANNEL_B], x1, y1, x2, y2, the_char, FG_COLOR_LT_GRAY, BG_COLOR_DK_GRAY, CHAR_AND_ATTR);
+	Text_DrawBoxCoords(the_system->screen_[ID_CHANNEL_B], x1, y1, x2, y2, the_char, FG_COLOR_LT_GRAY, BG_COLOR_DK_GRAY, CHAR_AND_ATTR);
 	WaitForUser();
 }
 
@@ -451,8 +453,8 @@ void Demo_Text_DrawBoxCoordsFancy(void)
 	x2 = 68;
 	y2 = 51;
 
-	Text_FillBox(&global_screen[ID_CHANNEL_B], x1+1, y1+1, x2-1, y2-1, CH_CHECKERED3, FG_COLOR_LT_GRAY, BG_COLOR_WHITE);
-	Text_DrawBoxCoordsFancy(&global_screen[ID_CHANNEL_B], x1, y1, x2, y2, FG_COLOR_LT_GRAY, BG_COLOR_DK_GRAY);
+	Text_FillBox(the_system->screen_[ID_CHANNEL_B], x1+1, y1+1, x2-1, y2-1, CH_CHECKERED3, FG_COLOR_LT_GRAY, BG_COLOR_WHITE);
+	Text_DrawBoxCoordsFancy(the_system->screen_[ID_CHANNEL_B], x1, y1, x2, y2, FG_COLOR_LT_GRAY, BG_COLOR_DK_GRAY);
 	WaitForUser();
 }
 
@@ -466,9 +468,9 @@ void Demo_Text_DrawStringAtXY(void)
 
 	the_message = General_StrlcpyWithAlloc((char*)"this is a string", 250);
 	
-	for (i = 6; i < global_screen[ID_CHANNEL_B].text_rows_vis_ - 1 && i*2 < global_screen[ID_CHANNEL_B].text_cols_vis_ - 1; i = i + 8)
+	for (i = 6; i < the_system->screen_[ID_CHANNEL_B]->text_rows_vis_ - 1 && i*2 < the_system->screen_[ID_CHANNEL_B]->text_cols_vis_ - 1; i = i + 8)
 	{	
-		Text_DrawStringAtXY(&global_screen[ID_CHANNEL_B], i*2, i, the_message, FG_COLOR_YELLOW, BG_COLOR_DK_BLUE);
+		Text_DrawStringAtXY(the_system->screen_[ID_CHANNEL_B], i*2, i, the_message, FG_COLOR_YELLOW, BG_COLOR_DK_BLUE);
 	}
 
 	WaitForUser();
@@ -490,12 +492,12 @@ void Demo_Text_DrawStringInBox1(void)
 	// small box
 	x1 = 39;
 	y1 = 19;
-	x2 = global_screen[ID_CHANNEL_B].text_cols_vis_ - 1;
+	x2 = the_system->screen_[ID_CHANNEL_B]->text_cols_vis_ - 1;
 	y2 = 41;
 
-	Text_FillBox(&global_screen[ID_CHANNEL_B], x1+1, y1+1, x2-1, y2-1, ' ', BG_COLOR_CYAN, BG_COLOR_BLACK);
-	Text_DrawBoxCoordsFancy(&global_screen[ID_CHANNEL_B], x1, y1, x2, y2, FG_COLOR_LT_GRAY, BG_COLOR_BLACK);
-	Text_DrawStringInBox(&global_screen[ID_CHANNEL_B], x1+1, y1+1, x2-1, y2-1, the_message, BG_COLOR_CYAN, BG_COLOR_BLACK, NULL);
+	Text_FillBox(the_system->screen_[ID_CHANNEL_B], x1+1, y1+1, x2-1, y2-1, ' ', BG_COLOR_CYAN, BG_COLOR_BLACK);
+	Text_DrawBoxCoordsFancy(the_system->screen_[ID_CHANNEL_B], x1, y1, x2, y2, FG_COLOR_LT_GRAY, BG_COLOR_BLACK);
+	Text_DrawStringInBox(the_system->screen_[ID_CHANNEL_B], x1+1, y1+1, x2-1, y2-1, the_message, BG_COLOR_CYAN, BG_COLOR_BLACK, NULL);
 
 	free(the_message);
 
@@ -518,12 +520,12 @@ void Demo_Text_DrawStringInBox2(void)
 	// medium box
 	x1 = 12;
 	y1 = 6;
-	x2 = global_screen[ID_CHANNEL_B].text_cols_vis_ - 3;
+	x2 = the_system->screen_[ID_CHANNEL_B]->text_cols_vis_ - 3;
 	y2 = 51;
 
-	Text_FillBox(&global_screen[ID_CHANNEL_B], x1+1, y1+1, x2-1, y2-1, ' ', FG_COLOR_LT_GRAY, BG_COLOR_WHITE);
-	Text_DrawBoxCoordsFancy(&global_screen[ID_CHANNEL_B], x1, y1, x2, y2, FG_COLOR_BLACK, BG_COLOR_WHITE);
-	Text_DrawStringInBox(&global_screen[ID_CHANNEL_B], x1+1, y1+1, x2-1, y2-1, the_message, FG_COLOR_BLACK, BG_COLOR_WHITE, &Test_MyGetUserResponseFunc);
+	Text_FillBox(the_system->screen_[ID_CHANNEL_B], x1+1, y1+1, x2-1, y2-1, ' ', FG_COLOR_LT_GRAY, BG_COLOR_WHITE);
+	Text_DrawBoxCoordsFancy(the_system->screen_[ID_CHANNEL_B], x1, y1, x2, y2, FG_COLOR_BLACK, BG_COLOR_WHITE);
+	Text_DrawStringInBox(the_system->screen_[ID_CHANNEL_B], x1+1, y1+1, x2-1, y2-1, the_message, FG_COLOR_BLACK, BG_COLOR_WHITE, &Test_MyGetUserResponseFunc);
 
 	free(the_message);
 
@@ -537,22 +539,22 @@ void Demo_Text_ScreenResolution1(void)
 	char*			the_message = msg_buffer;
 	int				y = 7;
 	
-	Text_SetVideoMode(&global_screen[ID_CHANNEL_B], RES_800X600);
-	ShowDescription("Text_SetVideoMode -> (RES_800X600) Changes resolution to 800x600 if available for this screen/channel.");	
+	Sys_SetVideoMode(the_system->screen_[ID_CHANNEL_B], RES_800X600);
+	ShowDescription("Sys_SetVideoMode -> (RES_800X600) Changes resolution to 800x600 if available for this screen/channel.");	
 
 	sprintf(the_message, "Requested 800x600. Actual: %i x %i, %i x %i text, %i x %i visible text", 
-		global_screen[ID_CHANNEL_B].width_, 
-		global_screen[ID_CHANNEL_B].height_, 
-		global_screen[ID_CHANNEL_B].text_mem_cols_, 
-		global_screen[ID_CHANNEL_B].text_mem_rows_, 
-		global_screen[ID_CHANNEL_B].text_cols_vis_, 
-		global_screen[ID_CHANNEL_B].text_rows_vis_
+		the_system->screen_[ID_CHANNEL_B]->width_, 
+		the_system->screen_[ID_CHANNEL_B]->height_, 
+		the_system->screen_[ID_CHANNEL_B]->text_mem_cols_, 
+		the_system->screen_[ID_CHANNEL_B]->text_mem_rows_, 
+		the_system->screen_[ID_CHANNEL_B]->text_cols_vis_, 
+		the_system->screen_[ID_CHANNEL_B]->text_rows_vis_
 		);
-	Text_DrawStringAtXY(&global_screen[ID_CHANNEL_B], 0, y, the_message, FG_COLOR_BLACK, BG_COLOR_GREEN);
-	Text_DrawStringAtXY(&global_screen[ID_CHANNEL_B], 0, y + 1, (char*)"0123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789", FG_COLOR_DK_BLUE, BG_COLOR_YELLOW);
-	Text_DrawStringAtXY(&global_screen[ID_CHANNEL_B], 0, y + 2, (char*)"<-START OF LINE", FG_COLOR_BLACK, BG_COLOR_GREEN);
-	Text_DrawStringAtXY(&global_screen[ID_CHANNEL_B], 0, 70, (char*)"ROW70", FG_COLOR_BLACK, BG_COLOR_GREEN);
-	Text_ShowFontChars(&global_screen[ID_CHANNEL_B], y + 3);
+	Text_DrawStringAtXY(the_system->screen_[ID_CHANNEL_B], 0, y, the_message, FG_COLOR_BLACK, BG_COLOR_GREEN);
+	Text_DrawStringAtXY(the_system->screen_[ID_CHANNEL_B], 0, y + 1, (char*)"0123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789", FG_COLOR_DK_BLUE, BG_COLOR_YELLOW);
+	Text_DrawStringAtXY(the_system->screen_[ID_CHANNEL_B], 0, y + 2, (char*)"<-START OF LINE", FG_COLOR_BLACK, BG_COLOR_GREEN);
+	Text_DrawStringAtXY(the_system->screen_[ID_CHANNEL_B], 0, 70, (char*)"ROW70", FG_COLOR_BLACK, BG_COLOR_GREEN);
+	Text_ShowFontChars(the_system->screen_[ID_CHANNEL_B], y + 3);
 
 	WaitForUser();
 }
@@ -564,22 +566,22 @@ void Demo_Text_ScreenResolution2(void)
 	char*			the_message = msg_buffer;
 	int				y = 7;
 	
-	Text_SetVideoMode(&global_screen[ID_CHANNEL_B], RES_640X480);
-	ShowDescription("Text_SetVideoMode -> (RES_640X480) Changes resolution to 640x480 if available for this screen/channel.");	
+	Sys_SetVideoMode(the_system->screen_[ID_CHANNEL_B], RES_640X480);
+	ShowDescription("Sys_SetVideoMode -> (RES_640X480) Changes resolution to 640x480 if available for this screen/channel.");	
 
 	sprintf(the_message, "Requested 640x480. Actual: %i x %i, %i x %i text, %i x %i visible text", 
-		global_screen[ID_CHANNEL_B].width_, 
-		global_screen[ID_CHANNEL_B].height_, 
-		global_screen[ID_CHANNEL_B].text_mem_cols_, 
-		global_screen[ID_CHANNEL_B].text_mem_rows_, 
-		global_screen[ID_CHANNEL_B].text_cols_vis_, 
-		global_screen[ID_CHANNEL_B].text_rows_vis_
+		the_system->screen_[ID_CHANNEL_B]->width_, 
+		the_system->screen_[ID_CHANNEL_B]->height_, 
+		the_system->screen_[ID_CHANNEL_B]->text_mem_cols_, 
+		the_system->screen_[ID_CHANNEL_B]->text_mem_rows_, 
+		the_system->screen_[ID_CHANNEL_B]->text_cols_vis_, 
+		the_system->screen_[ID_CHANNEL_B]->text_rows_vis_
 		);
-	Text_DrawStringAtXY(&global_screen[ID_CHANNEL_B], 0, y, the_message, FG_COLOR_BLACK, BG_COLOR_GREEN);
-	Text_DrawStringAtXY(&global_screen[ID_CHANNEL_B], 0, y + 1, (char*)"01234567890123456789012345678901234567890123456789012345678901234567890123456789", FG_COLOR_DK_BLUE, BG_COLOR_YELLOW);
-	Text_DrawStringAtXY(&global_screen[ID_CHANNEL_B], 0, y + 2, (char*)"<-START OF LINE", FG_COLOR_BLACK, BG_COLOR_GREEN);
-	Text_DrawStringAtXY(&global_screen[ID_CHANNEL_B], 0, 55, (char*)"ROW55", FG_COLOR_BLACK, BG_COLOR_GREEN);
-	Text_ShowFontChars(&global_screen[ID_CHANNEL_B], y + 3);
+	Text_DrawStringAtXY(the_system->screen_[ID_CHANNEL_B], 0, y, the_message, FG_COLOR_BLACK, BG_COLOR_GREEN);
+	Text_DrawStringAtXY(the_system->screen_[ID_CHANNEL_B], 0, y + 1, (char*)"01234567890123456789012345678901234567890123456789012345678901234567890123456789", FG_COLOR_DK_BLUE, BG_COLOR_YELLOW);
+	Text_DrawStringAtXY(the_system->screen_[ID_CHANNEL_B], 0, y + 2, (char*)"<-START OF LINE", FG_COLOR_BLACK, BG_COLOR_GREEN);
+	Text_DrawStringAtXY(the_system->screen_[ID_CHANNEL_B], 0, 55, (char*)"ROW55", FG_COLOR_BLACK, BG_COLOR_GREEN);
+	Text_ShowFontChars(the_system->screen_[ID_CHANNEL_B], y + 3);
 
 	WaitForUser();
 }
@@ -591,23 +593,23 @@ void Demo_Text_ScreenResolution3(void)
 	char*			the_message = msg_buffer;
 	int				y = 7;
 	
-	Text_SetVideoMode(&global_screen[ID_CHANNEL_A], RES_800X600);
-	ShowDescription("Text_SetVideoMode -> (RES_800X600) Changes resolution to 800x600 if available for this screen/channel.");	
+	Sys_SetVideoMode(the_system->screen_[ID_CHANNEL_A], RES_800X600);
+	ShowDescription("Sys_SetVideoMode -> (RES_800X600) Changes resolution to 800x600 if available for this screen/channel.");	
 
 	sprintf(the_message, "Requested 800x600. Actual: %i x %i, %i x %i text, %i x %i visible text", 
-		global_screen[ID_CHANNEL_A].width_, 
-		global_screen[ID_CHANNEL_A].height_, 
-		global_screen[ID_CHANNEL_A].text_mem_cols_, 
-		global_screen[ID_CHANNEL_A].text_mem_rows_, 
-		global_screen[ID_CHANNEL_A].text_cols_vis_, 
-		global_screen[ID_CHANNEL_A].text_rows_vis_
+		the_system->screen_[ID_CHANNEL_A]->width_, 
+		the_system->screen_[ID_CHANNEL_A]->height_, 
+		the_system->screen_[ID_CHANNEL_A]->text_mem_cols_, 
+		the_system->screen_[ID_CHANNEL_A]->text_mem_rows_, 
+		the_system->screen_[ID_CHANNEL_A]->text_cols_vis_, 
+		the_system->screen_[ID_CHANNEL_A]->text_rows_vis_
 		);
-	Text_DrawStringAtXY(&global_screen[ID_CHANNEL_A], 0, y, the_message, FG_COLOR_BLACK, BG_COLOR_GREEN);
-	Text_DrawStringAtXY(&global_screen[ID_CHANNEL_A], 0, y + 1, (char*)"0123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789", FG_COLOR_DK_BLUE, BG_COLOR_YELLOW);
-	Text_DrawStringAtXY(&global_screen[ID_CHANNEL_A], 0, y + 2, (char*)"<-START OF LINE", FG_COLOR_BLACK, BG_COLOR_GREEN);
-	Text_DrawStringAtXY(&global_screen[ID_CHANNEL_B], 0, y + 3, (char*)"800x600 should now be showing on Channel A", FG_COLOR_RED, BG_COLOR_GREEN);
-	Text_DrawStringAtXY(&global_screen[ID_CHANNEL_A], 0, 70, (char*)"ROW70", FG_COLOR_BLACK, BG_COLOR_GREEN);
-	Text_ShowFontChars(&global_screen[ID_CHANNEL_A], y + 4);
+	Text_DrawStringAtXY(the_system->screen_[ID_CHANNEL_A], 0, y, the_message, FG_COLOR_BLACK, BG_COLOR_GREEN);
+	Text_DrawStringAtXY(the_system->screen_[ID_CHANNEL_A], 0, y + 1, (char*)"0123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789", FG_COLOR_DK_BLUE, BG_COLOR_YELLOW);
+	Text_DrawStringAtXY(the_system->screen_[ID_CHANNEL_A], 0, y + 2, (char*)"<-START OF LINE", FG_COLOR_BLACK, BG_COLOR_GREEN);
+	Text_DrawStringAtXY(the_system->screen_[ID_CHANNEL_B], 0, y + 3, (char*)"800x600 should now be showing on Channel A", FG_COLOR_RED, BG_COLOR_GREEN);
+	Text_DrawStringAtXY(the_system->screen_[ID_CHANNEL_A], 0, 70, (char*)"ROW70", FG_COLOR_BLACK, BG_COLOR_GREEN);
+	Text_ShowFontChars(the_system->screen_[ID_CHANNEL_A], y + 4);
 
 	WaitForUser();
 }
@@ -619,23 +621,23 @@ void Demo_Text_ScreenResolution4(void)
 	char*			the_message = msg_buffer;
 	int				y = 7;
 	
-	Text_SetVideoMode(&global_screen[ID_CHANNEL_A], RES_1024X768);
-	ShowDescription("Text_SetVideoMode -> (RES_1024X768) Changes resolution to 1024x768 if available for this screen/channel.");	
+	Sys_SetVideoMode(the_system->screen_[ID_CHANNEL_A], RES_1024X768);
+	ShowDescription("Sys_SetVideoMode -> (RES_1024X768) Changes resolution to 1024x768 if available for this screen/channel.");	
 
 	sprintf(the_message, "Requested 1024x768. Actual: %i x %i, %i x %i text, %i x %i visible text", 
-		global_screen[ID_CHANNEL_A].width_, 
-		global_screen[ID_CHANNEL_A].height_, 
-		global_screen[ID_CHANNEL_A].text_mem_cols_, 
-		global_screen[ID_CHANNEL_A].text_mem_rows_, 
-		global_screen[ID_CHANNEL_A].text_cols_vis_, 
-		global_screen[ID_CHANNEL_A].text_rows_vis_
+		the_system->screen_[ID_CHANNEL_A]->width_, 
+		the_system->screen_[ID_CHANNEL_A]->height_, 
+		the_system->screen_[ID_CHANNEL_A]->text_mem_cols_, 
+		the_system->screen_[ID_CHANNEL_A]->text_mem_rows_, 
+		the_system->screen_[ID_CHANNEL_A]->text_cols_vis_, 
+		the_system->screen_[ID_CHANNEL_A]->text_rows_vis_
 		);
-	Text_DrawStringAtXY(&global_screen[ID_CHANNEL_A], 0, y, the_message, FG_COLOR_BLACK, BG_COLOR_GREEN);
-	Text_DrawStringAtXY(&global_screen[ID_CHANNEL_A], 0, y + 1, (char*)"0123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567", FG_COLOR_DK_BLUE, BG_COLOR_YELLOW);
-	Text_DrawStringAtXY(&global_screen[ID_CHANNEL_A], 0, y + 2, (char*)"<-START OF LINE", FG_COLOR_BLACK, BG_COLOR_GREEN);
-	Text_DrawStringAtXY(&global_screen[ID_CHANNEL_B], 0, y + 3, (char*)"1024x768 should now be showing on Channel A", FG_COLOR_RED, BG_COLOR_GREEN);
-	Text_DrawStringAtXY(&global_screen[ID_CHANNEL_A], 0, 91, (char*)"ROW91", FG_COLOR_BLACK, BG_COLOR_GREEN);
-	Text_ShowFontChars(&global_screen[ID_CHANNEL_A], y + 4);
+	Text_DrawStringAtXY(the_system->screen_[ID_CHANNEL_A], 0, y, the_message, FG_COLOR_BLACK, BG_COLOR_GREEN);
+	Text_DrawStringAtXY(the_system->screen_[ID_CHANNEL_A], 0, y + 1, (char*)"0123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567", FG_COLOR_DK_BLUE, BG_COLOR_YELLOW);
+	Text_DrawStringAtXY(the_system->screen_[ID_CHANNEL_A], 0, y + 2, (char*)"<-START OF LINE", FG_COLOR_BLACK, BG_COLOR_GREEN);
+	Text_DrawStringAtXY(the_system->screen_[ID_CHANNEL_B], 0, y + 3, (char*)"1024x768 should now be showing on Channel A", FG_COLOR_RED, BG_COLOR_GREEN);
+	Text_DrawStringAtXY(the_system->screen_[ID_CHANNEL_A], 0, 91, (char*)"ROW91", FG_COLOR_BLACK, BG_COLOR_GREEN);
+	Text_ShowFontChars(the_system->screen_[ID_CHANNEL_A], y + 4);
 
 	WaitForUser();
 }
@@ -782,9 +784,9 @@ void Demo_Text_UpdateFontData(void)
 	unsigned char*	the_new_font_data = testfont;
 
 	ShowDescription("Text_UpdateFontData -> Change the font characters with 2K of data from the specified buffer. See screen A as comparison.");	
-	Text_ShowFontChars(&global_screen[ID_CHANNEL_A], 10);
-	Text_ShowFontChars(&global_screen[ID_CHANNEL_B], 10);
-	Text_UpdateFontData(&global_screen[ID_CHANNEL_B], (char*)the_new_font_data);
+	Text_ShowFontChars(the_system->screen_[ID_CHANNEL_A], 10);
+	Text_ShowFontChars(the_system->screen_[ID_CHANNEL_B], 10);
+	Text_UpdateFontData(the_system->screen_[ID_CHANNEL_B], (char*)the_new_font_data);
 
 	WaitForUser();
 }
@@ -794,8 +796,8 @@ void Demo_Text_UpdateFontData(void)
 
 void RunDemo(void)
 {
-	Text_FillCharMem(&global_screen[ID_CHANNEL_B], ' ');
-	Text_FillAttrMem(&global_screen[ID_CHANNEL_B], 160);
+	Text_FillCharMem(the_system->screen_[ID_CHANNEL_B], ' ');
+	Text_FillAttrMem(the_system->screen_[ID_CHANNEL_B], 160);
 
 	ShowDescription("Welcome to the A2560 Text Library Demo! (No, it's not THAT kind of demo, sorry)");	
 	WaitForUser();
@@ -852,21 +854,14 @@ void RunDemo(void)
 
 int main(int argc, char* argv[])
 {
-	
-	global_screen[ID_CHANNEL_A].id_ = ID_CHANNEL_A;
-	global_screen[ID_CHANNEL_B].id_ = ID_CHANNEL_B;
+	if ( (the_system = Sys_InitSystem()) == NULL)
+	{
+		DEBUG_OUT(("%s %d: Couldn't initialize the system", __func__, __LINE__));
+		exit(0);
+	}
 
-	if (Text_AutoConfigureScreen(&global_screen[ID_CHANNEL_A]) == false)
-	{
-		DEBUG_OUT(("%s %d: Auto configure failed for screen A", __func__, __LINE__));
-		exit(0);
-	}
-	
-	if (Text_AutoConfigureScreen(&global_screen[ID_CHANNEL_B]) == false)
-	{
-		DEBUG_OUT(("%s %d: Auto configure failed for screen B", __func__, __LINE__));
-		exit(0);
-	}
+	// try flushing channel.. something about graphics mode makes getchar() not work any more? 
+	//sys_chan_flush(sys_chan_open(0, (unsigned char*)"", 1));
 	
 	RunDemo();
 	

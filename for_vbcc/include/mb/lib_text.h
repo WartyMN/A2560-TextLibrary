@@ -48,8 +48,8 @@
 // project includes
 
 // A2560 includes
-#include "a2560_platform.h"
-#include "lib_general.h"
+#include <mb/a2560_platform.h>
+#include <mb/lib_general.h>
 
 
 /*****************************************************************************/
@@ -354,29 +354,12 @@ char* Text_DrawStringInBox(Screen* the_screen, signed int x1, signed int y1, sig
 //! @param	the_string: the null-terminated string to be measured.
 //! @param	the_len: the length of the passed string. If the entire string fits, this len will be returned.
 //! @param	available_width: the width, in pixels, of the space the string is to be measured against.
+//! @param	fixed_char_width: the width, in pixels, of one character.
 //! @return	returns -1 in any error condition, or the number of characters that fit. If the entire string fits, the passed len will be returned.
 signed int Text_MeasureStringWidth(Font* the_font, char* the_string, signed int the_len, signed int available_width, signed int fixed_char_width);
 
 
 
-// **** Screen mode/resolution/size functions *****
-
-
-//! Detect the current screen mode/resolution, and set # of columns, rows, H pixels, V pixels, accordingly
-//! @return	returns false on any error/invalid input.
-boolean Text_SetSizes(Screen* the_screen);
-
-//! Change video mode to the one passed.
-//! @param	new_mode: One of the enumerated screen_resolution values. Must correspond to a valid VICKY video mode for the host machine. See VICKY_IIIA_RES_800X600_FLAGS, etc. defined in a2560_platform.h
-//! @return	returns false on any error/invalid input.
-boolean Text_SetVideoMode(Screen* the_screen, screen_resolution new_mode);
-
-//! Find out what kind of machine the software is running on, and configure the passed screen accordingly
-//! Configures screen settings, RAM addresses, etc. based on known info about machine types
-//! Configures screen width, height, total text rows and cols, and visible text rows and cols by checking hardware
-//! For machines with 2 screens, call this once per screen
-//! @return	Returns false if the machine is known to be incompatible with this software. 
-boolean Text_AutoConfigureScreen(Screen* the_screen);
 
 
 

@@ -37,10 +37,6 @@ var NAVTREE =
         [ "ToDo", "index.html#autotoc_md8", null ]
       ] ]
     ] ],
-    [ "Data Structures", "annotated.html", [
-      [ "Data Structures", "annotated.html", "annotated_dup" ],
-      [ "Data Structure Index", "classes.html", null ]
-    ] ],
     [ "Files", "files.html", [
       [ "File List", "files.html", "files_dup" ],
       [ "Globals", "globals.html", [
@@ -54,7 +50,7 @@ var NAVTREE =
 
 var NAVTREEINDEX =
 [
-"a2560__platform_8h_source.html"
+"files.html"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

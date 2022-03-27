@@ -249,6 +249,10 @@ typedef enum
 
 // forward declarations
 typedef struct Font Font;
+typedef struct Window Window;
+typedef struct WindowStyle WindowStyle;
+typedef struct Control Control;
+typedef struct ControlTemplate ControlTemplate;
 
 
 

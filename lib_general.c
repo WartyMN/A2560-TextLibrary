@@ -30,7 +30,8 @@
 
 // A2560 includes
 #include <mcp/syscalls.h>
-#include "a2560_platform.h"
+#include <mb/a2560_platform.h>
+#include <mb/lib_sys.h>
 
 
 /*****************************************************************************/
@@ -486,8 +487,11 @@ int General_Round(double the_float)
 char* General_StrlcpyWithAlloc(const char* the_source, unsigned long max_len)
 {
 	char* the_target;
+	size_t	alloc_len = General_Strnlen(the_source, max_len) + 1;
+	
+	DEBUG_OUT(("%s %d: here. the_source=%p, max_len=%lu, alloc_len=%lu", __func__, __LINE__, the_source, max_len, alloc_len));
 
-	if ( (the_target = (char*)calloc(General_Strnlen(the_source, max_len) + 1, sizeof(char)) ) == NULL)
+	if ( (the_target = (char*)f_calloc(alloc_len, sizeof(char), MEM_STANDARD) ) == NULL)
 	{
 		return NULL;
 	}
@@ -505,6 +509,7 @@ char* General_StrlcpyWithAlloc(const char* the_source, unsigned long max_len)
 unsigned long General_Strlcpy(char* dst, const char* src, unsigned long maxlen)
 {
     const unsigned long		srclen = strlen(src);
+	DEBUG_OUT(("%s %d: here. dst=%p ('%s'), src=%p ('%s'), max_len=%lu, srclen=%lu", __func__, __LINE__, dst, dst, src, src, maxlen, srclen));
 
     if (srclen + 1 < maxlen)
     {
@@ -515,6 +520,7 @@ unsigned long General_Strlcpy(char* dst, const char* src, unsigned long maxlen)
     	memcpy(dst, src, maxlen - 1);
         dst[maxlen - 1] = '\0';
     }
+	DEBUG_OUT(("%s %d: here. dst=%p ('%s'), src=%p ('%s'), max_len=%lu, srclen=%lu", __func__, __LINE__, dst, dst, src, src, maxlen, srclen));
 
     return srclen;
 }
@@ -590,6 +596,7 @@ signed int General_Strncasecmp(const char* string_1, const char* string_2, long 
 unsigned long General_Strnlen(const char* s, unsigned long maxlen)
 {
 	unsigned long	len;
+	DEBUG_OUT(("%s %d: here. s=%p, s='%s', maxlen=%lu", __func__, __LINE__, s, s, maxlen));
 
 	for (len = 0; len < maxlen; len++, s++)
 	{
@@ -598,6 +605,7 @@ unsigned long General_Strnlen(const char* s, unsigned long maxlen)
 			break;
 		}
 	}
+	DEBUG_OUT(("%s %d: here. s=%p, s='%s', len=%lu", __func__, __LINE__, s, s, len));
 	return (len);
 }
 

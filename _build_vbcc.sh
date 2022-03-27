@@ -9,12 +9,10 @@ cd $DEVA2560/lib_text
 # copy latest version of headers to VBCC
 cp lib_general.h $VBCC/targets/a2560-micah/include/mb/
 cp lib_text.h $VBCC/targets/a2560-micah/include/mb/
-cp a2560_platform.h $VBCC/targets/a2560-micah/include/mb/
 
 # copy headers to easy-to-share for-vbcc folder
 cp lib_general.h for_vbcc/include/mb/
 cp lib_text.h for_vbcc/include/mb/
-cp a2560_platform.h for_vbcc/include/mb/
 
 # make general as static lib
 vc +/opt/vbcc/config/a2560-4lib-micah -o a2560_general.lib lib_general.c
@@ -25,10 +23,6 @@ mv a2560_general.lib $VBCC/targets/a2560-micah/lib/
 vc +/opt/vbcc/config/a2560-4lib-micah -o a2560_text.lib lib_text.c
 cp a2560_text.lib for_vbcc/lib/
 mv a2560_text.lib $VBCC/targets/a2560-micah/lib/
-
-
-# renew doxygen docs
-doxygen
 
 
 # *************
@@ -45,6 +39,10 @@ vc +/opt/vbcc/config/a2560-s28-micahwlib -o text_test.s28 lib_text_test.c -lm
 perl -i -0777 -pe 's/S804000000FB/S804020000FB/' "$DEVA2560/lib_text/text_test.s28"
 
 
+
+
+# renew doxygen docs
+#doxygen
 
 
 
